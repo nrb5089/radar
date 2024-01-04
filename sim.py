@@ -3,22 +3,25 @@ import matplotlib.pyplot as plt
 import matplotlib
 from copy import deepcopy as dcp
 import cv2
-from core import MonostaticRadar, PlanarAESA
+from core import MonostaticRadar, PlanarAESA, SincAntennaPattern
 
 class Simulation:
 	'''
 	Top level simulation class for a 1v1 target vs track radar
 	'''
-	def __init__(self, sim_params, target_params, radar_params, demo = False):
+	def __init__(self, sim_params, target_params, radar_params, antenna_params, demo = False):
 		
 		self.sim_params = sim_params
 		self.target_params = target_params
 		self.radar_params = radar_params
+		self.antenna_params = antenna_params
 		
 		self.target = DWNATarget(target_params)
 								
 		self.radar = MonostaticRadar(radar_params)
 		
+		self.antenna_pattern = SincAntennaPattern(antenna_params)
+									
 		self.process_rf = sim_params['process_rf'] 
 		self.process_lam = 3e8/self.process_rf
 		self.radar.aesa = PlanarAESA(32, 3e8/2/self.process_rf)
@@ -107,6 +110,66 @@ class Simulation:
 		
 		
 		return x,B
+
+	def perform_360_scan(self,full_rotation_time_s, noenv = False, probe = False):
+		'''
+		This function performs a 360 degree scan, in order to synchronize the pri timing with the scan position, we round the time for a full rotation to be an integer multiple of the cpi used (for single pulse, this is just a single pri)
+		'''
+		
+		#Determine CPIs per scan 
+		length_cpi_s = np.sum(self.radar.pris_in_mode_sequence)
+		num_cpis_per_rotation = int(np.round(full_rotation_time_s/length_cpi_s))
+		steered_azs = np.linspace(0,2*np.pi,num_cpis_per_rotation)
+		actual_rotation_time_s = num_cpis_per_rotation * length_cpi_s
+		
+		steered_z = 0 #maintain constant elevation steering angle
+		
+		xs = []
+		Bs = []
+		
+		for steered_az in steered_azs:
+			x, wf_object = self.radar.waveform_scheduler_cpi()
+			
+			#Truth target informaitn
+			zoa,aoa,d = self.target.get_target_entity_geo(self.radar.transmitter)
+			d_t = 2/3e8 * d
+			distance_samples_skin_return_t = np.arange(wf_object.samples_per_cpi_rf) / self.radar.receiver.Fs_rf 
+			
+			min_range_sample_to_t = np.argmin(np.abs(distance_samples_skin_return_t-d_t))
+			
+			#Truncate return signals outside cpi
+			x = np.concatenate([np.zeros(min_range_sample_to_t) + 0.0j,x])
+			x = x[:wf_object.samples_per_cpi_rf]
+			
+			
+			if noenv: 
+				pass
+			else:
+				#Doppler
+				#TODO Doppler v_d seems like it may be always positive, need to fix this
+				v_zoa,v_aoa,v_d = self.target.get_target_entity_relative_velocity(self.radar.transmitter)
+				x = x * np.exp(1j* 2*np.pi/self.radar.receiver.Fs_rf * 2* v_d/self.process_lam * np.arange(len(x))) #TODO Should there be phase variation in this?
+				
+				#RRE
+				x = x * np.sqrt(self.process_lam**2 * self.target.rcs / d**4  / (4*np.pi)**3 / self.radar.receiver.Lrx / self.radar.transmitter.Ltx)
+				
+				#Tx/Rx Antenna Gain
+				x = self.antenna_pattern.gain_val(steered_az-aoa,steered_z-zoa)**2 * x
+				
+				print(f'Maximum Distance: {np.max(distance_samples_skin_return_t*3e8/2)}, Target Distance: {d}, Target Radial Velocity: {v_d}')
+			
+			x = self.radar.receiver.process_single_signal(x,wf_object)
+			x,T = self.radar.receiver.detect_single_signal(x)
+			B = self.radar.receiver.cfar.build_detection_vector(x,T)
+			
+			xs.append(x)
+			Bs.append(B)
+			#Update Target State	
+			self.target.update_state(wf_object.cpi_duration_s)
+		
+		
+		return xs,Bs
+		
 		
 class DWNATarget:
 	'''

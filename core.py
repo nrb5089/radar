@@ -57,7 +57,7 @@ class MonostaticRadar:
 						detector_type = params['detector_type'])
 		
 		
-		#Specify Waveforms
+		#Specify Waveforms by populating 'self.wf_bank', each element is a wf_object
 		self.wf_bank = {}
 		for wf_desc in params['wf_list']:
 			if wf_desc['type'] == 'single': 
@@ -101,9 +101,11 @@ class MonostaticRadar:
 		self.num_unique_wfs_per_mode = len(self.mode_sequence)
 		samples_per_pris = []
 		self.pris_per_cpi_wfs = []
+		self.pris_in_mode_sequence = []
 		for wf_index in self.mode_sequence:
 			samples_per_pris.append(self.wf_bank[wf_index].samples_per_pri_bb)
 			self.pris_per_cpi_wfs.append(self.wf_bank[wf_index].pris_per_cpi)
+			self.pris_in_mode_sequence.append(self.wf_bank[wf_index].pri)
 		self.min_range_samples_for_display_bb = np.min(samples_per_pris)
 		self.min_doppler_samples_for_display_two_sided = np.min(self.pris_per_cpi_wfs)
 		if np.mod(self.min_doppler_samples_for_display_two_sided,2) != 0:
@@ -157,37 +159,30 @@ class SincAntennaPattern:
 	"""
 	Antenna pattern object for a sinc(x) (sin(x)/x) pattern
 	"""
-	def __init__(self,
-				azimuth_beam_width,
-				elevation_beam_width,
-				peak_antenna_gain_db,
-				first_side_lobe_down_az_db,
-				first_side_lobe_down_el_db,
-				second_side_lobe_down_az_db,
-				second_side_lobe_down_el_db,
-				back_lobe_down_db):
-			self.azimuth_beam_width = azimuth_beam_width
-			self.elevation_beam_width = elevation_beam_width
-			self.peak_antenna_gain_db = peak_antenna_gain_db
-			self.first_side_lobe_down_az_db = first_side_lobe_down_az_db
-			self.first_side_lobe_down_el_db = first_side_lobe_down_el_db
-			self.second_side_lobe_down_az_db = second_side_lobe_down_az_db
-			self.second_side_lobe_down_el_db = second_side_lobe_down_el_db
-			self.back_lobe_down_db = back_lobe_down_db
+	def __init__(self,antenna_params):
+			self.azimuth_beam_width = antenna_params['azimuth_beam_width']
+			self.elevation_beam_width = antenna_params['elevation_beam_width']
+			self.peak_antenna_gain_db = antenna_params['peak_antenna_gain_db']
+			self.first_side_lobe_down_az_db = antenna_params['first_side_lobe_down_az_db']
+			self.first_side_lobe_down_el_db = antenna_params['first_side_lobe_down_el_db']
+			self.second_side_lobe_down_az_db = antenna_params['second_side_lobe_down_az_db']
+			self.second_side_lobe_down_el_db = antenna_params['second_side_lobe_down_el_db']
+			self.back_lobe_down_db = antenna_params['back_lobe_down_db']
 			
+			#Count the sidelobes for az and el
 			self.num_side_lobes_az = 0
-			lim = azimuth_beam_width/2
+			lim = self.azimuth_beam_width/2
 			while lim < np.pi:
-				lim += azimuth_beam_width/2
+				lim += self.azimuth_beam_width/2
 				self.num_side_lobes_az += 1
 			
 			self.num_side_lobes_el = 0
-			lim = elevation_beam_width/2
+			lim = self.elevation_beam_width/2
 			while lim < np.pi:
-				lim += elevation_beam_width/2
+				lim += self.elevation_beam_width/2
 				self.num_side_lobes_el += 1
 			
-			
+			#Determine position of null prior to backlobe
 			if np.mod(self.num_side_lobes_az,2) == 1:  
 				self.az_backlobe_null = self.num_side_lobes_az * self.azimuth_beam_width/2
 			else:  
@@ -197,10 +192,12 @@ class SincAntennaPattern:
 				self.el_backlobe_null = self.num_side_lobes_el * self.elevation_beam_width/2
 			else:  
 				self.el_backlobe_null = (self.num_side_lobes_el-1) * self.elevation_beam_width/2
-				
+			
+			#Sidelobe ratios are the same regardless of frequency, so it's best to just use the standard
+			#Backlobe value is the same for both az and el
 			self.first_side_lobe_val_az = np.abs(np.sinc(1.5))
 			self.second_side_lobe_val_az = np.abs(np.sinc(2.5))
-			self.back_lobe_val  = np.abs(np.sinc(self.az_backlobe_null + .25 * azimuth_beam_width)) #WTF is this...
+			self.back_lobe_val  = np.abs(np.sinc(self.az_backlobe_null + .25 * self.azimuth_beam_width)) #Nail down backlobe
 			self.first_side_lobe_val_el = np.abs(np.sinc(1.5))
 			self.second_side_lobe_val_el = np.abs(np.sinc(2.5))
 	

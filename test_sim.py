@@ -7,7 +7,121 @@ from sim import Simulation
 from util import ffts, affts, init_figs
 
 
-
+def main():
+	init_figs()
+	radar_params = {}
+	radar_params['x_loc_m_tx'] = 0.0
+	radar_params['y_loc_m_tx'] = 0.0
+	radar_params['z_loc_m_tx'] = 3.0
+	radar_params['x_vel_mps_tx'] = 0.0
+	radar_params['y_vel_mps_tx'] = 0.0
+	radar_params['z_vel_mps_tx'] = 0.0
+	radar_params['x_acc_mps2_tx'] = 0.0
+	radar_params['y_acc_mps2_tx'] = 0.0
+	radar_params['z_acc_mps2_tx'] = 0.0
+	radar_params['rf_sampling_frequency_hz'] = 500e6
+	radar_params['if_sampling_frequency_hz'] = 100e6
+	radar_params['bb_sampling_frequency_hz'] = 25e6
+	radar_params['rf_center_frequency_hz'] = 115e6
+	radar_params['rf_bandwidth_hz'] = 20e6
+	radar_params['transmit_power_w'] = 100 #per element
+	radar_params['internal_loss_db_tx'] = 2
+									
+	radar_params['x_loc_m_rx'] = 0.0 
+	radar_params['y_loc_m_rx'] = 0.0
+	radar_params['z_loc_m_rx'] = 3.0
+	radar_params['x_vel_mps_rx'] = 0.0
+	radar_params['y_vel_mps_rx'] = 0.0
+	radar_params['z_vel_mps_rx'] = 0.0
+	radar_params['x_acc_mps2_rx'] = 0.0
+	radar_params['y_acc_mps2_rx'] = 0.0
+	radar_params['z_acc_mps2_rx'] = 0.0
+	radar_params['rf_sampling_frequency_hz'] = 500e6
+	radar_params['if_sampling_frequency_hz'] = 100e6
+	radar_params['bb_sampling_frequency_hz'] = 25e6
+	radar_params['rf_center_frequency_hz'] = 115e6
+	radar_params['rf_bandwidth_hz'] = 20e6
+	radar_params['internal_loss_db_rx'] = 2
+# 	radar_params['reference_cells_one_sided'] = 32
+# 	radar_params['guard_cells_one_sided'] = 8
+# 	radar_params['probability_false_alarm'] = 1e-3
+	radar_params['num_reference_cells_range_one_sided'] = 20
+	radar_params['num_guard_cells_range_one_sided'] = 7
+	radar_params['num_reference_cells_doppler_one_sided'] = 10
+	radar_params['num_guard_cells_doppler_one_sided'] = 3
+	radar_params['probability_false_alarm'] = 1e-3
+	radar_params['probability_false_alarm_2D'] = 1e-2
+	radar_params['detector_type'] = 'square'
+	
+	num_pris = 7 * 11*13/np.array([7,11,13])
+	#num_pris = 7*11*13/np.array([7,7,7])
+	num_pris = num_pris.astype('int')
+	radar_params['wf_list'] = [{'index': 0, 'type': 'single', 'pw': 100e-6, 'pri': 1500e-6, 'lfm_excursion' : 2e6, 'pris_per_cpi': 1},
+							{'index': 1, 'type': 'single', 'pw': 100e-6, 'pri': 1550e-6, 'lfm_excursion' : 2e6, 'pris_per_cpi': 1},
+							{'index': 2, 'type': 'single', 'pw': 100e-6, 'pri': 1100e-6, 'lfm_excursion' : 2e6, 'pris_per_cpi': 1},
+								{'index' : 3,'type': 'burst', 'pw': 1e-06, 'pri': 7e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[0]},
+								{'index' :4,'type': 'burst', 'pw': 1e-06, 'pri': 11e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[1]},
+								{'index' : 5,'type': 'burst', 'pw': 1e-06, 'pri': 13e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[2]}]
+								#{'index' : 6,'type': 'burst', 'pw': 1e-06, 'pri': 17e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[3]}]
+	
+	radar_params['wf_sequences'] = [{'index': 0, 'type' : 'single_pulse_stagger', 'sequence' : [0]},
+						  {'index': 1, 'type' : 'single_pulse_stagger', 'sequence' : [0,1,2,0,1,2,1]},
+						  {'index' : 2, 'type' : 'track','sequence' : [3]},
+						  {'index' : 3, 'type' : 'range_resolve', 'sequence' : [3,4]},
+							{'index' : 4, 'type' : 'range_resolve', 'sequence' : [3,4,5]},
+							{'index' : 5, 'type' : 'range_resolve', 'sequence' : [3,4,5,6]}]
+	
+	radar_params['starting_mode_index'] = 0
+	
+	antenna_params = {}
+	antenna_params['azimuth_beam_width'] = 15 * np.pi/180
+	antenna_params['elevation_beam_width'] = 25 * np.pi/180
+	antenna_params['peak_antenna_gain_db'] = 0
+	antenna_params['first_side_lobe_down_az_db'] = 10
+	antenna_params['first_side_lobe_down_el_db'] = 8
+	antenna_params['second_side_lobe_down_az_db'] = 15
+	antenna_params['second_side_lobe_down_el_db'] = 12
+	antenna_params['back_lobe_down_db'] = 20
+	
+									
+	target_params = {}
+	target_params['x_loc_m'] = 31000.0 #100 nmi
+	target_params['y_loc_m'] = 0
+	target_params['z_loc_m'] = 10668 #35kft
+	target_params['x_vel_mps'] = -250 #550 knots Remember this is relative to the radar
+# 	target_params['x_vel_mps'] = -500 #550 knots Remember this is relative to the radar
+	target_params['y_vel_mps'] = 0
+	target_params['z_vel_mps'] = 0.0
+	target_params['x_acc_mps2'] = .1
+	target_params['y_acc_mps2'] = .001
+	target_params['z_acc_mps2'] = .001
+	target_params['radar_cross_section_dbsm'] =25
+	
+	sim_params = {}
+	#sim_params['process_rf'] = radar_params['rf_center_frequency_hz']
+	sim_params['process_rf'] = .3e9
+	
+	mysim = Simulation(sim_params,target_params,radar_params,antenna_params)
+	#single_pulse_stagger_single_dwell_test()
+	#single_pulse_stagger_single_dwell_test()
+	#test_path(mysim)
+	#single_pulse_demo(mysim)
+	
+	#locs = test_path(mysim)
+	#test_array()
+	#visualize_doppler_pulses(mysim)
+	#demo_doppler_maps(mysim)
+	#tracking_sim(mysim)
+	#multi_prf_burst_detections(mysim)
+	demo_360_scan(mysim)
+	#myradar = Receiver()
+	#x = myradar.pd_wf_object.wf
+	#x = myradar.process_signal(x)
+	#x = myradar.process_probe_signal(x,myradar.pd_wf_object)
+	#x = myradar.test()
+	plt.show()
+	
+	
 def test_build():
 	return
 	
@@ -112,7 +226,17 @@ def multi_prf_burst_detections(mysim):
 	print('pause')
 		
 
-def single_pulse_stagger_single_dwell_test():
+def demo_360_scan(mysim):
+	xs,Bs = mysim.perform_360_scan(.25)
+	fig1,ax1 = plt.subplots(1,1)
+	fig2,ax2 = plt.subplots(1,1)
+	xs = np.vstack(xs)
+	Bs = np.vstack(Bs)
+	ax1.imshow(np.abs(xs))
+	ax1.imshow(Bs)
+	return 
+	
+def single_pulse_stagger_single_dwell_test(mysim):
 	wf_index_sequence = mysim.radar.params['wf_sequences'][mysim.radar.current_mode_index]['sequence']
 	zoa,aoa,d = mysim.target.get_target_entity_geo(mysim.radar.transmitter)
 	steered_az = aoa
@@ -138,7 +262,7 @@ def single_pulse_stagger_single_dwell_test():
 			axes.plot(distance_for_plot,10*np.log10(x))
 			axes.plot(distance_for_plot,10*np.log10(T))
 		
-def tracking_sim():
+def tracking_sim(mysim):
 
 
 	# Initialize video window
@@ -191,106 +315,7 @@ def tracking_sim():
 	cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-	init_figs()
-	radar_params = {}
-	radar_params['x_loc_m_tx'] = 0.0
-	radar_params['y_loc_m_tx'] = 0.0
-	radar_params['z_loc_m_tx'] = 3.0
-	radar_params['x_vel_mps_tx'] = 0.0
-	radar_params['y_vel_mps_tx'] = 0.0
-	radar_params['z_vel_mps_tx'] = 0.0
-	radar_params['x_acc_mps2_tx'] = 0.0
-	radar_params['y_acc_mps2_tx'] = 0.0
-	radar_params['z_acc_mps2_tx'] = 0.0
-	radar_params['rf_sampling_frequency_hz'] = 500e6
-	radar_params['if_sampling_frequency_hz'] = 100e6
-	radar_params['bb_sampling_frequency_hz'] = 25e6
-	radar_params['rf_center_frequency_hz'] = 115e6
-	radar_params['rf_bandwidth_hz'] = 20e6
-	radar_params['transmit_power_w'] = 100 #per element
-	radar_params['internal_loss_db_tx'] = 2
-									
-	radar_params['x_loc_m_rx'] = 0.0 
-	radar_params['y_loc_m_rx'] = 0.0
-	radar_params['z_loc_m_rx'] = 3.0
-	radar_params['x_vel_mps_rx'] = 0.0
-	radar_params['y_vel_mps_rx'] = 0.0
-	radar_params['z_vel_mps_rx'] = 0.0
-	radar_params['x_acc_mps2_rx'] = 0.0
-	radar_params['y_acc_mps2_rx'] = 0.0
-	radar_params['z_acc_mps2_rx'] = 0.0
-	radar_params['rf_sampling_frequency_hz'] = 500e6
-	radar_params['if_sampling_frequency_hz'] = 100e6
-	radar_params['bb_sampling_frequency_hz'] = 25e6
-	radar_params['rf_center_frequency_hz'] = 115e6
-	radar_params['rf_bandwidth_hz'] = 20e6
-	radar_params['internal_loss_db_rx'] = 2
-# 	radar_params['reference_cells_one_sided'] = 32
-# 	radar_params['guard_cells_one_sided'] = 8
-# 	radar_params['probability_false_alarm'] = 1e-3
-	radar_params['num_reference_cells_range_one_sided'] = 20
-	radar_params['num_guard_cells_range_one_sided'] = 7
-	radar_params['num_reference_cells_doppler_one_sided'] = 10
-	radar_params['num_guard_cells_doppler_one_sided'] = 3
-	radar_params['probability_false_alarm'] = 1e-3
-	radar_params['probability_false_alarm_2D'] = 1e-2
-	radar_params['detector_type'] = 'square'
-	
-	num_pris = 7 * 11*13/np.array([7,11,13])
-	#num_pris = 7*11*13/np.array([7,7,7])
-	num_pris = num_pris.astype('int')
-	radar_params['wf_list'] = [{'index': 0, 'type': 'single', 'pw': 100e-6, 'pri': 1500e-6, 'lfm_excursion' : 2e6, 'pris_per_cpi': 1},
-							{'index': 1, 'type': 'single', 'pw': 100e-6, 'pri': 1550e-6, 'lfm_excursion' : 2e6, 'pris_per_cpi': 1},
-							{'index': 2, 'type': 'single', 'pw': 100e-6, 'pri': 1100e-6, 'lfm_excursion' : 2e6, 'pris_per_cpi': 1},
-								{'index' : 3,'type': 'burst', 'pw': 1e-06, 'pri': 7e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[0]},
-								{'index' :4,'type': 'burst', 'pw': 1e-06, 'pri': 11e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[1]},
-								{'index' : 5,'type': 'burst', 'pw': 1e-06, 'pri': 13e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[2]}]
-								#{'index' : 6,'type': 'burst', 'pw': 1e-06, 'pri': 17e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[3]}]
-	
-	radar_params['wf_sequences'] = [{'index': 0, 'type' : 'single_pulse_stagger', 'sequence' : [0,1,2]},
-						  {'index': 1, 'type' : 'single_pulse_stagger', 'sequence' : [0,1,2,0,1,2,1]},
-						  {'index' : 2, 'type' : 'track','sequence' : [3]},
-						  {'index' : 3, 'type' : 'range_resolve', 'sequence' : [3,4]},
-							{'index' : 4, 'type' : 'range_resolve', 'sequence' : [3,4,5]},
-							{'index' : 5, 'type' : 'range_resolve', 'sequence' : [3,4,5,6]}]
-	
-	radar_params['starting_mode_index'] = 4
-	
-	target_params = {}
-	target_params['x_loc_m'] = 31000.0 #100 nmi
-	target_params['y_loc_m'] = 0
-	target_params['z_loc_m'] = 10668 #35kft
-	target_params['x_vel_mps'] = -250 #550 knots Remember this is relative to the radar
-# 	target_params['x_vel_mps'] = -500 #550 knots Remember this is relative to the radar
-	target_params['y_vel_mps'] = 0
-	target_params['z_vel_mps'] = 0.0
-	target_params['x_acc_mps2'] = .1
-	target_params['y_acc_mps2'] = .001
-	target_params['z_acc_mps2'] = .001
-	target_params['radar_cross_section_dbsm'] =25
-	
-	sim_params = {}
-	#sim_params['process_rf'] = radar_params['rf_center_frequency_hz']
-	sim_params['process_rf'] = 10e9
-	
-	mysim = Simulation(sim_params,target_params,radar_params)
-	#single_pulse_stagger_single_dwell_test()
-	#single_pulse_stagger_single_dwell_test()
-	#test_path(mysim)
-	#single_pulse_demo(mysim)
-	
-	#locs = test_path(mysim)
-	#test_array()
-	#visualize_doppler_pulses(mysim)
-	#demo_doppler_maps(mysim)
-	#tracking_sim()
-	multi_prf_burst_detections(mysim)
-	#myradar = Receiver()
-	#x = myradar.pd_wf_object.wf
-	#x = myradar.process_signal(x)
-	#x = myradar.process_probe_signal(x,myradar.pd_wf_object)
-	#x = myradar.test()
-	plt.show()
+	main()
 	
 
 

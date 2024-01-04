@@ -9,37 +9,46 @@ from core import BasicReceiver, BasicTransmitter, PlanarAESA
 from sim import Simulation
 from util import ffts, affts, init_figs
 
-init_figs()
+def main():
+	init_figs()
+	#test_path()
+	#test_array()
+	#demo_doppler_maps()
+	#tracking_sim()
+	#myradar = Receiver()
+	#x = myradar.pd_wf_object.wf
+	#x = myradar.process_signal(x)
+	#x = myradar.process_probe_signal(x,myradar.pd_wf_object)
+	#x = myradar.test()
+	#test_cfar2D_window_construction()
+	sincantennapattern_test()
+# 	test_sinc()
+	plt.show()
+
 
 def sincantennapattern_test():
-	azimuth_beam_width = 15 * np.pi/180
-	elevation_beam_width = 25 * np.pi/180
-	peak_antenna_gain_db = 0
-	first_side_lobe_down_az_db = 10
-	first_side_lobe_down_el_db = 8
-	second_side_lobe_down_az_db = 15
-	second_side_lobe_down_el_db = 12
-	back_lobe_down_db = 20
-	mypattern = core.SincAntennaPattern(azimuth_beam_width,
-									elevation_beam_width,
-									peak_antenna_gain_db,
-									first_side_lobe_down_az_db,
-									first_side_lobe_down_el_db,
-									second_side_lobe_down_az_db,
-									second_side_lobe_down_el_db,
-									back_lobe_down_db)
+	antenna_params = {}
+	antenna_params['azimuth_beam_width'] = 15 * np.pi/180
+	antenna_params['elevation_beam_width'] = 25 * np.pi/180
+	antenna_params['peak_antenna_gain_db'] = 0
+	antenna_params['first_side_lobe_down_az_db'] = 10
+	antenna_params['first_side_lobe_down_el_db'] = 8
+	antenna_params['second_side_lobe_down_az_db'] = 15
+	antenna_params['second_side_lobe_down_el_db'] = 12
+	antenna_params['back_lobe_down_db'] = 20
+	mypattern = core.SincAntennaPattern(antenna_params)
+	
 	thetas_az = np.linspace(0,np.pi,250)
 	thetas_el = np.linspace(0,np.pi,250)
 	
 	#Slice
 	fig,axes = plt.subplots(1,1)
-	axes.plot(180/np.pi * thetas_az,10*np.log10(np.abs(mypattern.azimuth_slice(thetas_az))))
-	# axes.vlines(slnum*azimuth_beam_width/2*180/np.pi,0,1)
+	axes.plot(180/np.pi * thetas_az,10*np.log10(mypattern.azimuth_slice(thetas_az)))
 	
 	#2D Pattern Demo
 	# full_pattern = []
 	# for theta in thetas_el:
-		# full_pattern.append(10*np.log10(np.abs(mypattern.azimuth_slice(thetas_az,elevation_angle=theta))))
+		# full_pattern.append(10*np.log10(mypattern.azimuth_slice(thetas_az,elevation_angle=theta)))
 	# full_pattern = np.vstack(full_pattern)
 	# fig,axes = plt.subplots()
 	# axes.imshow(full_pattern)
@@ -112,20 +121,8 @@ def test_sinc():
 	fig,ax = plt.subplots(1,1)
 	ax.plot(theta,np.abs(np.sinc(theta)))
 if __name__ == '__main__':
+	main()
 	
-	#test_path()
-	#test_array()
-	#demo_doppler_maps()
-	#tracking_sim()
-	#myradar = Receiver()
-	#x = myradar.pd_wf_object.wf
-	#x = myradar.process_signal(x)
-	#x = myradar.process_probe_signal(x,myradar.pd_wf_object)
-	#x = myradar.test()
-	#test_cfar2D_window_construction()
-	sincantennapattern_test()
-# 	test_sinc()
-	plt.show()
 	
 
 
