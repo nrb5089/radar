@@ -396,7 +396,7 @@ class BasicReceiver:
 		x2D = np.vstack(x2D_filt)
 		del x2D_filt
 		# x2D = np.fft.fft(x2D)
-		x2D = np.fft.fftshift(np.fft.fft(x2D))
+		x2D = np.fft.fftshift(np.fft.fft(x2D),axes = 1)
 		# x2D = np.concatenate([np.zeros([wf_object.num_zeros_to_pad_range_samples_bb,512]) + 0j,x2D])
 		return x2D
 	

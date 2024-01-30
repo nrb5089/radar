@@ -71,7 +71,7 @@ def main():
 							{'index' : 4, 'type' : 'range_resolve', 'sequence' : [3,4,5]},
 							{'index' : 5, 'type' : 'range_resolve', 'sequence' : [3,4,5,6]}]
 	
-	radar_params['starting_mode_index'] = 0
+	radar_params['starting_mode_index'] = 2
 	
 	antenna_params = {}
 	antenna_params['azimuth_beam_width'] = 15 * np.pi/180
@@ -88,7 +88,7 @@ def main():
 	target_params['x_loc_m'] = 31000.0 #100 nmi
 	target_params['y_loc_m'] = 0
 	target_params['z_loc_m'] = 10668 #35kft
-	target_params['x_vel_mps'] = -250 #550 knots Remember this is relative to the radar
+	target_params['x_vel_mps'] = -550 #550 knots Remember this is relative to the radar
 # 	target_params['x_vel_mps'] = -500 #550 knots Remember this is relative to the radar
 	target_params['y_vel_mps'] = 0
 	target_params['z_vel_mps'] = 0.0
@@ -99,7 +99,7 @@ def main():
 	
 	sim_params = {}
 	#sim_params['process_rf'] = radar_params['rf_center_frequency_hz']
-	sim_params['process_rf'] = .3e9
+	sim_params['process_rf'] = 10e9
 	
 	mysim = Simulation(sim_params,target_params,radar_params,antenna_params)
 	#single_pulse_stagger_single_dwell_test()
@@ -111,9 +111,9 @@ def main():
 	#test_array()
 	#visualize_doppler_pulses(mysim)
 	#demo_doppler_maps(mysim)
-	#tracking_sim(mysim)
+	tracking_sim(mysim)
 	#multi_prf_burst_detections(mysim)
-	demo_360_scan(mysim)
+	#demo_360_scan(mysim)
 	#myradar = Receiver()
 	#x = myradar.pd_wf_object.wf
 	#x = myradar.process_signal(x)

@@ -78,7 +78,8 @@ class Simulation:
 			#Doppler
 			#TODO Doppler v_d seems like it may be always positive, need to fix this
 			v_zoa,v_aoa,v_d = self.target.get_target_entity_relative_velocity(self.radar.transmitter)
-			x = x * np.exp(1j* 2*np.pi/self.radar.receiver.Fs_rf * 2* v_d/self.process_lam * np.arange(len(x))) #TODO Should there be phase variation in this?
+			fD = - 2* v_d/self.process_lam
+			x = x * np.exp(1j* 2*np.pi/self.radar.receiver.Fs_rf * fD * np.arange(len(x))) #TODO Should there be phase variation in this?
 			
 			#RRE
 			x = x * np.sqrt(self.process_lam**2 * self.target.rcs / d**4  / (4*np.pi)**3 / self.radar.receiver.Lrx / self.radar.transmitter.Ltx)
@@ -88,7 +89,7 @@ class Simulation:
 			x = np.abs(np.conj(self.radar.aesa.array_response(steered_az,steered_z,self.process_rf)) @ self.radar.aesa.array_response(aoa,zoa,self.process_rf) ) * x
 			
 # 			print(f'Maximum Distance: {np.max(distance_samples_skin_return_m)}, Target Distance: {d}, Target Radial Velocity: {v_d}')
-			print(f'Maximum Distance: {np.max(distance_samples_skin_return_t*3e8/2)}, Target Distance: {d}, Target Radial Velocity: {v_d}')
+			print(f'Maximum Distance: {np.max(distance_samples_skin_return_t*3e8/2)}, Target Distance: {d}, Target Radial Velocity: {v_d}, Doppler Frequency: {np.round(fD/1e3,3)} kHz')
 		
 		if False: x = self.radar.receiver.apply_gating(x,wf_object,d)
 		if wf_object.type == 'single': 
@@ -107,6 +108,7 @@ class Simulation:
 			B = self.radar.receiver.cfar2D.build_detection_matrix(x,T)
 		#Update Target State	
 		self.target.update_state(wf_object.cpi_duration_s)
+		# self.target.update_state(.1)
 		
 		
 		return x,B
@@ -185,7 +187,7 @@ class DWNATarget:
 		x_acc_mps2 = target_params['x_acc_mps2']
 		y_acc_mps2 = target_params['y_acc_mps2']
 		z_acc_mps2 = target_params['z_acc_mps2']
-		radar_cross_section_dbsm = target_params['radar_cross_section_dbsm']
+		radar_cross_section_dbsm = target_params['radar_cross_section_dbsm'] #Spherical target, uniform RCS
 
 		self.state = np.array([x_loc_m,y_loc_m,z_loc_m,x_vel_mps,y_vel_mps,z_vel_mps])
 		self.sigma_accs = np.array([x_acc_mps2,y_acc_mps2,z_acc_mps2])
@@ -204,22 +206,38 @@ class DWNATarget:
 		self.state[5] = self.state[5] + t*az
 	
 	def get_target_entity_geo(self,entity):
-		x = self.state[0] - entity.state[0]
-		y = self.state[1] - entity.state[1]
-		z = self.state[2] - entity.state[2]
+		# x = self.state[0] - entity.state[0]
+		# y = self.state[1] - entity.state[1]
+		# z = self.state[2] - entity.state[2]
+		x = entity.state[0] - self.state[0]
+		y = entity.state[1] - self.state[1]
+		z = entity.state[2] - self.state[2]
 		zoa = np.arctan(np.sqrt(x**2 + y**2)/z)
 		aoa = np.sign(y) * np.arccos(x/np.sqrt(x**2 + y**2))
 		d = np.sqrt((x)**2 + (y)**2 + (z)**2)
 		return zoa,aoa,d
 
 	def get_target_entity_relative_velocity(self,entity):
-		x = self.state[3] - entity.state[3]
-		y = self.state[4] - entity.state[4]
-		z = self.state[5] - entity.state[5]
-		if z == 0: v_zoa = 0.0
-		else: v_zoa = np.arctan(np.sqrt(x**2 + y**2)/z)
-		v_aoa = np.sign(y) * np.arccos(x/np.sqrt(x**2 + y**2))
-		v_d = np.sqrt((x)**2 + (y)**2 + (z)**2)
+		'''
+		Note that a negative  velocity indicates that two entities are moving towards each other, hence the Doppler shift should be negative.
+		'''
+		x = entity.state[0] - self.state[0]
+		y = entity.state[1] - self.state[1]
+		z = entity.state[2] - self.state[2]
+		d = np.sqrt((x)**2 + (y)**2 + (z)**2)
+		
+		# xv = self.state[3] - entity.state[3]
+		# yv = self.state[4] - entity.state[4]
+		# zv = self.state[5] - entity.state[5]
+		xv = entity.state[3] - self.state[3]
+		yv = entity.state[4] - self.state[4]
+		zv = entity.state[5] - self.state[5]
+		
+		if zv == 0: v_zoa = 0.0
+		else: v_zoa = np.arctan(np.sqrt(xv**2 + yv**2)/zv)
+		v_aoa = np.sign(yv) * np.arccos(xv/np.sqrt(xv**2 + yv**2))
+		# v_d = np.sqrt((x)**2 + (y)**2 + (z)**2)
+		v_d = (xv * x + yv * y + zv * z)/d
 		return v_zoa,v_aoa,v_d
 
 
