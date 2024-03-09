@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 from copy import deepcopy as dcp
-import cv2
+#import cv2
 from core import MonostaticRadar, PlanarAESA, SincAntennaPattern
 
 class Simulation:

@@ -2,11 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 from copy import deepcopy as dcp
-import cv2
+#import cv2
 from sim import Simulation
 from util import ffts, affts, init_figs
 
 
+'''
+Other Params
+600 kHz PRF, .45us PW, Unmod, 2400 pulses
+250 kHz PRF, .75us PW, 13 bit barker, 1000 pulses
+200 kHz PRF, 1us PW, .5 MHz LFM, 800 pusles
+
+'''
 def main():
 	init_figs()
 	radar_params = {}
@@ -21,7 +28,7 @@ def main():
 	radar_params['z_acc_mps2_tx'] = 0.0
 	radar_params['rf_sampling_frequency_hz'] = 500e6
 	radar_params['if_sampling_frequency_hz'] = 100e6
-	radar_params['bb_sampling_frequency_hz'] = 25e6
+	radar_params['bb_sampling_frequency_hz'] = 50e6
 	radar_params['rf_center_frequency_hz'] = 115e6
 	radar_params['rf_bandwidth_hz'] = 20e6
 	radar_params['transmit_power_w'] = 100 #per element
@@ -38,7 +45,7 @@ def main():
 	radar_params['z_acc_mps2_rx'] = 0.0
 	radar_params['rf_sampling_frequency_hz'] = 500e6
 	radar_params['if_sampling_frequency_hz'] = 100e6
-	radar_params['bb_sampling_frequency_hz'] = 25e6
+	radar_params['bb_sampling_frequency_hz'] = 50e6
 	radar_params['rf_center_frequency_hz'] = 115e6
 	radar_params['rf_bandwidth_hz'] = 20e6
 	radar_params['internal_loss_db_rx'] = 2
@@ -56,17 +63,21 @@ def main():
 	num_pris = 7 * 11*13/np.array([7,11,13])
 	#num_pris = 7*11*13/np.array([7,7,7])
 	num_pris = num_pris.astype('int')
-	radar_params['wf_list'] = [{'index': 0, 'type': 'single', 'pw': 100e-6, 'pri': 1500e-6, 'lfm_excursion' : 2e6, 'pris_per_cpi': 1},
-							{'index': 1, 'type': 'single', 'pw': 100e-6, 'pri': 1550e-6, 'lfm_excursion' : 2e6, 'pris_per_cpi': 1},
-							{'index': 2, 'type': 'single', 'pw': 100e-6, 'pri': 1100e-6, 'lfm_excursion' : 2e6, 'pris_per_cpi': 1},
-								{'index' : 3,'type': 'burst', 'pw': 1e-06, 'pri': 7e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[0]},
-								{'index' :4,'type': 'burst', 'pw': 1e-06, 'pri': 11e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[1]},
-								{'index' : 5,'type': 'burst', 'pw': 1e-06, 'pri': 13e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[2]}]
+	
+	#wf_list is a list of wf_params for each waveform the radar exhibits
+	radar_params['wf_list'] = [#{'index': 0, 'type': 'single', 'pw': 100e-6, 'pri': 1500e-6, 'modulation' : 'lfm', 'lfm_excursion' : 2e6, 'bpsk_seq' : [], 'bpsk_chipw' : 0.,'pris_per_cpi': 1},
+							#{'index': 1, 'type': 'single', 'pw': 100e-6, 'pri': 1550e-6, 'modulation' : 'lfm', 'lfm_excursion' : 2e6, 'bpsk_seq' : [], 'bpsk_chipw' : 0.,'pris_per_cpi': 1},
+							#{'index': 2, 'type': 'single', 'pw': 100e-6, 'pri': 1100e-6, 'modulation' : 'lfm', 'lfm_excursion' : 2e6, 'bpsk_seq' : [], 'bpsk_chipw' : 0.,'pris_per_cpi': 1},
+								#{'index' : 3,'type': 'burst', 'pw': 1e-06, 'pri': 7e-6, 'modulation' : 'lfm', 'lfm_excursion' : 2e6, 'bpsk_seq' : [], 'bpsk_chipw' : 0.,'pris_per_cpi': num_pris[0]},
+								#{'index' :4,'type': 'burst', 'pw': 1e-06, 'pri': 11e-6, 'modulation' : 'lfm', 'lfm_excursion' : 2e6, 'bpsk_seq' : [], 'bpsk_chipw' : 0.,'pris_per_cpi': num_pris[1]},
+								{'index' : 5,'type': 'burst', 'pw': .75e-06, 'pri': 4e-6, 'modulation' : 'bpsk', 'lfm_excursion' : 0., 'bpsk_seq' : [1,1,1,1,1,-1,-1,1,1,-1,1,-1,1], 'bpsk_chipw' : .04e-6,'pris_per_cpi': 200}]
+								#{'index' : 6,'type': 'burst', 'pw': .45e-06, 'pri': 1.66667e-6, 'modulation' : 'none', 'lfm_excursion' : 0., 'bpsk_seq' : [], 'bpsk_chipw' : 0.,'pris_per_cpi': 2400},
+								#{'index' : 7,'type': 'burst', 'pw': 1e-06, 'pri': 5e-6, 'modulation' : 'lfm', 'lfm_excursion' : 5e6, 'bpsk_seq' : [],'bpsk_chipw' : 0.,'pris_per_cpi': 800}]
 								#{'index' : 6,'type': 'burst', 'pw': 1e-06, 'pri': 17e-6, 'lfm_excursion' : 2e6,'pris_per_cpi': num_pris[3]}]
 	
 	radar_params['wf_sequences'] = [{'index': 0, 'type' : 'single_pulse_stagger', 'sequence' : [0]},
 						  {'index': 1, 'type' : 'single_pulse_stagger', 'sequence' : [0,1,2,0,1,2,1]},
-						  {'index' : 2, 'type' : 'track','sequence' : [3]},
+						  {'index' : 2, 'type' : 'track','sequence' : [5]},
 						  {'index' : 3, 'type' : 'range_resolve', 'sequence' : [3,4]},
 							{'index' : 4, 'type' : 'range_resolve', 'sequence' : [3,4,5]},
 							{'index' : 5, 'type' : 'range_resolve', 'sequence' : [3,4,5,6]}]
@@ -95,7 +106,7 @@ def main():
 	target_params['x_acc_mps2'] = .1
 	target_params['y_acc_mps2'] = .001
 	target_params['z_acc_mps2'] = .001
-	target_params['radar_cross_section_dbsm'] =25
+	target_params['radar_cross_section_dbsm'] =35
 	
 	sim_params = {}
 	#sim_params['process_rf'] = radar_params['rf_center_frequency_hz']
@@ -106,12 +117,12 @@ def main():
 	#single_pulse_stagger_single_dwell_test()
 	#test_path(mysim)
 	#single_pulse_demo(mysim)
-	
+	mysim.radar.wf_bank[5].help()
 	#locs = test_path(mysim)
 	#test_array()
 	#visualize_doppler_pulses(mysim)
 	#demo_doppler_maps(mysim)
-	tracking_sim(mysim)
+	#tracking_sim(mysim)
 	#multi_prf_burst_detections(mysim)
 	#demo_360_scan(mysim)
 	#myradar = Receiver()

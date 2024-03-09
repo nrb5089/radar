@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-from scipy.signal import butter, cheby1, lfilter,firwin, convolve2d
+from scipy.signal import butter, cheby1, lfilter, firwin, convolve2d
 from copy import deepcopy as dcp
-import cv2
+#import cv2
 from util import ffts,affts,log2lin
 
 		
@@ -59,20 +59,9 @@ class MonostaticRadar:
 		
 		#Specify Waveforms by populating 'self.wf_bank', each element is a wf_object
 		self.wf_bank = {}
-		for wf_desc in params['wf_list']:
-			if wf_desc['type'] == 'single': 
-				WFClass = SinglePulseWaveform
-			if wf_desc['type'] == 'burst':
-				WFClass = BurstPulseWaveform
-			self.wf_bank[wf_desc['index']] = WFClass(pulse_width_s = wf_desc['pw'],
-							pulse_repetition_interval_s = wf_desc['pri'],
-							lfm_excursion_hz = wf_desc['lfm_excursion'],
-							pris_per_coherent_processing_interval = wf_desc['pris_per_cpi'],
-							rf_sampling_frequency_hz = params['rf_sampling_frequency_hz'],
-							if_sampling_frequency_hz = params['if_sampling_frequency_hz'],
-							bb_sampling_frequency_hz = params['bb_sampling_frequency_hz'],
-							rf_center_frequency_hz = params['rf_center_frequency_hz'])
-
+		for wf_params in params['wf_list']:
+			self.wf_bank[wf_params['index']] = Waveform(params,wf_params)
+			
 		#Initialize Mode and Waveform
 		self.current_mode_index = params['starting_mode_index']
 		self.reset_mode()
@@ -461,157 +450,372 @@ class BasicReceiver:
 		return x, T
 		
 
-class BurstPulseWaveform:
-	def __init__(self,
-					pulse_width_s = 1e-6,
-					pulse_repetition_interval_s = 19e-6,
-					lfm_excursion_hz = 10e6,
-					pris_per_coherent_processing_interval = 32,
-					rf_sampling_frequency_hz = 32e9,
-					if_sampling_frequency_hz = 4e9,
-					bb_sampling_frequency_hz = 25e6,
-					rf_center_frequency_hz = 13.2e9
-					):
+class Waveform:
+	"""
+	A class to represent a radar waveform.
+	
+	
+
+	Attributes
+	----------
+	index : int
+		Unique index given to distinguish among other Waveform objects used.
+	
+	type : str
+		Indicates the waveform type being a single pulse or a burst of pulses. Valid options are 'single' and 'burst'.
 		
-		self.pw = pulse_width_s
-		self.pri = pulse_repetition_interval_s
-		self.lfm_ex = lfm_excursion_hz
-		self.pris_per_cpi = pris_per_coherent_processing_interval
-		self.Fs_rf = rf_sampling_frequency_hz
-		self.Fs_if = if_sampling_frequency_hz
-		self.Fs_bb = bb_sampling_frequency_hz
-		self.fc_rf = rf_center_frequency_hz
-		self.fc_if = np.mod(rf_center_frequency_hz,if_sampling_frequency_hz)
+	pw : float
+		Pulse Width (PW) in seconds.
+	
+	pri : float
+		Pulse Repetition Interval (PRI) in seconds.
 		
-		self.type = 'burst'
+	modulation : str
+		Specifies the type of modulation on pulse used.  Valid options are 'bpsk', 'lfm', or 'none'.
+	
+	lfm_ex : float
+		Specifies the linear frequency modulation excursion (i.e., 1 MHz is a 1 MHz chirp or lfm) in Hertz. Not used if modulation is not set to 'lfm'.
 		
-		self.samples_per_pw_rf = int(self.pw * rf_sampling_frequency_hz)
-		self.samples_per_pw_if = int(self.pw * if_sampling_frequency_hz)
-		self.samples_per_pw_bb = int(self.pw * bb_sampling_frequency_hz)
+	bpsk_seq : numpy.ndarray
+		Specifies the binary phase shift keyed sequence consisting of '-1' and '1' as a numpy array, i.e., a 13-bit Barker code would be np.array([1,1,1,1,1,-1,-1,-1,1,-1,1,-1,1]). dtype should be float32, float64, or int. Not used if modulation is not set to 'bpsk'.
 		
-		self.samples_per_pri_rf = int(self.pri * rf_sampling_frequency_hz)
-		self.samples_per_pri_if = int(self.pri * if_sampling_frequency_hz)
-		self.samples_per_pri_bb = int(self.pri * bb_sampling_frequency_hz)
+	chip_width_s : float
+		Specifies the length of a bpsk chip in seconds.  Not used if modulation is not set to 'bpsk'.
 		
-		self.samples_per_cpi_rf = int(pris_per_coherent_processing_interval * self.samples_per_pri_rf)
-		self.samples_per_cpi_if = int(pris_per_coherent_processing_interval * self.samples_per_pri_if)
-		self.samples_per_cpi_bb = int(pris_per_coherent_processing_interval * self.samples_per_pri_bb)
+	pris_per_cpi : int
+		Specifies the number of PRIs in a Coherent Processing Interval (CPI).  For waveform type 'single', this defaults to 1.
+
+	Fs_rf : float
+		Sampling frequency at transmit/receive (RF) frequency in Hertz.
+	
+	Fs_if : float
+		Sampling frequency at relevant intermediate freqency (IF) in Hertz.
+	
+	Fs_bb : float
+		Sampling frequency at baseband (BB) in Hertz.
+	
+	fc_rf : float
+		RF center frequency in Hertz.
+		
+	fc_if : float
+		IF center frequency in Hertz.
+	
+	samples_per_chip_<freq> : int 
+		Computed by: int(np.ceil(self.pw/self.bpsk_length * self.Fs_<freq>)). <freq> can be 'bb', 'if', or 'rf'.
+			
+	samples_per_pw_<freq> : int
+		Computed by: int(self.pw * self.Fs_<freq>). <freq> can be 'bb', 'if', or 'rf'.
+		
+	samples_per_pri_<freq> : int
+		Computed by: int(self.pri * self.Fs_<freq>). <freq> can be 'bb', 'if', or 'rf'.
+		
+	samples_per_cpi_<freq> : int
+		Computed by: int(self.pris_per_cpi * self.samples_per_pri_<freq>). <freq> can be 'bb', 'if', or 'rf'.
+	
+	cpi_duration_s : float
+		Duration of CPI in seconds
+		
+	samples_per_range_window_<freq>: int
+		Computed by: samples_per_pri_<freq> - int(2 * self.samples_per_pw_<freq>).  <freq> can be 'bb', 'if', or 'rf'.
+			
+	range_per_cpi_m : float
+		maximum echo range within a CPI in meters, determined by c * cpi_duration_s/2
+		
+	range_unambiguous : float
+		maximum unambiguous range in meters, determined by cPRI/2
+	
+	bb_filter : FIR
+		An instance of FIR representing the filter used for the low pass filtering of the baseband waveform.
+	
+	mf_wf_bb : numpy.ndarray
+		Baseband waveform to match pulse used in matched filter.  Applied using method 'apply_matched_filter'. dtype should be complex64 or complex128.
+	
+	range_resolution : float
+		Range resolution in meters. Computed by: 3e8/2/self.bandwidth.
+	
+	rcv_window_mask : numpy.ndarray
+		Array of 1s and 0s that indicate the the listening on and off intervals, respectively, for the waveform to be received.  
+	
+	Methods
+	-------
+	wf():
+		Generates samples at the RF center frequency (fc_rf) at RF sampling frequency (Fs_rf) for one coherent processing interval.  For type 'single', this is just a single pri, for type 'burst', this is a train of pulses.
+		
+	apply_matched_filter(x):
+		Correlates a single matched pulse to the incoming signal x, as specified by waveform attributes. Filtering performed as Baseband (BB) sampling rate 
+		
+	apply_bb_filter(x):
+		Applies Baseband (BB) low-pass filter limited to waveform bandwidth.  For LFM, this is the lfm_ex, for BPSK, this is 1/chip_width_s, and for unmodulated, this is just 1/pw
+		
+		
+	Notes
+	-------
+	When we refer to the RF center frequency or RF sampling rate, we intend the frequency at which the waveform is transmitted, i.e., the antenna(s) and front end tuned such that it utilizes that frequency.
+	
+	The range window is the time the radar spends listening for pulses echoed.  For burst waveforms, there is an inherently restricted range due to the need to listen for the full pulse length and then transmit the second pulse, resulting in what are called its 'blind zones'.  These are accounted for by applying the self.rcv_window_mask to an incoming signal x.
+	
+	Examples
+	-------
+	wf_params: 
+	lfm_single_wf_params = {'index': 2, 'type': 'single', 'pw': 100e-6, 'pri': 1100e-6, 'modulation' : 'lfm', 'lfm_excursion' : 2e6, 'bpsk_seq' : [], 'bpsk_chipw' : 0.,'pris_per_cpi': 1}
+	bpsk_burst_wf_params = {'index' : 5,'type': 'burst', 'pw': .75e-06, 'pri': 4e-6, 'modulation' : 'bpsk', 'lfm_excursion' : 0., 'bpsk_seq' : [1,1,1,1,1,-1,-1,1,1,-1,1,-1,1], 'bpsk_chipw' : .04e-6,'pris_per_cpi': 200}
+	
+	Example transmit/receive chain for Waveform instance mywf:
+	x = mywf.wf() 						#Transmited waveform
+	x = applyEnvironment(x)  			#function specific to user scenario
+	x = mywf.apply_rcv_mask(x) 			#Account for blind range zones
+	x = applyRFFrontend(x) 				#function specific to user scenario
+	x = convert2baseband(x) 			#function specific to user scenario
+	x = mywf.apply_bb_filter(x)			#Filter at baseband
+	x = mywf.apply_matched_filter(x)	#Matched filter for pulse
+	"""
+
+	def __init__(self, radar_params, wf_params):
+		"""
+		Constructs all necessary attributes.
+		
+		Parameters
+		----------
+			radar_params : dict
+				A dictionary containing radar signal processing parameters.  Expected key-value pairs:
+					'rf_sampling_frequency_hz' (float): Sampling frequency at transmit/receive (RF) frequency in Hertz.
+					'if_sampling_frequency_hz' (float): Sampling frequency at relevant intermediate freqency (IF) in Hertz.
+					'bb_sampling_frequency_hz' (float): Sampling frequency at baseband (BB) in Hertz.
+					'fc_rf' (float): RF center frequency in Hertz.
+					
+			wf_params : dict
+				A dictionary containing waveform parameter information.  Expected key-value pairs:
+					'index' (int): Unique index given to distinguish among other Waveform objects used.
+					'type' (str): Indicates the waveform type being a single pulse or a burst of pulses. Valid options are 'single' and 'burst'.
+					'pw' (float): Pulse Width (PW) in seconds.
+					'pri' (float): Pulse Repetition Interval (PRI) in seconds.
+					'modulation' (str): Specifies the type of modulation on pulse used.  Valid options are 'bpsk', 'lfm', or 'none'.
+					'lfm_ex' (float): Specifies the linear frequency modulation excursion (i.e., 1 MHz is a 1 MHz chirp or lfm) in Hertz. Not used if modulation is not set to 'lfm'.
+					'bpsk_seq' (numpy.ndarray): Specifies the binary phase shift keyed sequence consisting of '-1' and '1' as a numpy array, i.e., a 13-bit Barker code would be np.array([1,1,1,1,1,-1,-1,-1,1,-1,1,-1,1]). dtype should be float32, float64, or int. Not used if modulation is not set to 'bpsk'.
+					'chip_width_s' (float): Specifies the length of a bpsk chip in seconds.  Not used if modulation is not set to 'bpsk'.
+					'pris_per_cpi' (int): Specifies the number of PRIs in a Coherent Processing Interval (CPI).  For waveform type 'single', this defaults to 1.
+		"""
+				
+		self.index = wf_params['index'] #A radar may have multiple waveforms that it assigns unique indices to each
+		self.type = wf_params['type'] #burst or single
+		self.pw = wf_params['pw'] #pulse width in seconds, ignored if modulation type bpsk, pulse width is equal to chip_width_s * len(bpsk_seq)
+		self.pri = wf_params['pri'] #pulse repetition interval in seconds
+		self.modulation = wf_params['modulation'] #modulation type: lfm, bpsk, or none
+		self.lfm_ex = wf_params['lfm_excursion'] #linear frequency modulation (lfm) excursion in Hz, ignored if not modulation type lfm
+		self.bpsk_seq = wf_params['bpsk_seq'] #Array or 1s and -1s of the bpsk sequence, ignored if not modulation type bpsk 
+		self.chip_width_s = wf_params['bpsk_chipw'] #Chip width for bpsk symbols, used to determine pulse width for bpsk waveform types
+		self.pris_per_cpi = wf_params['pris_per_cpi'] #number of pris in coherent processing interval (cpi), for Doppler (burst) pulses, this is the total number of pulses in the burst
+		
+		#parameters translated from the radar employing the waveform
+		self.Fs_rf = radar_params['rf_sampling_frequency_hz']
+		self.Fs_if = radar_params['if_sampling_frequency_hz']
+		self.Fs_bb = radar_params['bb_sampling_frequency_hz']
+		self.fc_rf = radar_params['rf_center_frequency_hz']
+		self.fc_if = np.mod(self.fc_rf,self.Fs_if)
+		
+		if self.modulation == 'bpsk':
+			self.bpsk_length = len(self.bpsk_seq)
+			self.pw = self.bpsk_length * self.chip_width_s
+			self.samples_per_chip_bb = int(np.ceil(self.pw/self.bpsk_length * self.Fs_bb))
+			self.samples_per_chip_if = int(self.samples_per_chip_bb * self.Fs_if/self.Fs_bb)
+			self.samples_per_chip_rf = int(self.samples_per_chip_if * self.Fs_rf/self.Fs_if)
+			
+		self.samples_per_pw_rf = int(self.pw * self.Fs_rf)
+		self.samples_per_pw_if = int(self.pw * self.Fs_if)
+		self.samples_per_pw_bb = int(self.pw * self.Fs_bb)
+		
+		self.samples_per_pri_rf = int(self.pri * self.Fs_rf)
+		self.samples_per_pri_if = int(self.pri * self.Fs_if)
+		self.samples_per_pri_bb = int(self.pri * self.Fs_bb)
+		
+		self.samples_per_cpi_rf = int(self.pris_per_cpi * self.samples_per_pri_rf)
+		self.samples_per_cpi_if = int(self.pris_per_cpi * self.samples_per_pri_if)
+		self.samples_per_cpi_bb = int(self.pris_per_cpi * self.samples_per_pri_bb)
 		self.cpi_duration_s = self.pris_per_cpi * self.pri
 		
 		self.samples_per_range_window_rf = self.samples_per_pri_rf - int(2 * self.samples_per_pw_rf)
 		self.samples_per_range_window_if = self.samples_per_pri_if - int(2 * self.samples_per_pw_if)
 		self.samples_per_range_window_bb = self.samples_per_pri_bb - int(2 * self.samples_per_pw_bb)
 		
-		self.Delta_R = 3e8/2/self.lfm_ex
-		self.samples_per_range_bin_rf = int(self.Fs_rf/self.lfm_ex)
-		self.samples_per_range_bin_bb = int(self.Fs_bb/self.lfm_ex)
+		
+		
 		self.range_per_cpi_m = self.samples_per_cpi_rf / self.Fs_rf * 3e8/2
 		self.range_unambiguous = 3e8 * self.pri/2
-		self.fmin_bb = -self.lfm_ex/2
-		self.fmax_bb = self.lfm_ex/2
+		
+		if self.modulation == 'lfm':
+			self.bandwidth = dcp(self.lfm_ex)
+			self.mf_wf_bb = np.exp(1j * 2 * np.pi/self.Fs_bb * (np.cumsum(np.linspace(-self.bandwidth/2,self.bandwidth/2,self.samples_per_pw_bb))))
+
+		elif self.modulation == 'bpsk':
+			self.bpsk_length = len(self.bpsk_seq)
+			self.bandwidth = 1/self.chip_width_s
+			self.mf_wf_bb = np.repeat(self.bpsk_seq[-1::-1],self.samples_per_chip_bb) + 0j
+		elif self.modulation == 'none':
+			self.bandwidth = 1/self.pw
+		
+		self.range_resolution = 3e8/2/self.bandwidth
 		
 		#Digital Decimation Pre-Filter for MF
-		self.bb_filter = FIR(numtaps = 31, cutoff = self.fmax_bb, fs = self.Fs_bb)
+		self.bb_filter = FIR(numtaps = 31, cutoff = self.bandwidth/2, fs = self.Fs_bb)
+		self.mf_wf_bb = np.ones(self.samples_per_pw_bb) + 0j
 		
-		self.mf_wf_bb = np.exp(1j * 2 * np.pi/self.Fs_bb * (np.cumsum(np.linspace(self.fmin_bb,self.fmax_bb,self.samples_per_pw_bb))))
 	
 		#Receive window for a PRI starts on the falling edge of the pulse and has a listening time equal to a PRI - 2PW
 		self.rcv_window_mask = []
 		
-		for pri_idx in np.arange(self.pris_per_cpi):
+		if self.type == 'burst':
+			for pri_idx in np.arange(self.pris_per_cpi):
+				self.rcv_window_mask.extend(np.zeros(self.samples_per_pw_rf) + 0j)
+				self.rcv_window_mask.extend(np.ones(self.samples_per_range_window_rf) + 0j)
+				self.rcv_window_mask.extend(np.zeros(int(self.samples_per_pw_rf)) + 0j)
+				
+		elif self.type == 'single':
 			self.rcv_window_mask.extend(np.zeros(self.samples_per_pw_rf) + 0j)
 			self.rcv_window_mask.extend(np.ones(self.samples_per_range_window_rf) + 0j)
-			self.rcv_window_mask.extend(np.zeros(int(self.samples_per_pw_rf)) + 0j)
-		self.rcv_window_mask = np.array(self.rcv_window_mask)
+			self.rcv_window_mask = np.array(self.rcv_window_mask)
+		
+	def wf(self):
+		"""
+		Generates samples at the RF center frequency (fc_rf) at RF sampling frequency (Fs_rf) for one coherent processing interval.  For type 'single', this is just a single pri, for type 'burst', this is a train of pulses.
+
+		Parameters
+		----------
+			None
+		
+		Returns
+		----------
+		wf_out : numpy.ndarray
+			Complex digital IQ representation of "single" or "burst" waveform for one CPI.  Length calculated by CPI length and RF sampling frequency. dtype will be complex64 or complex128.
 			
-	def wf(self):
-		'''
-		waveforms set as generators to preserve memoryv
-		'''
-		wf_single_pri = np.concatenate([np.exp(1j * 2 * np.pi/self.Fs_rf * (self.fc_rf *np.arange(self.samples_per_pw_rf) + np.cumsum(np.linspace(self.fmin_bb,self.fmax_bb,self.samples_per_pw_rf)))),np.zeros(self.samples_per_pri_rf-self.samples_per_pw_rf) + 0j])
-		burst_wf = []
-		for ii in np.arange(self.pris_per_cpi):
-			burst_wf.extend(wf_single_pri)
-		return np.array(burst_wf)
 		
-	def apply_matched_filter(self,x): return np.convolve(x,np.conj(self.mf_wf_bb), mode = 'same')
-	def apply_bb_filter(self,x): return self.bb_filter.filter_signal(x)
+		Notes
+		----------
+		Waveforms set as generators to preserve memory.
+		
+		"""
+		
+		if self.modulation == 'lfm':
+			wf_single_pri = np.concatenate([np.exp(1j * 2 * np.pi/self.Fs_rf * (self.fc_rf *np.arange(self.samples_per_pw_rf) + np.cumsum(np.linspace(-self.bandwidth/2,self.bandwidth/2,self.samples_per_pw_rf)))),np.zeros(self.samples_per_pri_rf-self.samples_per_pw_rf) + 0j])
+		
+		if self.modulation == 'bpsk':
+			wf_single_pri = np.concatenate([np.repeat(self.bpsk_seq,self.samples_per_chip_rf) * np.exp(1j * 2*np.pi/self.Fs_rf * self.fc_rf *np.arange(self.samples_per_pw_rf)),np.zeros(self.samples_per_pri_rf-self.samples_per_pw_rf) + 0j])
+		
+		if self.modulation == 'none':
+			wf_single_pri = np.concatenate([np.exp(1j * 2*np.pi/self.Fs_rf * self.fc_rf *np.arange(self.samples_per_pw_rf)),np.zeros(self.samples_per_pri_rf-self.samples_per_pw_rf) + 0j])
+			
+		if self.type == 'burst':
+			burst_wf = []
+			for ii in np.arange(self.pris_per_cpi):
+				burst_wf.extend(wf_single_pri)
+			wf_out = np.array(burst_wf)
+			
+		elif self.type == 'single': 
+			wf_out = wf_single_pri
+			
+		return wf_out
+		
+	def apply_matched_filter(self,x): 
+		"""
+		Correlates a single matched pulse to the incoming signal x, as specified by waveform attributes. Filtering performed as Baseband (BB) sampling rate
+		
+		Parameters
+		-------
+		x : numpy.ndarray
+			Complex digital IQ representation of signal. dtype should be complex64 or complex128.
+			
+		Returns
+		-------
+		Filtered complex digital IQ representation of signal. dtype will be complex64 or complex128.
+		"""
+		return np.convolve(x,np.conj(self.mf_wf_bb), mode = 'same')
 	
-class SinglePulseWaveform:
-	def __init__(self,
-					pulse_width_s = 10e-6,
-					pulse_repetition_interval_s = 1000e-6,
-					lfm_excursion_hz = 2e6,
-					pris_per_coherent_processing_interval = 1,
-					rf_sampling_frequency_hz = 32e9,
-					if_sampling_frequency_hz = 4e9,
-					bb_sampling_frequency_hz = 25e6,
-					rf_center_frequency_hz = 13.2e9
-					):
+	def apply_bb_filter(self,x): 
+		"""
+		Applies Baseband (BB) low-pass filter limited to waveform bandwidth.  For LFM, this is the lfm_ex, for BPSK, this is 1/chip_width_s, and for unmodulated, this is just 1/pw
 		
-		self.pw = pulse_width_s
-		self.pri = pulse_repetition_interval_s
-		self.lfm_ex = lfm_excursion_hz
-		self.pris_per_cpi = pris_per_coherent_processing_interval
-		self.Fs_rf = rf_sampling_frequency_hz
-		self.Fs_if = if_sampling_frequency_hz
-		self.Fs_bb = bb_sampling_frequency_hz
-		self.fc_rf = rf_center_frequency_hz
-		self.fc_if = np.mod(rf_center_frequency_hz,if_sampling_frequency_hz)
+		Parameters
+		-------
+		x : numpy.ndarray
+			Complex digital IQ representation of signal. dtype should be complex64 or complex128.
+			
+		Returns
+		-------
+		Filtered complex digital IQ representation of signal. dtype will be complex64 or complex128.
+		"""
+		return self.bb_filter.filter_signal(x)
+	
+	def apply_rcv_mask(self,x): 
+		"""
+		Applies self.rcv_window_mask to incoming signal to account for blind range zones.
 		
-		self.type = 'single'
+		Parameters
+		-------
+		x : numpy.ndarray
+			Incoming signal of type complex64 or complex128.
+		"""
+		return x * self.rcv_window_mask
 		
+	def help(self):
+		"""Prints the class docstring and the docstrings of its methods."""
+		# Print class docstring
+		print(f"Class Documentation:\n{self.__class__.__doc__}\n")
 		
-		self.samples_per_pw_rf = int(self.pw * rf_sampling_frequency_hz)
-		self.samples_per_pw_if = int(self.pw * if_sampling_frequency_hz)
-		self.samples_per_pw_bb = int(self.pw * bb_sampling_frequency_hz)
+		# Iterate through the class attributes
+		for attr in dir(self):
+			# Filter out special and private attributes/methods
+			if not attr.startswith("__"):
+				# Get the attribute/method object
+				attr_obj = getattr(self, attr)
+				# If it's callable (a method), print its docstring
+				if callable(attr_obj):
+					print(f"Method {attr} Documentation:\n{attr_obj.__doc__}\n")
 		
-		self.samples_per_pri_rf = int(self.pri * rf_sampling_frequency_hz)
-		self.samples_per_pri_if = int(self.pri * if_sampling_frequency_hz)
-		self.samples_per_pri_bb = int(self.pri * bb_sampling_frequency_hz)
-		
-		self.samples_per_cpi_rf = int(1 * self.samples_per_pri_rf)
-		self.samples_per_cpi_if = int(1 * self.samples_per_pri_if)
-		self.samples_per_cpi_bb = int(1 * self.samples_per_pri_bb)
-		self.cpi_duration_s = self.pri
-		
-		self.samples_per_range_window_rf = self.samples_per_pri_rf - self.samples_per_pw_rf
-		self.samples_per_range_window_if = self.samples_per_pri_if - self.samples_per_pw_if
-		self.samples_per_range_window_bb = self.samples_per_pri_bb - self.samples_per_pw_bb
-		
-		self.Delta_R = 3e8/2/self.lfm_ex
-		self.samples_per_range_bin_rf = int(self.Fs_rf/self.lfm_ex)
-		self.range_per_cpi_m = self.samples_per_cpi_rf / self.Fs_rf * 3e8/2
-		self.fmin_bb = -self.lfm_ex/2
-		self.fmax_bb = self.lfm_ex/2
-		
-		#Digital Decimation Pre-Filter for MF
-		self.bb_filter = FIR(numtaps = 31, cutoff = self.fmax_bb, fs = self.Fs_bb)
-		
-		self.wf_single_pw_rf = np.exp(1j * 2 * np.pi/self.Fs_rf * (self.fc_rf *np.arange(self.samples_per_pw_rf) + np.cumsum(np.linspace(self.fmin_bb,self.fmax_bb,self.samples_per_pw_rf))))
-		self.mf_wf_bb = np.exp(1j * 2 * np.pi/self.Fs_bb * (np.cumsum(np.linspace(self.fmin_bb,self.fmax_bb,self.samples_per_pw_bb))))
-
-		#Receive window for a PRI starts on the falling edge of the pulse and has a listening time equal to a PRI - 2PW
-		self.rcv_window_mask = []
-		self.rcv_window_mask.extend(np.zeros(self.samples_per_pw_rf) + 0j)
-		self.rcv_window_mask.extend(np.ones(self.samples_per_range_window_rf) + 0j)
-		self.rcv_window_mask = np.array(self.rcv_window_mask)
-		
-	def wf(self):
-		'''
-		waveforms set as generators to preserve memoryv
-		'''
-		if self.pri > 0: return np.concatenate([self.wf_single_pw_rf,np.zeros(self.samples_per_pri_rf-self.samples_per_pw_rf) + 0j])
-		else: return self.wf_single_pw_rf
-		
-		
-	# def apply_matched_filter(self,x): return np.convolve(x,np.conj(self.mf_wf_bb), mode = 'full')[self.samples_per_pw_bb:-self.samples_per_pw_bb]
-	def apply_matched_filter(self,x): return np.convolve(x,np.conj(self.mf_wf_bb), mode = 'same')
-	# def apply_matched_filter(self,x): return np.convolve(x,np.conj(self.mf_wf_bb), mode = 'full')
-	def apply_bb_filter(self,x): return self.bb_filter.filter_signal(x)
-
-
 class ButterFilter:
+	"""
+	Class wrapper for scipy.signal.butter class object.
+	
+	Parameters
+	-------
+	N : int
+		Number of filter taps.
+		
+	Wn : float or tuple
+		Designates bandlimits of filter, dtype is float if btype is 'low' or 'high'.  For btype 'bandpass', should be a tuple specifying start and stop band in Hertz.
+	
+	Fs : float
+		Sampling frequency in Hertz.
+	
+	btype : str
+		Filter type. Valid options are 'low', 'high', and 'bandpass'.
+		
+	
+	Attributes
+	-------
+	N : int
+		Number of filter taps.
+		
+	Wn : float or tuple
+		Designates bandlimits of filter, dtype is float if btype is 'low' or 'high'.  For btype 'bandpass', should be a tuple specifying start and stop band in Hertz.
+	
+	Fs : float
+		Sampling frequency in Hertz.
+	
+	btype : str
+		Filter type. Valid options are 'low', 'high', and 'bandpass'.
+	
+	a : numpy.ndarray
+		Numerator coefficients in frequency response. dtype is float32 or float64.
+		
+	b : numpy.ndarray
+		Denominator coefficients in frequency response. dtype os float32 or float64
+		
+	Methods
+	-------
+	filter_signal(x)
+		Applies scipy.signal.lfilter(self.a,self.b,x) to signal x.  dtype of x should be float32, float 64, complex64, or complex128.
+	
+	"""
+	
 	def __init__(self,N,Wn,fs,btype):
 		self.N = N
 		self.Wn = Wn
@@ -623,6 +827,55 @@ class ButterFilter:
 	def filter_signal(self,x): return lfilter(self.b,self.a,x)
 
 class Cheby1Filter:
+	"""
+	Class wrapper for scipy.signal.cheby1 class object.
+	
+	Parameters
+	-------
+	N : int
+		Number of filter taps.
+		
+	Wn : float or tuple
+		Designates bandlimits of filter, dtype is float if btype is 'low' or 'high'.  For btype 'bandpass', should be a tuple specifying start and stop band in Hertz.
+	
+	Fs : float
+		Sampling frequency in Hertz.
+		
+	rp : float
+		Specifies passband ripple in dB.
+	
+	btype : str
+		Filter type. Valid options are 'low', 'high', and 'bandpass'.
+	
+	Attributes
+	-------
+	N : int
+		Number of filter taps.
+		
+	Wn : float or tuple
+		Designates bandlimits of filter, dtype is float if btype is 'low' or 'high'.  For btype 'bandpass', should be a tuple specifying start and stop band in Hertz.
+	
+	Fs : float
+		Sampling frequency in Hertz.
+		
+	rp : float
+		Specifies passband ripple in dB.
+	
+	btype : str
+		Filter type. Valid options are 'low', 'high', and 'bandpass'.
+	
+	a : numpy.ndarray
+		Numerator coefficients in frequency response. dtype is float32 or float64.
+		
+	b : numpy.ndarray
+		Denominator coefficients in frequency response. dtype is float32 or float64.
+		
+	Methods
+	-------
+	filter_signal(x)
+		Applies scipy.signal.lfilter(self.a,self.b,x) to signal x.  dtype of x should be float32, float 64, complex64, or complex128.
+	
+	"""
 	def __init__(self,N,rp,Wn,fs,btype):
 		self.N = N
 		self.rp = rp
@@ -635,6 +888,40 @@ class Cheby1Filter:
 	def filter_signal(self,x): return lfilter(self.b,self.a,x)
 	
 class FIR:
+	"""
+	Class wrapper for scipy.signal.firwin class object.
+	
+	Parameters
+	-------
+	numtaps : int
+		Number of filter taps.
+		
+	cutoff : float 
+		Designates bandlimit of filter, dtype is float with units in Hertz.
+	
+	fs : float
+		Sampling frequency in Hertz.
+	
+	Attributes
+	-------
+	numtaps : int
+		Number of filter taps.
+		
+	cutoff : float 
+		Designates bandlimit of filter, dtype is float with units in Hertz.
+	
+	fs : float
+		Sampling frequency in Hertz.
+		
+	h : numpy.ndarray
+		Impulse response filter coefficients. dtype is float32 or float64.
+		
+	Methods
+	-------
+	filter_signal(x)
+		Applies numpy.convolve(x,self.h) to signal x.  dtype of x should be float32, float 64, complex64, or complex128.
+	
+	"""
 	def __init__(self,numtaps, cutoff, fs):
 		self.numtaps = numtaps
 		self.cutoff = cutoff

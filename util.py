@@ -7,6 +7,7 @@ def ffts(x): return np.fft.fftshift(np.fft.fft(x))/np.sqrt(len(x))
 def affts(x): return np.abs(ffts(x))
 
 def log2lin(x): return 10**(x/10)
+
 def init_figs():
 	plt.close('all')
 	############## Options to generate nice figures
