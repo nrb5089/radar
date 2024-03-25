@@ -2,9 +2,9 @@
 
 # -- Project information
 
-project = 'radar'
-copyright = '2024, nrb5089'
-author = 'nrb5089'
+project = 'Lumache'
+copyright = '2021, Graziella'
+author = 'Graziella'
 
 release = '0.1'
 version = '0.1.0'
