@@ -43,4 +43,11 @@ ffts
 
 This function performs a shifted fft of data.
 
+The package provides the following functions for direct use.
 
+printhello
+-------------
+
+.. autofunction:: testfile.printhello
+
+This function performs a shifted fft of data.
