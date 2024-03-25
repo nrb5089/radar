@@ -44,7 +44,7 @@ ffts
 This function performs a shifted fft of data.
 
 Waveform
--------------
+--------------------------------------------------------------------
 
 .. autoclass:: core.Waveform
    :members:
