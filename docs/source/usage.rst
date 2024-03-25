@@ -43,11 +43,10 @@ ffts
 
 This function performs a shifted fft of data.
 
-The package provides the following functions for direct use.
-
-printhello
+Waveform
 -------------
 
-.. autofunction:: testfile.printhello
+.. autoclass:: core.Waveform
+   :members:
+   :undoc-members:
 
-This function performs a shifted fft of data.

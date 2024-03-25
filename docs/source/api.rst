@@ -6,4 +6,4 @@ API
 
    lumache
    util
-   testfile
+   core
