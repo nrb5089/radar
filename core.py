@@ -558,7 +558,7 @@ class Waveform:
 	The range window is the time the radar spends listening for pulses echoed.  For burst waveforms, there is an inherently restricted range due to the need to listen for the full pulse length and then transmit the second pulse, resulting in what are called its 'blind zones'.  These are accounted for by applying the self.rcv_window_mask to an incoming signal x.
 	
 	Examples
-	-------
+	---------
 	wf_params: 
 	lfm_single_wf_params = {'index': 2, 'type': 'single', 'pw': 100e-6, 'pri': 1100e-6, 'modulation' : 'lfm', 'lfm_excursion' : 2e6, 'bpsk_seq' : [], 'bpsk_chipw' : 0.,'pris_per_cpi': 1}
 	bpsk_burst_wf_params = {'index' : 5,'type': 'burst', 'pw': .75e-06, 'pri': 4e-6, 'modulation' : 'bpsk', 'lfm_excursion' : 0., 'bpsk_seq' : [1,1,1,1,1,-1,-1,1,1,-1,1,-1,1], 'bpsk_chipw' : .04e-6,'pris_per_cpi': 200}
@@ -682,7 +682,7 @@ class Waveform:
 		Generates samples at the RF center frequency (fc_rf) at RF sampling frequency (Fs_rf) for one coherent processing interval.  For type 'single', this is just a single pri, for type 'burst', this is a train of pulses.
 
 		Parameters
-		----------
+		-----------
 			None
 		
 		Returns
@@ -722,7 +722,7 @@ class Waveform:
 		Correlates a single matched pulse to the incoming signal x, as specified by waveform attributes. Filtering performed as Baseband (BB) sampling rate
 		
 		Parameters
-		-------
+		-----------
 		x : numpy.ndarray
 			Complex digital IQ representation of signal. dtype should be complex64 or complex128.
 			
@@ -737,7 +737,7 @@ class Waveform:
 		Applies Baseband (BB) low-pass filter limited to waveform bandwidth.  For LFM, this is the lfm_ex, for BPSK, this is 1/chip_width_s, and for unmodulated, this is just 1/pw
 		
 		Parameters
-		-------
+		-----------
 		x : numpy.ndarray
 			Complex digital IQ representation of signal. dtype should be complex64 or complex128.
 			
@@ -752,7 +752,7 @@ class Waveform:
 		Applies self.rcv_window_mask to incoming signal to account for blind range zones.
 		
 		Parameters
-		-------
+		------------
 		x : numpy.ndarray
 			Incoming signal of type complex64 or complex128.
 		"""
@@ -778,7 +778,7 @@ class ButterFilter:
 	Class wrapper for scipy.signal.butter class object.
 	
 	Parameters
-	-------
+	-----------
 	N : int
 		Number of filter taps.
 		
@@ -793,7 +793,7 @@ class ButterFilter:
 		
 	
 	Attributes
-	-------
+	-----------
 	N : int
 		Number of filter taps.
 		
@@ -834,7 +834,7 @@ class Cheby1Filter:
 	Class wrapper for scipy.signal.cheby1 class object.
 	
 	Parameters
-	-------
+	-----------
 	N : int
 		Number of filter taps.
 		
@@ -895,7 +895,7 @@ class FIR:
 	Class wrapper for scipy.signal.firwin class object.
 	
 	Parameters
-	-------
+	----------
 	numtaps : int
 		Number of filter taps.
 		
@@ -906,7 +906,7 @@ class FIR:
 		Sampling frequency in Hertz.
 	
 	Attributes
-	-------
+	----------
 	numtaps : int
 		Number of filter taps.
 		
