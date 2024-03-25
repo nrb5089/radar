@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-def ffts(x): return np.fft.fftshift(np.fft.fft(x))/np.sqrt(len(x))
+def ffts(x): 
+	''' Performs shifted and normalized fft '''
+	return np.fft.fftshift(np.fft.fft(x))/np.sqrt(len(x))
 
 def affts(x): return np.abs(ffts(x))
 

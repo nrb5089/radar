@@ -32,3 +32,15 @@ For example:
 >>> lumache.get_random_ingredients()
 ['shells', 'gorgonzola', 'parsley']
 
+
+
+The package provides the following functions for direct use.
+
+ffts
+-------------
+
+.. autofunction:: util.ffts
+
+This function performs a shifted fft of data.
+
+
