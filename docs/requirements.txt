@@ -1,5 +1,4 @@
 sphinx
 sphinx-rtd-theme
 numpy
-scipy
 matplotlib
