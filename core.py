@@ -6,6 +6,9 @@ from copy import deepcopy as dcp
 #import cv2
 from util import ffts,affts,log2lin
 
+
+__version__ = "0.1.0"
+
 		
 class MonostaticRadar:
 	def __init__(self,params):
