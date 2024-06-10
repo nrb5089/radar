@@ -119,9 +119,7 @@ class PlanarAESA:
 		self.num_elements = int(one_sided_elements**2)
 		self.d = array_element_spacing
 		self.rvec = self.build_rvec(one_sided_elements,array_element_spacing)
-		self.zlims = np.array([-np.pi/4,3*np.pi/4])
-		self.azlims = np.array([-np.pi/2,np.pi/2])
-		
+
 	def array_response(self,azimth_angle,zenith_angle,frequency):
 		lam = 3e8/frequency
 		kvec = 2*np.pi/lam * np.array([np.sin(zenith_angle)*np.cos(azimth_angle),np.sin(zenith_angle)*np.sin(azimth_angle),np.cos(zenith_angle)])
@@ -160,7 +158,8 @@ class CustomAESA:
 	
 	'''
 	def __init__(self,path_array_elements_file):
-		self.rvec = np.loadtxt(path_array_elements_file).T
+		self.rvec = np.loadtxt(path_array_elements_file)
+		print(self.rvec)
 		
 	def array_response(self,azimth_angle,zenith_angle,frequency):
 		lam = 3e8/frequency
@@ -1012,15 +1011,15 @@ class CoherentOscillator:
 		self.current_phase = initial_phase
 
 if __name__ == '__main__':
-	init_figs()
-	plt.close('all')
+	#init_figs()
+	#plt.close('all')
 # 	myradar = Receiver(rf_sampling_frequency_hz = 500e6,
 # 					if_sampling_frequency_hz = 100e6,
 # 					bb_sampling_frequency_hz = 20e6,
 # 					rf_center_frequency_hz = 20e6,
 # 					rf_bandwidth_hz = 10e6)
 
-	single_pulse_demo()
+	#single_pulse_demo()
 	#test_path()
 	#test_array()
 	#demo_doppler_maps()
@@ -1030,7 +1029,8 @@ if __name__ == '__main__':
 	#x = myradar.process_signal(x)
 	#x = myradar.process_probe_signal(x,myradar.pd_wf_object)
 	#x = myradar.test()
-	plt.show()
+	#plt.show()
+	myaesa = CustomAESA('test_elements.txt')
 	
 
 

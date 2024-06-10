@@ -5,7 +5,7 @@ from scipy.signal import butter, cheby1, lfilter,firwin
 from copy import deepcopy as dcp
 import cv2
 import core
-from core import BasicReceiver, BasicTransmitter, PlanarAESA
+from core import BasicReceiver, BasicTransmitter, PlanarAESA, CustomAESA
 from sim import Simulation
 from util import ffts, affts, init_figs
 
@@ -21,8 +21,9 @@ def main():
 	#x = myradar.process_probe_signal(x,myradar.pd_wf_object)
 	#x = myradar.test()
 	#test_cfar2D_window_construction()
-	sincantennapattern_test()
+	#sincantennapattern_test()
 # 	test_sinc()
+	visualize_array_geometry()
 	plt.show()
 
 
@@ -94,10 +95,8 @@ def test_array():
 
 def visualize_array_geometry():
 	fig,ax = plt.subplots(subplot_kw={'projection': '3d'})
-# 	for x,z in zip(rx,rz):
-# 		for y in ry:
-# 			ax.plot(x,y,z,'kx',markersize = 10)
-	myaesa = PlanarAESA(16, .1)
+	#myaesa = PlanarAESA(8, .1)
+	myaesa = CustomAESA('test_elements.txt')
 	rvec = myaesa.rvec
 	for r in rvec:
 		ax.plot(r[0],r[1],r[2],'kx',markersize = 10)
