@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 from copy import deepcopy as dcp
-#import cv2
+import cv2
 from sim import Simulation
 from util import ffts, affts, init_figs
 
@@ -116,8 +116,8 @@ def main():
 	#single_pulse_stagger_single_dwell_test()
 	#single_pulse_stagger_single_dwell_test()
 	#test_path(mysim)
-	#single_pulse_demo(mysim)
-	mysim.radar.wf_bank[5].help()
+	single_pulse_demo(mysim)
+	#mysim.radar.wf_bank[5].help()
 	#locs = test_path(mysim)
 	#test_array()
 	#visualize_doppler_pulses(mysim)

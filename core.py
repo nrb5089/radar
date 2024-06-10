@@ -112,6 +112,8 @@ class PlanarAESA:
 	Calculates the gain for a particular set of azimuth and elevation angles
 	
 	Not intended to be a true time delay model
+	
+	By default produces a square grid array
 	'''
 	def __init__(self,one_sided_elements, array_element_spacing):
 		self.num_elements = int(one_sided_elements**2)
@@ -147,6 +149,24 @@ class PlanarAESA:
 		rvec[:,2] = rvec_hold[:,1]
 		return rvec
 
+class CustomAESA:
+	'''
+	Calculates the gain for a particular set of azimuth and elevation angles
+	
+	Not intended to be a true time delay model
+	
+	Accepts 'array_elements_file' where each line is 3 elements representing the x y z coordinates
+	of an array element.
+	
+	'''
+	def __init__(self,path_array_elements_file):
+		self.rvec = np.loadtxt(path_array_elements_file).T
+		
+	def array_response(self,azimth_angle,zenith_angle,frequency):
+		lam = 3e8/frequency
+		kvec = 2*np.pi/lam * np.array([np.sin(zenith_angle)*np.cos(azimth_angle),np.sin(zenith_angle)*np.sin(azimth_angle),np.cos(zenith_angle)])
+		return np.exp(1j*self.rvec @ kvec)
+		
 class SincAntennaPattern:
 	"""
 	Antenna pattern object for a sinc(x) (sin(x)/x) pattern

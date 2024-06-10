@@ -6,9 +6,13 @@ def ffts(x):
 	''' Performs shifted and normalized fft '''
 	return np.fft.fftshift(np.fft.fft(x))/np.sqrt(len(x))
 
-def affts(x): return np.abs(ffts(x))
-
-def log2lin(x): return 10**(x/10)
+def affts(x): 
+	''' Performs shifted and normalized fft along with absolute value '''
+	return np.abs(ffts(x))
+	
+def log2lin(x): 
+	'''Returns the inverse logarithm'''
+	return 10**(x/10)
 
 def init_figs():
 	plt.close('all')
