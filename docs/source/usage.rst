@@ -23,8 +23,9 @@ Tell me how to use this.
 
 The package provides the following functions for direct use.
 
-util
------
+Main Containers
+----------------
+
 
 .. automodule:: util
     :members:
@@ -34,9 +35,6 @@ util
     :show-inheritance:
     
 
-
-core
------
 
 .. automodule:: core
     :members:
