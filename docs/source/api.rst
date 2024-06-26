@@ -3,7 +3,7 @@ API
 
 .. autosummary::
    :toctree: generated
-
-   lumache
+   
+   radar
    util
    core
