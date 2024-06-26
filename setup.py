@@ -7,7 +7,8 @@ setup(
     author='Blinn',
     author_email='your.email@example.com',
     url='https://github.com/nrb5089/radar/',
-    packages=find_packages(),  # Automatically find packages in the project
+    #packages=find_packages(),  # Automatically find packages in the project
+	py_modules=['radar', 'core', 'util'],  # List of modules in the root
     install_requires=[
         'numpy',
         'scipy',
