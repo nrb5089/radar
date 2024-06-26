@@ -28,12 +28,20 @@ util
 
 
 .. automodule:: util
-
-    :exclude-members: __dict__, __weakref__, __doc__, __module__
+    :members:
+    :undoc-members:
+    :private-members:
+    :special-members:
+    :show-inheritance:
+    :exclude-members: __dict__, __weakref__, __module__, __doc__
 
 core
 -------
 
 .. automodule:: core
-
-    :exclude-members: __dict__, __weakref__, __doc__, __module__
+    :members:
+    :undoc-members:
+    :private-members:
+    :special-members:
+    :show-inheritance:
+    :exclude-members: __dict__, __weakref__, __module__, __doc__
