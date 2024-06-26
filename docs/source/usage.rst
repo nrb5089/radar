@@ -29,10 +29,11 @@ util
 
 .. automodule:: util
 
-    
+    :exclude-members: __dict__, __weakref__, __doc__, __module__
 
 core
 -------
 
 .. automodule:: core
 
+    :exclude-members: __dict__, __weakref__, __doc__, __module__
