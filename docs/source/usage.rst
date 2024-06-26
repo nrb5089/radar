@@ -28,19 +28,11 @@ util
 
 
 .. automodule:: util
-    :members:
-    :undoc-members:
-    :private-members:
-    :special-members:
-    :show-inheritance:
+
     
 
 core
 -------
 
 .. automodule:: core
-    :members:
-    :undoc-members:
-    :private-members:
-    :special-members:
-    :show-inheritance:
+
