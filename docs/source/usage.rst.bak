@@ -26,6 +26,8 @@ The package provides the following functions for direct use.
 util
 -----
 
+.. autofunction:: util.ffts
+
 .. automodule:: core
     :members:
     :undoc-members:
@@ -36,7 +38,11 @@ util
 
 
 core
------
+------------
+
+.. autoclass:: core.Waveform
+   :members:
+   :undoc-members:
 
 .. automodule:: core
     :members:

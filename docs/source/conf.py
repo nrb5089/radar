@@ -8,9 +8,9 @@ sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('.'))
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'radar'
+copyright = '2024, Blinn'
+author = 'Blinn'
 
 release = '0.1'
 version = '0.1.0'
