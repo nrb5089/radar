@@ -870,7 +870,7 @@ class Cheby1Filter:
 		Filter type. Valid options are 'low', 'high', and 'bandpass'.
 	
 	Attributes
-	-------
+	-----------
 	N : int
 		Number of filter taps.
 		
@@ -893,7 +893,7 @@ class Cheby1Filter:
 		Denominator coefficients in frequency response. dtype is float32 or float64.
 		
 	Methods
-	-------
+	--------
 	filter_signal(x)
 		Applies scipy.signal.lfilter(self.a,self.b,x) to signal x.  dtype of x should be float32, float 64, complex64, or complex128.
 	
@@ -914,7 +914,7 @@ class FIR:
 	Class wrapper for scipy.signal.firwin class object.
 	
 	Parameters
-	----------
+	-----------
 	numtaps : int
 		Number of filter taps.
 		
@@ -925,7 +925,7 @@ class FIR:
 		Sampling frequency in Hertz.
 	
 	Attributes
-	----------
+	-----------
 	numtaps : int
 		Number of filter taps.
 		
@@ -939,7 +939,7 @@ class FIR:
 		Impulse response filter coefficients. dtype is float32 or float64.
 		
 	Methods
-	-------
+	--------
 	filter_signal(x)
 		Applies numpy.convolve(x,self.h) to signal x.  dtype of x should be float32, float 64, complex64, or complex128.
 	

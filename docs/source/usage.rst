@@ -26,7 +26,7 @@ The package provides the following functions for direct use.
 util
 -----
 
-.. automodule:: core
+.. automodule:: util
     :members:
     :undoc-members:
     :private-members:
