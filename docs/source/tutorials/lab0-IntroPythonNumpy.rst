@@ -307,31 +307,6 @@ Python has built-in support for complex numbers, which are written with a "j" as
     z = x / y
     print(z)  # Outputs: (-0.15384615384615385+1.2307692307692308j)
 
-
-You can do other operations like power and roots as well, but these will need to be done in modules like ``numpy`` or ``cmath``.  A complex number is generally represented as $z = a + bj $, where $ a $ and $ b $ are real numbers, and $ j $ is the imaginary unit with the property $ j^2 = -1 $.
-
-**Real part:** :math:`\Re(z) = a'
-
-**Imaginary part:** $\Im(z) = b$
-
-**Magnitude (or modulus or absolute value) of a complex number:** $|z| = \sqrt{a^2 + b^2}$
-
-**Phase:** $\phi = \arctan(\frac{b}{a})$
-
-**Polar Form:** :math:`z = a + bj = |z|\exp(j\phi)$`, which is more commonly used in signal processing.  This also has the alternative Euler formula expression, $z = |z|(\cos(\phi) + j\sin(\phi))$
-
-**Complex conjugate:** $z^* = a - bj$ or $z^* = |z|\exp(-j\phi)$, note that $zz^* = |z|^2$
-
-**Addition of complex numbers:** if $z_1 = a + bj$ and $z_2 = c + dj$, then $z_1 + z_2 = (a + c) + (b + d)j$
-
-**Subtraction of complex numbers:** if $z_1 = a + bj$ and $z_2 = c + dj$, then $z_1 - z_2 = (a - c) + (b - d)j$
-
-**Multiplication of complex numbers:** if $z_1 = a + bj$ and $z_2 = c + dj$, then $z_1 \cdot z_2 = (ac - bd) + (ad + bc)j$ or $z_1z_2 = |z_1||z_2|\exp(j(\phi_1 + \phi_2))$
-
-**Division of complex numbers:** if $z_1 = a + bj$ and $z_2 = c + dj$, then $\frac{z_1}{z_2} = \frac{(ac + bd)}{(c^2 + d^2)} + \frac{(bc - ad)j}{(c^2 + d^2)}$ or $\frac{z_1}{z_2} = \frac{|z_1|}{|z_2|}\exp(j(\phi_1 - \phi_2))$
-
-This should cover the basic operations you can perform with complex numbers both in Python and in mathematical notation for rectangular form.  
-
 Transpose and Hermitian
 ------------------------------------------
 
@@ -385,7 +360,7 @@ Determinant
 ------------------------------------------
 Compute the determinant of a matrix, $\textrm{det}(\textbf{A})$.
 
-.. code-block:: python 
+.. code-block:: python
 
     import numpy as np
 
