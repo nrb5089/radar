@@ -69,7 +69,7 @@ We use ``as np`` so that we can refer to numpy with the shortened 'np' instead o
 Creating a NumPy array
 ------------------------------------------
 
-Vectors and Matrices are critical to understanding signal processing algorithms, we denote vectors as bold lower case $\textbf{v}$ and matrices as bold upper case $\textbf{M}$.  Tensors (informally, matrices with greater than 2 dimensions), are also represented by multidimensional arrays.  The starting example are all real elements, but extend to complex numbers as well.  Python/Numpy uses $1j$ or $1i$ to denote imaginary numbers, i.e., $1 + 2j$.  
+Vectors and Matrices are critical to understanding signal processing algorithms, we denote vectors as bold lower case $\textbf{v}$ and matrices as bold upper case $\textbf{M}$.  Tensors (informally, matrices with greater than 2 dimensions), are also represented by multidimensional arrays.  The starting example are all real elements, but extend to complex numbers as well.  Python/Numpy uses :math:`1j` or :math:`1i` to denote imaginary numbers, i.e., :math:`1 + 2j`.  
 
 A numpy array is a grid of values, all of the same type, and is indexed by a tuple of nonnegative integers. 
 
@@ -93,7 +93,7 @@ You can create a numpy array from a Python list or tuple using the `array` funct
 
 Array Indexing
 ------------------
-The :math:`n^{th}` element of a vector may be denoted as :math:`v[n]` or :math:`v_n`.  We will denote this in unbolded since it is scalar, i.e., :math:`\textbf{v} = [v_0,\dots,v_n,\dots]`.
+The :math:`n^{\textnormal{th}}` element of a vector may be denoted as :math:`v[n]` or :math:`v_n`.  We will denote this in unbolded since it is scalar, i.e., :math:`\textbf{v} = [v_0,\dots,v_n,\dots]`.
 
 You can access the array elements as
 
@@ -217,7 +217,7 @@ Here are a few linear algebra operations related to using NumPy arrays in the co
 
 Matrix-Vector Multiplication
 -----------------------------------
-3x3 matrix, $\textbf{A}$, and a 3x1 vector, $\textbf{v}$. Perform matrix-vector multiplication.
+3x3 matrix, :math:`\textbf{A}`, and a 3x1 vector, :math:`\textbf{v}`. Perform matrix-vector multiplication.
 
 .. code-block:: python 
 
