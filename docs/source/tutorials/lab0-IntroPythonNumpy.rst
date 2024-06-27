@@ -109,6 +109,7 @@ Likewise for matrices $M[m,n]$ or $M_{m,n}$ denotes the element in row $m$ and c
 For 2D arrays, you need to use comma-separated indices
 
 .. code-block:: python
+
     import numpy as np
 
     M = np.array([[1,2,3,4,5], [6,7,8,9,10]])
@@ -453,6 +454,7 @@ Write a Python script to perform the following operations using ``@``, ``.T``, a
 **Output**
 Matrix multiplication of A and B:
  .. code-block:: none
+ 
      [[16 25 17]
      [34 55 45]
      [52 85 73]]
@@ -460,6 +462,7 @@ Matrix multiplication of A and B:
 Element-wise multiplication of A's transpose and B:
  
  .. code-block:: none
+ 
      [[ 2 15 55]
      [14 40 18]]
  
@@ -478,6 +481,7 @@ Determinant of C:
 
 Inverse of C:
 .. code-block:: none
+
      [[ 0.434238    2.35908142 -1.39457203 -0.81210856]
      [-0.11064718 -0.37995825  0.33611691  0.17327766]
      [-0.32985386 -1.84968685  1.02087683  0.79958246]
@@ -497,6 +501,7 @@ For the same matrix ``C``, compute
 **Output**
 Eigenvalues of ``C``
 .. code-block:: none
+
      [16.06533523+0.j         -5.9476733 +0.j          0.94116903+1.27306956j
       0.94116903-1.27306956j]
  
