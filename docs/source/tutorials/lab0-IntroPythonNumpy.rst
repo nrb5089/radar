@@ -453,18 +453,19 @@ Write a Python script to perform the following operations using ``@``, ``.T``, a
 
 **Output**
 Matrix multiplication of A and B:
- .. code-block:: none
+
+.. code-block:: none
  
-     [[16 25 17]
-     [34 55 45]
-     [52 85 73]]
+    [[16 25 17]
+    [34 55 45]
+    [52 85 73]]
  
 Element-wise multiplication of A's transpose and B:
  
- .. code-block:: none
- 
-     [[ 2 15 55]
-     [14 40 18]]
+.. code-block:: none
+
+    [[ 2 15 55]
+    [14 40 18]]
  
  
 Problem 2: Determinant and Inverse
@@ -476,8 +477,7 @@ Given a matrix `C = np.array([[4, 7, 9, 12], [2, 6, 1, 0.5], [1, 10, 1, 4], [5, 
 2. The inverse of C
 
 **Output**
-Determinant of C:
-``-239.5000000000001``
+Determinant of C: ``-239.5000000000001``
 
 Inverse of C:
 .. code-block:: none
