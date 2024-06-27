@@ -5,4 +5,9 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "radar"
 authors = [{name = "Blinn", email = "myemail@email.com"}]
+dependencies = [
+    "numpy",
+    "scipy",
+    "opencv-python"
+]
 dynamic = ["version", "description"]
