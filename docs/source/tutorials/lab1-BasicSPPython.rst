@@ -326,10 +326,10 @@ Decimation (Downsampling)
 
 .. image:: media/filter_decimation.png
 
-Interpolation (Upsampling*)
+Interpolation (Upsampling)
 ------------------------------
 
-*More than just inserting zeros...
+More than just inserting zeros...
 
 Imagine you are looking at a connect-the-dots puzzle, but some of the dots are missing. You can still visualize the shape or picture by drawing straight lines between the dots you can see, even if there are gaps.  Interpolation is like filling in those missing dots so that the picture is more complete and flows smoothly. Instead of having jagged straight lines, you can get a curve or a smoother line that makes more sense and provides a better idea of the whole picture.  For a simpler example, think about the temperature readings at noon over a week. If you only have readings for Monday, Wednesday, and Friday, but you want to guess (or estimate) what the temperature was on Tuesday and Thursday, you could use the readings from the days you know to make a good guess. Interpolation is the mathematical way of making that guess.  In essence, interpolation is about using what you know to estimate what you don't know. It helps in filling gaps or making smoother transitions between known points or values.
 
@@ -429,7 +429,7 @@ Center Frequency and Mixing
 Frequency conversion and the use of intermediate frequency (IF) stages are fundamental concepts in radio and radar systems. These techniques are employed for several reasons, enhancing the performance, flexibility, and functionality of communication and sensing systems. Here's a detailed overview:
 
 Reasons for Frequency Conversion
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------
 
 **Improving Antenna Performance:**
 - Antennas are typically more efficient when they are about half the wavelength of the transmitted or received signal. For high-frequency signals (like those in the GHz range), this would mean very small antennas. By converting to a lower IF, you can use a more efficiently sized antenna.
@@ -720,7 +720,7 @@ Project
 Problem 1: Efficient Filtering
 --------------------------------
 
-The ``lfilter`` function applies the convolution in the time domain, which is colloquially known as linear filtering, but is actually inefficient compared to other methods.  In this problem we set up a demonstration that you will fill in the blanks for FFT convolution.  Both vectors being convolved must be zero padded to have the same length, the FFT of each vector is then multiplied together, and then we take the IFFT. Fill in the ``?`` below.
+The ``lfilter`` function applies the convolution in the time domain, which is colloquially known as linear filtering, but is actually inefficient compared to other methods.  In this problem we set up a demonstration that you will fill in the blanks for FFT convolution.  Both vectors being convolved must be zero padded to have the same length, the FFT of each vector is then multiplied together, and then we take the IFFT. Uncomment the line and fill in the ``?`` below.
 
 .. code-block:: python
 
@@ -751,20 +751,20 @@ The ``lfilter`` function applies the convolution in the time domain, which is co
 
 
     #Determine convolution output length
-    num_zeros_pad_x = ?
-    num_zeros_pad_h = ?
-    convolution_output_length = ?
+    #num_zeros_pad_x = ?
+    #num_zeros_pad_h = ?
+    #convolution_output_length = ?
     x_prefiltered = np.concatenate([x,np.zeros(num_zeros_pad_x)])
     h_prefiltered = np.concatenate([h,np.zeros(num_zeros_pad_h)])
 
     #Perform convolution via FFT
-    X_prefiltered = ? #FFT x
-    H_prefiltered = ? #FFT h
-    X_fft_filtered = ? #Perform the filtering
-    x_fft_filtered = ? #IFFT of filtered output
+    #X_prefiltered = ? #FFT x
+    #H_prefiltered = ? #FFT h
+    #X_fft_filtered = ? #Perform the filtering
+    #x_fft_filtered = ? #IFFT of filtered output
 
     #Perform linear convolution
-    x_filtered = np.convolve(?,?,mode = 'full')
+    #x_filtered = np.convolve(?,?,mode = 'full')
 
 
 
