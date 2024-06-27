@@ -10,103 +10,6 @@ from util import ffts,affts,log2lin
 __version__ = "0.1.0"
 
 
-class MonostaticRadar:
-	def __init__(self,params):
-		self.params = params
-		self.m_per_sample_rf =3e8 / 2 / self.params['rf_sampling_frequency_hz']
-		self.m_per_sample_if =3e8 / 2 / self.params['if_sampling_frequency_hz']
-		self.m_per_sample_bb =3e8 / 2 / self.params['bb_sampling_frequency_hz']
-		
-		self.transmitter = BasicTransmitter(
-								x_loc_m = params['x_loc_m_tx'], 
-								y_loc_m = params['y_loc_m_tx'],
-								z_loc_m = params['z_loc_m_tx'], 
-								x_vel_mps = params['x_vel_mps_tx'],
-								y_vel_mps = params['y_vel_mps_tx'],
-								z_vel_mps = params['z_vel_mps_tx'],
-								x_acc_mps2 = params['x_acc_mps2_tx'],
-								y_acc_mps2 = params['y_acc_mps2_tx'],
-								z_acc_mps2 = params['z_acc_mps2_tx'],
-								rf_sampling_frequency_hz = params['rf_sampling_frequency_hz'],
-								if_sampling_frequency_hz = params['if_sampling_frequency_hz'],
-								bb_sampling_frequency_hz = params['bb_sampling_frequency_hz'],
-								rf_center_frequency_hz = params['rf_center_frequency_hz'],
-								rf_bandwidth_hz = params['rf_bandwidth_hz'],
-								transmit_power_w = params['transmit_power_w'], #per element
-								internal_loss_db = params['internal_loss_db_tx'])
-								
-		self.receiver = BasicReceiver(
-						x_loc_m = params['x_loc_m_rx'], 
-						y_loc_m = params['y_loc_m_rx'],
-						z_loc_m = params['z_loc_m_rx'], 
-						x_vel_mps = params['x_vel_mps_rx'],
-						y_vel_mps = params['y_vel_mps_rx'],
-						z_vel_mps = params['z_vel_mps_rx'],
-						x_acc_mps2 = params['x_acc_mps2_rx'],
-						y_acc_mps2 = params['y_acc_mps2_rx'],
-						z_acc_mps2 = params['z_acc_mps2_rx'],
-						rf_sampling_frequency_hz = params['rf_sampling_frequency_hz'],
-						if_sampling_frequency_hz = params['if_sampling_frequency_hz'],
-						bb_sampling_frequency_hz = params['bb_sampling_frequency_hz'],
-						rf_center_frequency_hz = params['rf_center_frequency_hz'],
-						rf_bandwidth_hz = params['rf_bandwidth_hz'],
-						internal_loss_db = params['internal_loss_db_rx'],
-						num_reference_cells_range_one_sided = params['num_reference_cells_range_one_sided'],
-						num_guard_cells_range_one_sided = params['num_guard_cells_range_one_sided'],
-						num_reference_cells_doppler_one_sided = params['num_reference_cells_doppler_one_sided'],
-						num_guard_cells_doppler_one_sided = params['num_guard_cells_doppler_one_sided'],
-						probability_false_alarm = params['probability_false_alarm'],
-						probability_false_alarm_2D = params['probability_false_alarm_2D'],
-						detector_type = params['detector_type'])
-		
-		
-		#Specify Waveforms by populating 'self.wf_bank', each element is a wf_object
-		self.wf_bank = {}
-		for wf_params in params['wf_list']:
-			self.wf_bank[wf_params['index']] = Waveform(params,wf_params)
-			
-		#Initialize Mode and Waveform
-		self.current_mode_index = params['starting_mode_index']
-		self.reset_mode()
-	
-	def waveform_scheduler_cpi(self):
-		'''Method called iteratively that correpsonds to defined mode operation to generate waveform'''
-		# mode_dict = self.params['wf_sequences'][self.current_mode_index]
-		# num_unique_wfs_per_mode = len(self.mode_dict['sequence'])
-		wf_index = self.mode_sequence[self.current_mode_waveform_index]
-		wf_object = self.wf_bank[wf_index]
-		wfout = self.transmitter.transmit_waveform(wf_object)
-		
-		self.current_mode_waveform_index = np.mod(self.current_mode_waveform_index + 1,self.num_unique_wfs_per_mode)
-		return wfout, wf_object
-	
-	def switch_mode(self,mode_index):
-		self.current_mode_index = mode_index
-		self.reset_mode()
-	
-	def reset_mode(self):
-		# self.current_mode_waveform_index = self.params['wf_sequences'][self.current_mode_index]['sequence'][0]
-		self.current_mode_waveform_index = 0
-		self.mode_dict = self.params['wf_sequences'][self.current_mode_index]
-		self.mode_sequence = self.mode_dict['sequence']
-		
-		self.num_unique_wfs_per_mode = len(self.mode_sequence)
-		samples_per_pris = []
-		self.pris_per_cpi_wfs = []
-		self.pris_in_mode_sequence = []
-		for wf_index in self.mode_sequence:
-			samples_per_pris.append(self.wf_bank[wf_index].samples_per_pri_bb)
-			self.pris_per_cpi_wfs.append(self.wf_bank[wf_index].pris_per_cpi)
-			self.pris_in_mode_sequence.append(self.wf_bank[wf_index].pri)
-		self.min_range_samples_for_display_bb = np.min(samples_per_pris)
-		self.min_doppler_samples_for_display_two_sided = np.min(self.pris_per_cpi_wfs)
-		if np.mod(self.min_doppler_samples_for_display_two_sided,2) != 0:
-			self.min_doppler_samples_for_display_one_sided = int((self.min_doppler_samples_for_display_two_sided-1)/2)
-		else:
-			self.min_doppler_samples_for_display_one_sided = int((self.min_doppler_samples_for_display_two_sided)/2)
-			
-		
-		
 class PlanarAESA:
 	'''
 	Calculates the gain for a particular set of azimuth and elevation angles
@@ -263,37 +166,37 @@ class DiscreteScan:
 		
 		
 class BasicTransmitter:
-	def __init__(self,
-	
+	def __init__(self,params):
+		self.params = params
 				#Spatial Parameters
-				x_loc_m = 0.0, 
-				y_loc_m = 0.0,
-				z_loc_m = 3.0, 
-				x_vel_mps = 0.0,
-				y_vel_mps = 0.0,
-				z_vel_mps = 0.0,
-				x_acc_mps2 = 0.0,
-				y_acc_mps2 = 0.0,
-				z_acc_mps2 = 0.0,
+				# x_loc_m = 0.0, 
+				# y_loc_m = 0.0,
+				# z_loc_m = 3.0, 
+				# x_vel_mps = 0.0,
+				# y_vel_mps = 0.0,
+				# z_vel_mps = 0.0,
+				# x_acc_mps2 = 0.0,
+				# y_acc_mps2 = 0.0,
+				# z_acc_mps2 = 0.0,
 				
-				#Transmitter and Sampling Parameters
-				rf_sampling_frequency_hz = 32e9,
-				if_sampling_frequency_hz = 4e9,
-				bb_sampling_frequency_hz = 25e6,
-				rf_center_frequency_hz = 13.2e9,
-				rf_bandwidth_hz = 1e9,
-				transmit_power_w = 100, #per element
-				internal_loss_db = 2):
+				# #Transmitter and Sampling Parameters
+				# rf_sampling_frequency_hz = 32e9,
+				# if_sampling_frequency_hz = 4e9,
+				# bb_sampling_frequency_hz = 25e6,
+				# rf_center_frequency_hz = 13.2e9,
+				# rf_bandwidth_hz = 1e9,
+				# transmit_power_w = 100, #per element
+				# internal_loss_db = 2):
 				
-		self.state = np.array([x_loc_m,y_loc_m,z_loc_m,x_vel_mps,y_vel_mps,z_vel_mps]) 
-		self.Fs_rf = rf_sampling_frequency_hz
-		self.Fs_if = if_sampling_frequency_hz
-		self.Fs_bb = bb_sampling_frequency_hz
-		self.fc_rf = rf_center_frequency_hz
-		self.fc_if = np.mod(rf_center_frequency_hz,if_sampling_frequency_hz)
-		self.rf_bw = rf_bandwidth_hz
-		self.Ptx = transmit_power_w
-		self.Ltx = 10**(internal_loss_db/10)
+		self.state = np.array([params['x_loc_m'],params['y_loc_m'],params['z_loc_m'],params['x_vel_mps'],params['y_vel_mps'],params['z_vel_mps']]) 
+		self.Fs_rf = params['rf_sampling_frequency_hz']
+		self.Fs_if = params['if_sampling_frequency_hz']
+		self.Fs_bb = params['bb_sampling_frequency_hz']
+		self.fc_rf = params['rf_center_frequency_hz']
+		self.fc_if = np.mod(params['rf_center_frequency_hz'],params['if_sampling_frequency_hz'])
+		self.rf_bw = params['rf_bandwidth_hz']
+		self.Ptx = params['transmit_power_w']
+		self.Ltx = 10**(params['internal_loss_db']/10)
 
 	def transmit_waveform(self,wf_object):
 		return np.sqrt(self.Ptx) * wf_object.wf()
@@ -303,56 +206,58 @@ class BasicReceiver:
 	Transmits a sequence of lfm pulses as a pulse-Doppler burst and executes basic MTI and FFT processing
 	'''
 	#TODO: Break it up into an "ACTUAL" RF center frequency and a "CALCULATIONS" RF Center frequency
-	def __init__(self,
-	
-				#Spatial Parameters
-				x_loc_m = 0.0, 
-				y_loc_m = 0.0,
-				z_loc_m = 3.0, 
-				x_vel_mps = 0.0,
-				y_vel_mps = 0.0,
-				z_vel_mps = 0.0,
-				x_acc_mps2 = 0.0,
-				y_acc_mps2 = 0.0,
-				z_acc_mps2 = 0.0,  
-				
-				#Receiver and Sampling Parameters
-				rf_sampling_frequency_hz = 32e9,
-				if_sampling_frequency_hz = 4e9,
-				bb_sampling_frequency_hz = 25e6,
-				rf_center_frequency_hz = 13.2e9,
-				rf_bandwidth_hz = 1e9,
-				receiver_noise_figure_db = 5,
-				internal_loss_db = 2,
-				
-				# CFAR Parameters
-				num_reference_cells_range_one_sided = 10,
-				num_guard_cells_range_one_sided = 4,
-				probability_false_alarm = 1e-6,
-				num_reference_cells_doppler_one_sided = 10,
-				num_guard_cells_doppler_one_sided = 3,
-				probability_false_alarm_2D = 1e-1,
-				detector_type = 'square'):
+	def __init__(self,params):
+		self.params = params
 		
-		self.state = np.array([x_loc_m,y_loc_m,z_loc_m,x_vel_mps,y_vel_mps,z_vel_mps]) 
-		self.Fs_rf = rf_sampling_frequency_hz
-		self.Fs_if = if_sampling_frequency_hz
-		self.Fs_bb = bb_sampling_frequency_hz
-		self.fc_rf = rf_center_frequency_hz
-		self.fc_if = np.mod(rf_center_frequency_hz,if_sampling_frequency_hz)
-		self.rf_bw = rf_bandwidth_hz
-		self.det_type = detector_type
+	
+				# #Spatial Parameters
+				# x_loc_m = 0.0, 
+				# y_loc_m = 0.0,
+				# z_loc_m = 3.0, 
+				# x_vel_mps = 0.0,
+				# y_vel_mps = 0.0,
+				# z_vel_mps = 0.0,
+				# x_acc_mps2 = 0.0,
+				# y_acc_mps2 = 0.0,
+				# z_acc_mps2 = 0.0,  
+				
+				# #Receiver and Sampling Parameters
+				# rf_sampling_frequency_hz = 32e9,
+				# if_sampling_frequency_hz = 4e9,
+				# bb_sampling_frequency_hz = 25e6,
+				# rf_center_frequency_hz = 13.2e9,
+				# rf_bandwidth_hz = 1e9,
+				# receiver_noise_figure_db = 5,
+				# internal_loss_db = 2,
+				
+				# # CFAR Parameters
+				# num_reference_cells_range_one_sided = 10,
+				# num_guard_cells_range_one_sided = 4,
+				# probability_false_alarm = 1e-6,
+				# num_reference_cells_doppler_one_sided = 10,
+				# num_guard_cells_doppler_one_sided = 3,
+				# probability_false_alarm_2D = 1e-1,
+				# detector_type = 'square'):
+		
+		self.state = np.array([params['x_loc_m'],params['y_loc_m'],params['z_loc_m'],params['x_vel_mps'],params['y_vel_mps'],params['z_vel_mps']]) 
+		self.Fs_rf = params['rf_sampling_frequency_hz']
+		self.Fs_if = params['if_sampling_frequency_hz']
+		self.Fs_bb = params['bb_sampling_frequency_hz']
+		self.fc_rf = params['rf_center_frequency_hz']
+		self.fc_if = np.mod(params['rf_center_frequency_hz'],params['if_sampling_frequency_hz'])
+		self.rf_bw = params['rf_bandwidth_hz']
+		self.det_type = params['detector_type']
 		
 		self.rf_lam = 3e8/self.fc_rf
 		self.rf2if_ds = int(self.Fs_rf/self.Fs_if)
 		self.if2bb_ds = int(self.Fs_if/self.Fs_bb)
 		
-		self.NF_lin = 10**(receiver_noise_figure_db/10)
-		self.Lrx = 10**(internal_loss_db/10)
+		self.NF_lin = 10**(params['receiver_noise_figure_db']/10)
+		self.Lrx = 10**(params['internal_loss_db']/10)
 		
 		#TODO Add Power limiting, like a tanh
 		
-		self.sigma_n = np.sqrt(1.38e-23 * 290 * rf_bandwidth_hz * self.NF_lin)
+		self.sigma_n = np.sqrt(1.38e-23 * 290 * params['rf_bandwidth_hz'] * self.NF_lin)
 		
 		#Analog Front End Filters
 		#assert self.fc_if + self.rf_bw/2 < self.Fs_rf/2, f'Top of RF signal bandwidth {(self.fc_rf + self.rf_bw/2 )/2/1e6} MHz equals or exceeds sampling Nyquist limit {self.Fs_rf/2/1e6} MHz!'
@@ -363,12 +268,12 @@ class BasicReceiver:
 		self.mti = MTIBasic()
 		
 		# #Detection
-		self.cfar = CA_CFAR1D(num_reference_cells_range_one_sided, num_guard_cells_range_one_sided,probability_false_alarm)
-		self.cfar2D = CA_CFAR2D(num_reference_cells_doppler_one_sided, 
-								num_reference_cells_range_one_sided,
-								num_guard_cells_doppler_one_sided,
-								num_guard_cells_range_one_sided,
-								probability_false_alarm_2D)
+		self.cfar = CA_CFAR1D(params['num_reference_cells_range_one_sided'], params['num_guard_cells_range_one_sided'],params['probability_false_alarm'])
+		self.cfar2D = CA_CFAR2D(params['num_reference_cells_doppler_one_sided'], 
+								params['num_reference_cells_range_one_sided'],
+								params['num_guard_cells_doppler_one_sided'],
+								params['num_guard_cells_range_one_sided'],
+								params['probability_false_alarm_2D'])
 		
 	def detector(self,x):
 		x = np.abs(x)
@@ -382,17 +287,6 @@ class BasicReceiver:
 		return wf_object.bb_filter.filter_signal(x)
 	
 	def add_receiver_noise(self,x): return x + self.sigma_n/np.sqrt(2) * (np.random.randn(len(x)) + 1j*np.random.randn(len(x)))
-	
-	def apply_gating(self,x,wf_object,center_range_gate_m): 
-		width_range_gate_m = wf_object.samples_per_range_window_rf / wf_object.Fs_rf * 3e8/2
-		range_gate_min_m = center_range_gate_m - width_range_gate_m/2
-		range_gate_max_m = center_range_gate_m + width_range_gate_m/2
-		
-		range_sample_min = int(2/3e8 * range_gate_min_m * wf_object.Fs_rf)
-		range_sample_max = int(2/3e8 * range_gate_max_m * wf_object.Fs_rf)
-		range_gate_mask = np.zeros(wf_object.samples_per_cpi_rf) + 0j
-		range_gate_mask[range_sample_min:range_sample_max] = 1.0 + 0j
-		return x * range_gate_mask
 
 	def process_burst_signal(self,x,wf_object,probe = False):
 		#Mask emulates the receive window times so that there aren't samples uring transmission, for example
@@ -954,6 +848,52 @@ class FIR:
 	def filter_signal(self,x): return np.convolve(x,self.h,mode = 'same')
 
 class CA_CFAR1D:
+	"""
+	One dimensional cell-averaging CFAR, calculates the threshold and builds detection
+	vector with input signal.
+	
+	Parameters
+	-----------
+	num_reference_cells_one_sided : int
+		Number of taps on CFAR window on one side of the cell under test.
+		
+	num_guard_cells_one_sided : int
+		Number of guard cell taps on the CFAR window on one side of the cell under test.
+	
+	probability_false_alarm : float
+		Probability of false alarm that characterizes the CFAR.
+	
+	Attributes
+	-----------
+	num_ref : int
+		Number of taps on CFAR window on one side of the cell under test.
+		
+	num_guard : int
+		Number of guard cell taps on the CFAR window on one side of the cell under test.
+	
+	pfa : float
+		Probability of false alarm that characterizes the CFAR.
+		
+	cfar_constant : float
+		CFAR constant.
+		
+	cfar_window : numpy.ndarray
+		Array of 1s and 0s that is convolved with incoming signal to induce CA-CFAR operation.
+		
+	Methods
+	--------
+	calculate_cfar_thresh(x)
+		Applies numpy.convolve(x,self.cfar_window, mode = 'same') to signal numpy.ndarray x.  dtype of x should be float32, float 64, complex64, or complex128.
+		
+	build_detection_vector(x,T)
+		Returns vector consisting of 1s and 0s, where 1 indicates that the signal has broken the detection threshold T, which is an numpy.ndarray.
+	
+	
+	Notes
+	------
+	CA-CFAR theory derived from M. A. Richards, Fundamentals of Radar Signal Processing, 2nd ed. New York, NY, USA: McGraw-Hill Education, 2014.
+
+	"""
 	def __init__(self,num_reference_cells_one_sided,
 				  num_guard_cells_one_sided,
 				  probability_of_false_alarm):
@@ -975,6 +915,64 @@ class CA_CFAR1D:
 		return det_vec
 
 class CA_CFAR2D:
+	"""
+	Two dimensional cell-averaging CFAR, calculates the threshold and builds detection
+	vector with input signal.
+	
+	Parameters
+	-----------
+	num_reference_cells_doppler_one_sided : int
+		Number of taps on CFAR window on one side of the cell under test along Doppler dimension.
+		
+	num_reference_cells_range_one_sided : int
+		Number of taps on CFAR window on one side of the cell under test along range dimension.
+		
+	num_guard_cells_doppler_one_sided : int
+		Number of guard cell taps on the CFAR window on one side of the cell under test along Doppler dimension.
+		
+	num_guard_cells_range_one_sided : int
+		Number of guard cell taps on the CFAR window on one side of the cell under test along range dimension.
+	
+	probability_false_alarm : float
+		Probability of false alarm that characterizes the CFAR.
+	
+	Attributes
+	-----------
+	num_ref_d : int
+		Number of taps on CFAR window on one side of the cell under test along Doppler dimension.
+		
+	num_ref_r : int
+		Number of taps on CFAR window on one side of the cell under test along range dimension.
+		
+	num_guard_d : int
+		Number of guard cell taps on the CFAR window on one side of the cell under test along Doppler dimension.
+		
+	num_guard_r : int
+		Number of guard cell taps on the CFAR window on one side of the cell under test along range dimension.
+	
+	pfa : float
+		Probability of false alarm that characterizes the CFAR.
+		
+	cfar_constant : float
+		CFAR constant.
+		
+	cfar_window : numpy.ndarray
+		Matrix of 1s and 0s that is convolved with incoming signal to induce CA-CFAR operation.
+		
+	Methods
+	--------
+	calculate_cfar_thresh(x)
+		Applies numpy.convolve(x,self.cfar_window, mode = 'same') to signal numpy.ndarray x.  dtype of x should be float32, float 64, complex64, or complex128.
+		
+	build_detection_matrix(x,T)
+		Returns vector consisting of 1s and 0s, where 1 indicates that the signal has broken the detection threshold T, which is an numpy.ndarray.
+	
+	
+	Notes
+	------
+	CA-CFAR theory derived from M. A. Richards, Fundamentals of Radar Signal Processing, 2nd ed. New York, NY, USA: McGraw-Hill Education, 2014.
+
+	"""
 	def __init__(self,num_reference_cells_doppler_one_sided,
 				num_reference_cells_range_one_sided,
 				num_guard_cells_doppler_one_sided,

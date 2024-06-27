@@ -17,48 +17,45 @@ Other Params
 def main():
 	init_figs()
 	radar_params = {}
-	radar_params['x_loc_m_tx'] = 0.0
-	radar_params['y_loc_m_tx'] = 0.0
-	radar_params['z_loc_m_tx'] = 3.0
-	radar_params['x_vel_mps_tx'] = 0.0
-	radar_params['y_vel_mps_tx'] = 0.0
-	radar_params['z_vel_mps_tx'] = 0.0
-	radar_params['x_acc_mps2_tx'] = 0.0
-	radar_params['y_acc_mps2_tx'] = 0.0
-	radar_params['z_acc_mps2_tx'] = 0.0
+	tx_params['x_loc_m'] = 0.0
+	tx_params['y_loc_m'] = 0.0
+	tx_params['z_loc_m'] = 3.0
+	tx_params['x_vel_mps'] = 0.0
+	tx_params['y_vel_mps'] = 0.0
+	tx_params['z_vel_mps'] = 0.0
+	tx_params['x_acc_mps2'] = 0.0
+	tx_params['y_acc_mps2'] = 0.0
+	tx_params['z_acc_mps2'] = 0.0
+	tx_params['internal_loss_db'] = 2
+	
+	rx_params['x_loc_m'] = 0.0
+	rx_params['y_loc_m'] = 0.0
+	rx_params['z_loc_m'] = 3.0
+	rx_params['x_vel_mps'] = 0.0
+	rx_params['y_vel_mps'] = 0.0
+	rx_params['z_vel_mps'] = 0.0
+	rx_params['x_acc_mps2'] = 0.0
+	rx_params['y_acc_mps2'] = 0.0
+	rx_params['z_acc_mps2'] = 0.0
+	rx_params['internal_loss_db'] = 2
+	
 	radar_params['rf_sampling_frequency_hz'] = 500e6
 	radar_params['if_sampling_frequency_hz'] = 100e6
 	radar_params['bb_sampling_frequency_hz'] = 50e6
 	radar_params['rf_center_frequency_hz'] = 115e6
 	radar_params['rf_bandwidth_hz'] = 20e6
 	radar_params['transmit_power_w'] = 100 #per element
-	radar_params['internal_loss_db_tx'] = 2
+	
+	radar_params['tx_params'] = tx_params
+	radar_params['rx_params'] = rx_params
 									
-	radar_params['x_loc_m_rx'] = 0.0 
-	radar_params['y_loc_m_rx'] = 0.0
-	radar_params['z_loc_m_rx'] = 3.0
-	radar_params['x_vel_mps_rx'] = 0.0
-	radar_params['y_vel_mps_rx'] = 0.0
-	radar_params['z_vel_mps_rx'] = 0.0
-	radar_params['x_acc_mps2_rx'] = 0.0
-	radar_params['y_acc_mps2_rx'] = 0.0
-	radar_params['z_acc_mps2_rx'] = 0.0
-	radar_params['rf_sampling_frequency_hz'] = 500e6
-	radar_params['if_sampling_frequency_hz'] = 100e6
-	radar_params['bb_sampling_frequency_hz'] = 50e6
-	radar_params['rf_center_frequency_hz'] = 115e6
-	radar_params['rf_bandwidth_hz'] = 20e6
-	radar_params['internal_loss_db_rx'] = 2
-# 	radar_params['reference_cells_one_sided'] = 32
-# 	radar_params['guard_cells_one_sided'] = 8
-# 	radar_params['probability_false_alarm'] = 1e-3
-	radar_params['num_reference_cells_range_one_sided'] = 20
-	radar_params['num_guard_cells_range_one_sided'] = 7
-	radar_params['num_reference_cells_doppler_one_sided'] = 10
-	radar_params['num_guard_cells_doppler_one_sided'] = 3
-	radar_params['probability_false_alarm'] = 1e-3
-	radar_params['probability_false_alarm_2D'] = 1e-2
-	radar_params['detector_type'] = 'square'
+	detector_params['num_reference_cells_range_one_sided'] = 20
+	detector_params['num_guard_cells_range_one_sided'] = 7
+	detector_params['num_reference_cells_doppler_one_sided'] = 10
+	detector_params['num_guard_cells_doppler_one_sided'] = 3
+	detector_params['probability_false_alarm'] = 1e-3
+	detector_params['probability_false_alarm_2D'] = 1e-2
+	detector_params['detector_type'] = 'square'
 	
 	num_pris = 7 * 11*13/np.array([7,11,13])
 	#num_pris = 7*11*13/np.array([7,7,7])
