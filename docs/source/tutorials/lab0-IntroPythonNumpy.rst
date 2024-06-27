@@ -477,14 +477,14 @@ Write a Python script to perform the following operations using ``@``, ``.T``, a
 
 **Output**
 Matrix multiplication of A and B:
- .. code-block::
+ .. code-block:: none
      [[16 25 17]
      [34 55 45]
      [52 85 73]]
  
 Element-wise multiplication of A's transpose and B:
  
- .. code-block::
+ .. code-block:: none
      [[ 2 15 55]
      [14 40 18]]
  
@@ -499,9 +499,10 @@ Given a matrix `C = np.array([[4, 7, 9, 12], [2, 6, 1, 0.5], [1, 10, 1, 4], [5, 
 
 **Output**
 Determinant of C:
- ``-239.5000000000001``
+``-239.5000000000001``
+
 Inverse of C:
-.. code-block::
+.. code-block:: none
      [[ 0.434238    2.35908142 -1.39457203 -0.81210856]
      [-0.11064718 -0.37995825  0.33611691  0.17327766]
      [-0.32985386 -1.84968685  1.02087683  0.79958246]
@@ -511,21 +512,21 @@ Inverse of C:
 Problem 3: Eigenvalues and Eigenvectors
 ------------------------------------------
 
-For the same matrix `C`, compute:
+For the same matrix ``C``, compute
 
-1. The eigenvalues of C
-2. The eigenvectors of C
-3. Build a diagonal matrix of the vector of eigenvalues `np.diag()`
+1. The eigenvalues of ``C``
+2. The eigenvectors of ``C``
+3. Build a diagonal matrix of the vector of eigenvalues ``np.diag()``
 4. Reconstruct C using the diagonal matrix and matrix of eigenvectors. The result will be complex.
 
 **Output**
-Eigenvalues of C:
-.. code-block::
+Eigenvalues of ``C``
+.. code-block:: none
      [16.06533523+0.j         -5.9476733 +0.j          0.94116903+1.27306956j
       0.94116903-1.27306956j]
  
-Eigenvectors of C:
-.. code-block::
+Eigenvectors of ``C``
+.. code-block:: none
      [[ 0.80738772+0.j          0.50074368+0.j          0.76290198+0.j
        0.76290198-0.j        ]
      [ 0.21412914+0.j         -0.09361387+0.j         -0.21182191-0.08063397j
@@ -535,8 +536,8 @@ Eigenvectors of C:
      [ 0.45039254+0.j         -0.71716833+0.j          0.30845146+0.03885582j
        0.30845146-0.03885582j]]
 
-Reconstructed C:
-.. code-block::
+Reconstructed ``C``
+.. code-block:: none
      [[ 4. -1.25389341e-16j  7. +6.32484664e-15j  9. -6.24830406e-15j
       12. -3.00509803e-17j]
      [ 2. +1.42874811e-17j  6. +1.86223409e-15j  1. -1.84380385e-15j
@@ -546,8 +547,8 @@ Reconstructed C:
      [ 5. -3.99186102e-17j  4. +3.76743004e-15j  6. -3.91085454e-15j
        1. -2.77193111e-17j]]
 
-Clean Reconstructed C:
-.. code-block::
+Clean Reconstructed ``C``
+.. code-block:: none
      [[ 4.   7.   9.  12. ]
      [ 2.   6.   1.   0.5]
      [ 1.  10.   1.   4. ]
