@@ -24,16 +24,16 @@ Tell me how to use this.
 The package provides the following functions for direct use.
 
 
-util
+radar.util
 -------
-.. automodule:: util
+.. automodule:: radar.util
     :members:
     :undoc-members:
     :exclude-members: __dict__, __weakref__, __module__
 
-core
+radar.core
 -------
-.. automodule:: core
+.. automodule:: radar.core
     :members:
     :undoc-members:
     :exclude-members: __dict__, __weakref__, __module__
