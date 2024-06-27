@@ -40,4 +40,4 @@ html_theme = 'sphinx_rtd_theme'
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
 
-autodoc_mock_imports = ['numpy', 'scipy', 'opencv-python'] #Added by me
+autodoc_mock_imports = ['numpy', 'scipy', 'opencv-python', 'matplotlib'] #Added by me
