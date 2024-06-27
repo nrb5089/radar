@@ -18,7 +18,9 @@ Contents
 --------
 
 .. toctree::
+    :maxdepth: 2
     :caption: Setup
+    
     usage
     api
 
