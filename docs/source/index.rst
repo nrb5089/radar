@@ -5,8 +5,8 @@ Welcome to the documentation for radar!
 radar signal processing as to prototype for Software-Defined Radio 
 (SDR) design.
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
+Check out the :doc:`setup_and_installation` section for further information, including
+how to install the project.
 
 radar has its documentation hosted on Read the Docs.
 
@@ -19,15 +19,15 @@ Contents
 
 .. toctree::
     :maxdepth: 2
-    :caption: Setup
+    :caption: Getting Started
     
-    usage
-    api
+    setup_and_installation
 
 .. toctree::
     :maxdepth: 2
     :caption: Functional Blocks
     
+    api
     functional_blocks
     
     
