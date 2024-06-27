@@ -108,7 +108,7 @@ You can access the array elements as
 Likewise for matrices $M[m,n]$ or $M_{m,n}$ denotes the element in row $m$ and column $n$.
 For 2D arrays, you need to use comma-separated indices
 
-.. code-block:: python 
+.. code-block:: python
     import numpy as np
 
     M = np.array([[1,2,3,4,5], [6,7,8,9,10]])
@@ -122,7 +122,7 @@ Array Slicing
 Slices of vectors or matrices are denoted $\textbf{v}[m:n]$ or $\textbf{v}_{m:n}$, and for matrices, $\textbf{M}[m:n,p:q]$ or $\textbf{M}_{m:n,p:q}$.
 NumPy arrays can be sliced, You can slice a NumPy array like this
 
-.. code-block:: python 
+.. code-block:: python
 
     import numpy as np
 
@@ -148,7 +148,7 @@ Basic Array Operations
 
 You can perform element-wise operations on arrays like addition, subtraction, etc.
 
-.. code-block:: python 
+.. code-block:: python
 
     import numpy as np
 
@@ -174,7 +174,7 @@ Mathematical Functions
 
 NumPy provides standard mathematical functions like sin, cos, exp, etc. These functions operate element-wise on an array, producing an array as output.
 
-.. code-block:: python 
+.. code-block:: python
 
     import numpy as np
 
@@ -191,7 +191,7 @@ Statistical Functions
 
 NumPy provides functions to calculate statistical metrics like mean, median, standard deviation, etc.
 
-.. code-block:: python 
+.. code-block:: python
 
     import numpy as np
 
@@ -527,6 +527,7 @@ Eigenvalues of ``C``
  
 Eigenvectors of ``C``
 .. code-block:: none
+
      [[ 0.80738772+0.j          0.50074368+0.j          0.76290198+0.j
        0.76290198-0.j        ]
      [ 0.21412914+0.j         -0.09361387+0.j         -0.21182191-0.08063397j
@@ -537,7 +538,9 @@ Eigenvectors of ``C``
        0.30845146-0.03885582j]]
 
 Reconstructed ``C``
+
 .. code-block:: none
+
      [[ 4. -1.25389341e-16j  7. +6.32484664e-15j  9. -6.24830406e-15j
       12. -3.00509803e-17j]
      [ 2. +1.42874811e-17j  6. +1.86223409e-15j  1. -1.84380385e-15j
@@ -548,7 +551,9 @@ Reconstructed ``C``
        1. -2.77193111e-17j]]
 
 Clean Reconstructed ``C``
+
 .. code-block:: none
+
      [[ 4.   7.   9.  12. ]
      [ 2.   6.   1.   0.5]
      [ 1.  10.   1.   4. ]
