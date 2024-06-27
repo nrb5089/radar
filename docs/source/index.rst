@@ -36,5 +36,5 @@ Contents
     :caption: Tutorials:
    
     tutorials/lab0-IntroPythonNumpy
-    
+    tutorials/lab1-BasicSPPython
     
