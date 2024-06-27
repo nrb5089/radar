@@ -4,7 +4,7 @@ import matplotlib
 from scipy.signal import butter, cheby1, lfilter, firwin, convolve2d
 from copy import deepcopy as dcp
 #import cv2
-from util import ffts,affts,log2lin
+from .util import ffts,affts,log2lin
 
 
 __version__ = "0.1.0"
