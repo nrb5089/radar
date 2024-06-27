@@ -93,7 +93,7 @@ You can create a numpy array from a Python list or tuple using the `array` funct
 
 Array Indexing
 ------------------
-The $n$th element of a vector may be denoted as $v[n]$ or $v_n$.  We will denote this in unbolded since it is scalar, i.e., $\textbf{v} = [v_0,\dots,v_n,\dots]$.
+The :math:`n^{th}` element of a vector may be denoted as :math:`v[n]` or :math:`v_n`.  We will denote this in unbolded since it is scalar, i.e., :math:`\textbf{v} = [v_0,\dots,v_n,\dots]`.
 
 You can access the array elements as
 
@@ -106,7 +106,7 @@ You can access the array elements as
     print(v[1])  # Output: 2
     print(v[2] + v[3])  # Output: 7
 
-Likewise for matrices $M[m,n]$ or $M_{m,n}$ denotes the element in row $m$ and column $n$.
+Likewise for matrices :math:`M[m,n]` or :math:`M_{m,n}` denotes the element in row :math:`m` and column :math:`n`.
 For 2D arrays, you need to use comma-separated indices
 
 .. code-block:: python
@@ -121,7 +121,7 @@ For 2D arrays, you need to use comma-separated indices
 
 Array Slicing
 ------------------------------------------
-Slices of vectors or matrices are denoted $\textbf{v}[m:n]$ or $\textbf{v}_{m:n}$, and for matrices, $\textbf{M}[m:n,p:q]$ or $\textbf{M}_{m:n,p:q}$.
+Slices of vectors or matrices are denoted :math:`\textbf{v}[m:n]` or :math:`\textbf{v}_{m:n}`, and for matrices, :math:`\textbf{M}[m:n,p:q]` or :math:`\textbf{M}_{m:n,p:q}`.
 NumPy arrays can be sliced, You can slice a NumPy array like this
 
 .. code-block:: python
@@ -241,7 +241,7 @@ Matrix-Vector Multiplication
 Matrix-Matrix Multiplication
 ------------------------------------------
 
-3x3 matrices, $\textbf{A}$, $\textbf{B}$, compute the element-wise (Hadamard) product $\textbf{A}\circ\textbf{B}$ and the more common matrix-matrix multiplciation $\textbf{A}\textbf{B}$.  When we talk about matrix-matrix multplication, we always mean the latter here, but will be denoted with $\circ$ otherwise.
+3x3 matrices, :math:`\textbf{A}`, :math:`\textbf{B}`, compute the element-wise (Hadamard) product :math:`\textbf{A}\circ\textbf{B}` and the more common matrix-matrix multiplciation :math:`\textbf{A}\textbf{B}`.  When we talk about matrix-matrix multplication, we always mean the latter here, but will be denoted with :math:`\circ` otherwise.
 
 .. code-block:: python 
 
@@ -270,7 +270,7 @@ Matrix-Matrix Multiplication
 Complex Numbers
 ------------------------------------------
 
-Python has built-in support for complex numbers, which are written with a "j" as the imaginary part. Here's a quick introduction:
+Python has built-in support for complex numbers, which are written with a ``j`` as the imaginary part. Here's a quick introduction:
 
 .. code-block:: python 
 
@@ -312,7 +312,7 @@ Python has built-in support for complex numbers, which are written with a "j" as
 Transpose and Hermitian
 ------------------------------------------
 
-Compute the transpose, $\textbf{A}^T$, and Hermitian (conjugate transpose), $\textbf{C}^H$ of a matrix.  
+Compute the transpose, :math:`\textbf{A}^T`, and Hermitian (conjugate transpose), :math:`\textbf{C}^H` of a matrix.  
 
 .. code-block:: python 
 
@@ -341,7 +341,7 @@ Compute the transpose, $\textbf{A}^T$, and Hermitian (conjugate transpose), $\te
 
 Inverse
 ------------------------------------------
-Compute the inverse of a matrix, $\textbf{A}^{-1}$.
+Compute the inverse of a matrix, :math:`\textbf{A}^{-1}`.
 
 .. code-block:: python 
 
@@ -360,7 +360,7 @@ Compute the inverse of a matrix, $\textbf{A}^{-1}$.
 
 Determinant
 ------------------------------------------
-Compute the determinant of a matrix, $\textrm{det}(\textbf{A})$.
+Compute the determinant of a matrix, :math:`\textrm{det}(\textbf{A})`.
 
 .. code-block:: python
 
@@ -380,7 +380,7 @@ Compute the determinant of a matrix, $\textrm{det}(\textbf{A})$.
 Solve the System of Linear Equations 
 ------------------------------------------
 
-$3x + y = 9$ and $x + 2y = 8$.
+:math:`3x + y = 9` and :math:`x + 2y = 8`.
 
 .. code-block:: python 
 
@@ -402,7 +402,7 @@ $3x + y = 9$ and $x + 2y = 8$.
 Eigenvalue Decomposition
 ------------------------------------------
 
-Find the eigenvalues and eigenvectors of a matrix, $A = \textbf{V}\textbf{D}\textbf{V}^{-1}$.
+Find the eigenvalues and eigenvectors of a matrix, :math:`A = \textbf{V}\textbf{D}\textbf{V}^{-1}`.
 
 .. code-block:: python 
 
@@ -453,7 +453,7 @@ Write a Python script to perform the following operations using ``@``, ``.T``, a
 2. Element-wise Multiplication of A's transpose and B
 
 **Output**
-Matrix multiplication of A and B:
+Matrix multiplication of ``A`` and ``B``:
 
 .. code-block:: none
  
@@ -461,7 +461,7 @@ Matrix multiplication of A and B:
     [34 55 45]
     [52 85 73]]
  
-Element-wise multiplication of A's transpose and B:
+Element-wise multiplication of ``A``'s transpose and ``B```:
  
 .. code-block:: none
 
@@ -472,15 +472,15 @@ Element-wise multiplication of A's transpose and B:
 Problem 2: Determinant and Inverse
 ------------------------------------
 
-Given a matrix `C = np.array([[4, 7, 9, 12], [2, 6, 1, 0.5], [1, 10, 1, 4], [5, 4, 6, 1]])`, calculate:
+Given a matrix ``C = np.array([[4, 7, 9, 12], [2, 6, 1, 0.5], [1, 10, 1, 4], [5, 4, 6, 1]])``, calculate:
 
-1. The determinant of C
-2. The inverse of C
+1. The determinant of ``C``
+2. The inverse of ``C``
 
 **Output**
-Determinant of C: ``-239.5000000000001``
+Determinant of ``C``: ``-239.5000000000001``
 
-Inverse of C:
+Inverse of ``C``:
 .. code-block:: none
 
      [[ 0.434238    2.35908142 -1.39457203 -0.81210856]
