@@ -1,39 +1,24 @@
 Usage
-=====
+======
 
 .. _installation:
 
-Installation (working)
------------------------
+Installation 
+-------------
 
-**DON'T DO THIS**
-
-To use radar, first install it using pip:
+To use radar, first install it using pip (Same for Windows and Linux):
 
 .. code-block:: console
-
-   (.venv) $ pip install radar
+    
+    git clone https://github.com/nrb5089/radar.git
+    cd radar
+   (.venv) $ pip install ./
 
 Creating radars
 ----------------
 
 Tell me how to use this.
 
-
-
 The package provides the following functions for direct use.
 
 
-radar.util
-------------
-.. automodule:: radar.util
-    :members:
-    :undoc-members:
-    :exclude-members: __dict__, __weakref__, __module__
-
-radar.core
------------
-.. automodule:: radar.core
-    :members:
-    :undoc-members:
-    :exclude-members: __dict__, __weakref__, __module__

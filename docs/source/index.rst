@@ -18,12 +18,21 @@ Contents
 --------
 
 .. toctree::
+    :caption: Setup
+    usage
+    api
 
-   usage
-   api
-
+.. toctree::
+    :maxdepth: 2
+    :caption: Functional Blocks
+    
+    functional_blocks
+    
+    
 .. toctree::
     :maxdepth: 2
     :caption: Tutorials:
    
     tutorials/lab0-IntroPythonNumpy
+    
+    
