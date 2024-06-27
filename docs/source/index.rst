@@ -21,3 +21,9 @@ Contents
 
    usage
    api
+
+.. totree::
+    :maxdepth: 2
+    :caption: Tutorials:
+   
+    tutorials/lab0-IntroPythonNumpy
