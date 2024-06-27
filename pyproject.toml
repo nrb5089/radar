@@ -8,7 +8,7 @@ authors = [{name = "Blinn", email = "myemail@email.com"}]
 dependencies = [
     "numpy",
     "scipy",
-    "opencv-python"
+    "opencv-python",
     "matplotlib"
 ]
 dynamic = ["version", "description"]
