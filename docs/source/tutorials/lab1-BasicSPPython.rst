@@ -249,7 +249,7 @@ Generate noisy sine waves with a frequency of 200 MHz and 1200 MHz (1.2 GHz) and
 
 .. image:: media/filtered_sine.png
 
-Note in the figure on the bottom that the higher frequency sine wave has been removed.  Here is a look at the frequency response of the filter to provide some more insight.  The top plot shows the magnitude response, which we see that outside our cutoff (or stopband) frequency, 500 MHz, is significantly lower.  The phase response on the bottom, while it may not appear to yield much insight at first, shows that inside the $\pm$ 500 MHz (or the passband) that the phase is "linear".  It is typical in good filter design to produce linear or near-linear phase so that the distortions accumulated while filtering are predictable, i.e. group delay.  Most signal processing texts will go into more detail, see [1,2,3].
+Note in the figure on the bottom that the higher frequency sine wave has been removed.  Here is a look at the frequency response of the filter to provide some more insight.  The top plot shows the magnitude response, which we see that outside our cutoff (or stopband) frequency, 500 MHz, is significantly lower.  The phase response on the bottom, while it may not appear to yield much insight at first, shows that inside the :math:`\pm` 500 MHz (or the passband) that the phase is "linear".  It is typical in good filter design to produce linear or near-linear phase so that the distortions accumulated while filtering are predictable, i.e. group delay.  Most signal processing texts will go into more detail, see [1,2,3].
 
 .. image:: media/butter_freq_filter_response.png
 
@@ -363,7 +363,7 @@ Imagine you are looking at a connect-the-dots puzzle, but some of the dots are m
 
 
 
-The Nyquist-Shannon sampling theorem provides a prescription for how to perfectly reconstruct a continuous-time signal from its samples, under certain conditions. Specifically, it states that a band-limited signal $x(t)$ that contains no frequency components higher than :math:`f_{\text{max}}` can be completely reconstructed from its samples if it is sampled at a rate :math:`f_s > 2 f_{\text{max}}`.
+The Nyquist-Shannon sampling theorem provides a prescription for how to perfectly reconstruct a continuous-time signal from its samples, under certain conditions. Specifically, it states that a band-limited signal :math:`x(t)` that contains no frequency components higher than :math:`f_{\text{max}}` can be completely reconstructed from its samples if it is sampled at a rate :math:`f_s > 2 f_{\text{max}}`.
 
 The formula for reconstruction is:
 
