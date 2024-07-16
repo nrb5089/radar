@@ -332,7 +332,7 @@ Often, in receiver design and analysis, noise is modeled as Additive White Gauss
 
 :math:`\chi = \frac{P}{\sigma^2}`
 
-Interference may be causing additional noise :math:`\sigma_i^2` from an :math:`i^{th}`source, the Signal-to-Interference-plus-Noise Ratio (SINR) is 
+Interference may be causing additional noise :math:`\sigma_i^2` from an ith source, the Signal-to-Interference-plus-Noise Ratio (SINR) is 
 
 :math:`\frac{P}{\sigma^2 + \sigma_1^2 + \dots + \sigma_i + \dots}`
 
