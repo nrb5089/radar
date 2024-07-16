@@ -37,4 +37,5 @@ Contents
    
     tutorials/lab0-IntroPythonNumpy
     tutorials/lab1-BasicSPPython
+    tutorials/lab2-TxRx
     
