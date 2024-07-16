@@ -158,7 +158,7 @@ Imagine you have a variety of different-sized musical instruments: a large drum,
 
 Reaching a higher frequency is typically achieved by mixing the baseband IQ signal with a **carrier** signal. The I component is mixed with a cosine wave, and the Q component is mixed with a sine wave.
 
-The passband signal $s(t)$ can be expressed as:
+The passband signal :math:`s(t)` can be expressed as:
 
 :math:`s(t) = I(t)\cos(2\pi f_c t) - Q(t)\sin(2\pi f_c t)`
 
@@ -196,12 +196,12 @@ Radar does something similar but uses radio waves instead of sound waves.
 
 The radar range equation relates the range (distance) of a target to several factors:
 
-1. **Transmitted Power (:math:`P_t`)**: The amount of energy the radar sends out.
-2. **Transmitter Antenna Gain (:math:`G_t`)**: A measure of how "focused" the transmitted/received energy is in a particular direction.
-3. **Receiver Antenna Gain (:math:`G_r`)**: A measure of how "focused" the transmitted/received energy is in a particular direction.
-4. **Radar Cross Section (:math:`\sigma`)**: A measure of how much radio energy an object reflects back towards the radar. Large metal objects have a high :math:`\sigma`; stealth aircraft are designed to have a low :math:`\sigma`.
-5. **Frequency (:math:`f`)** or Wavelength (λ): The frequency/wavelength of the radio wave used.
-6. **Range (:math:`R`)**: The distance between the radar and the target.
+1. **Transmitted Power** (:math:`P_t`): The amount of energy the radar sends out.
+2. **Transmitter Antenna Gain** (:math:`G_t`): A measure of how "focused" the transmitted/received energy is in a particular direction.
+3. **Receiver Antenna Gain** (:math:`G_r`): A measure of how "focused" the transmitted/received energy is in a particular direction.
+4. **Radar Cross Section** (:math:`\sigma`): A measure of how much radio energy an object reflects back towards the radar. Large metal objects have a high :math:`\sigma`; stealth aircraft are designed to have a low :math:`\sigma`.
+5. **Frequency** (:math:`f`) or Wavelength (:math:`\lambda`): The frequency/wavelength of the radio wave used.
+6. **Range** (:math:`R`): The distance between the radar and the target.
 
 The basic radar equation looks like this:
 
@@ -214,9 +214,9 @@ Where:
 
 **Layman Explanation**
 
-Think of :math:`P_t` as the loudness of your shout, and $P_r$ as how loud the echo is when it returns. 
+Think of :math:`P_t` as the loudness of your shout, and :math:`P_r` as how loud the echo is when it returns. 
 
-- If you shout louder (higher $P_t$), you'll hear a louder echo (higher :math:`P_r`).
+- If you shout louder (higher :math:`P_t`), you'll hear a louder echo (higher :math:`P_r`).
 - If the person (or object) you're trying to detect is closer (smaller :math:`R`), the echo will be louder.
 - If the person is wearing reflective clothing (think of this as a higher :math:`\sigma`), they'll reflect more sound and produce a louder echo.
 
@@ -232,13 +232,13 @@ Power
 
 **Continuous Domain (Analog Signals):**
 
-For a continuous-time signal $x(t)$, the **power** is defined as the average power over an interval. 
+For a continuous-time signal :math:`x(t)`, the **power** is defined as the average power over an interval. 
 
-For non-periodic signals, the average power $P$ over all time is given by:
+For non-periodic signals, the average power :math:`P` over all time is given by:
 
 :math:`P = \lim_{T \to \infty} \frac{1}{2T} \int_{-T}^{T} |x(t)|^2 \, dt`
 
-For periodic signals with period $T_0$, the average power :math:`P` is:
+For periodic signals with period :math:`T_0`, the average power :math:`P` is:
 
 :math:`P = \frac{1}{T_0} \int_{0}^{T_0} |x(t)|^2 \, dt`
 
@@ -250,17 +250,17 @@ Where:
 
 For a discrete-time signal :math:`x[n]`, the power is similarly defined. 
 
-For non-periodic sequences, the average power $P$ over all time is:
+For non-periodic sequences, the average power :math:`P` over all time is:
 :math:`P = \lim_{N \to \infty} \frac{1}{2N + 1} \sum_{n=-N}^{N} |x[n]|^2`
 
-For periodic sequences with period $N_0$, the average power :math:`P` is:
+For periodic sequences with period :math:`N_0`, the average power :math:`P` is:
 :math:`P = \frac{1}{N_0} \sum_{n=0}^{N_0-1} |x[n]|^2`
 
 Where:
 - :math:`x[n]` is the signal.
 - :math:`N_0` is the period of the sequence.
 
-In plain English, sum of squared absolute value of elements averaged over the length of the sequence.  A scaling factor $P$ may be applied to a vector/array in order to obtain an "amplification" or "attenuation".
+In plain English, sum of squared absolute value of elements averaged over the length of the sequence.  A scaling factor :math:`P` may be applied to a vector/array in order to obtain an "amplification" or "attenuation".
 
 .. code-block:: python
 
@@ -298,7 +298,7 @@ Here are the most common types of noise in a receiver:
 
 1. **Thermal Noise (or Johnson-Nyquist Noise):** This noise originates due to the random motion of electrons in a conductor. Its power is proportional to temperature and bandwidth. It's present in all electronic devices and components. Given by the equation:
    :math:`N = k \times T \times B`
-   where $k$ is Boltzmann's constant, :math:`T` is the absolute temperature, and :math:`B`  is the bandwidth.
+   where :math:`k` is Boltzmann's constant, :math:`T` is the absolute temperature, and :math:`B`  is the bandwidth.
 
 2. **Shot Noise:** This noise results from the discrete nature of electron charge. It's more prominent in semiconductor devices like diodes and transistors. The power of shot noise is proportional to the DC current and the bandwidth.
 
@@ -332,7 +332,7 @@ Often, in receiver design and analysis, noise is modeled as Additive White Gauss
 
 :math:`\chi = \frac{P}{\sigma^2}`
 
-
+Interference may be causing additional noise :math:`\sigma_i^2` from an :math:`i^{th}`source, the Signal-to-Interference-plus-Noise Ratio (SINR) is 
 
 :math:`\frac{P}{\sigma^2 + \sigma_1^2 + \dots + \sigma_i + \dots}`
 
@@ -632,7 +632,7 @@ Problem 3
 
 (graphic from https://www.researchgate.net/figure/Radar-signal-concept_fig1_276184180)
 
-All radar detection is based on delays relative to intervals in which measurements are processed.  In this problem, you'll be shown how to simulate a delay within that interval.  Let's say we have a target out at 50 km, with our chosen $T_{\textnormal{PRI}} = 1000$ us we can detect a target, unambiguously, out to 
+All radar detection is based on delays relative to intervals in which measurements are processed.  In this problem, you'll be shown how to simulate a delay within that interval.  Let's say we have a target out at 50 km, with our chosen :math:`T_{\textnormal{PRI}} = 1000` us we can detect a target, unambiguously, out to 
 
 :math:`R_\textnormal{ua} = cT_{\textnormal{PRI}}/2 = 150 \textnormal{km}`
 
@@ -654,7 +654,7 @@ where :math:`c = 3\times 10^8` m/s is the speed of light in free space.  We can 
     x = np.concatenate([np.zeros(myreceiver.mywf.samples_per_cpi_rf-len(x)) + 0.0j,x])
 
 
-**DO THIS** Process ``x`` in the above snippet using your ``process_signal`` function constructed in Problem 1, then apply your matched filter from the ``SinglePulseWaveform`` instance you created, ``mywf``.  The output should look like the following, note the delay is roughly a third of the way through the overall receive window samples.  Matching this sample to a moment in time, then scaling by $c/2$ provides the distance estimation of the target.  But how do designate something as a detection, or not?  Surely noise can trigger detections if significant enough, let's find out in the next lab...
+**DO THIS** Process ``x`` in the above snippet using your ``process_signal`` function constructed in Problem 1, then apply your matched filter from the ``SinglePulseWaveform`` instance you created, ``mywf``.  The output should look like the following, note the delay is roughly a third of the way through the overall receive window samples.  Matching this sample to a moment in time, then scaling by :math:`c/2` provides the distance estimation of the target.  But how do designate something as a detection, or not?  Surely noise can trigger detections if significant enough, let's find out in the next lab...
 
 .. image:: media/distance_delay_test.png
 
@@ -663,7 +663,7 @@ Problem 4
 
 So far we have only dealt with the noiseless response of the transmitter and receiver, in fact we are using the default magnitude (power) of the signals in the model that Python prescribes.  Let's calibrate this to match a situation in real life.
 
-We can scale the transmit power of the waveform as follows, for a transmit power of $P_t$,
+We can scale the transmit power of the waveform as follows, for a transmit power of :math:`P_t`,
 
 .. code-block:: python
 
@@ -869,11 +869,11 @@ How do we detect a signal out of noise?  While there is a lot of interesting mat
 
 In general for a detection problem, we are interested in three quantities defined in [3]
 
-* Probability of Detection ($P_D$): The probability that a target IS declared when a target IS in fact present.
-* Probability of False Alarm ($P_{FA}$): The probability that a target IS declared when a target is in fact NOT present.
-* Probability of Missed Detection ($P_{MD}$): The probability that a target is NOT declared when a target IS in fact present.
+* Probability of Detection (:math:`P_D`): The probability that a target IS declared when a target IS in fact present.
+* Probability of False Alarm (:math:`P_{FA}`): The probability that a target IS declared when a target is in fact NOT present.
+* Probability of Missed Detection (:math:`P_{MD}`): The probability that a target is NOT declared when a target IS in fact present.
 
-A good detector will maximize $P_D$, based on a user-choosen $P_{FA}$ as to not cause too many missed detections.  For now, we apply a barebones detector known as a Constant False Alarm Rate (CFAR), that works by comparing averages of sections of the return signal with itself.  In particular, we use the Cell- Averaging (CA) CFAR from Section 6.5.4 of [3], which calculated a threshold based on the samples around the "tested cell".  We require two pieces
+A good detector will maximize :math:`P_D`, based on a user-choosen :math:`P_{FA}` as to not cause too many missed detections.  For now, we apply a barebones detector known as a Constant False Alarm Rate (CFAR), that works by comparing averages of sections of the return signal with itself.  In particular, we use the Cell- Averaging (CA) CFAR from Section 6.5.4 of [3], which calculated a threshold based on the samples around the "tested cell".  We require two pieces
 
 * Moving Window Average of samples
 * Constant to scale the threshold
@@ -882,7 +882,7 @@ The moving windows consists of reference cells, :math:`x_i`, and guard cells tha
 
 .. image:: media/cfar_windows.png
 
-We compute the moving window average of $N$ reference cells as 
+We compute the moving window average of :math:`N` reference cells as 
 
 :math:`T_N = \frac{1}{N}\sum_{i = 1}^N |x_i|`
 

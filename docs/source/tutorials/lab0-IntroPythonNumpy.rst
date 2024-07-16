@@ -69,7 +69,7 @@ We use ``as np`` so that we can refer to numpy with the shortened 'np' instead o
 Creating a NumPy array
 ------------------------------------------
 
-Vectors and Matrices are critical to understanding signal processing algorithms, we denote vectors as bold lower case $\textbf{v}$ and matrices as bold upper case $\textbf{M}$.  Tensors (informally, matrices with greater than 2 dimensions), are also represented by multidimensional arrays.  The starting example are all real elements, but extend to complex numbers as well.  Python/Numpy uses :math:`1j` or :math:`1i` to denote imaginary numbers, i.e., :math:`1 + 2j`.  
+Vectors and Matrices are critical to understanding signal processing algorithms, we denote vectors as bold lower case :math:`\textbf{v}` and matrices as bold upper case :math:`\textbf{M}`.  Tensors (informally, matrices with greater than 2 dimensions), are also represented by multidimensional arrays.  The starting example are all real elements, but extend to complex numbers as well.  Python/Numpy uses :math:`1j` or :math:`1i` to denote imaginary numbers, i.e., :math:`1 + 2j`.  
 
 A numpy array is a grid of values, all of the same type, and is indexed by a tuple of nonnegative integers. 
 
