@@ -328,7 +328,7 @@ Often, in receiver design and analysis, noise is modeled as Additive White Gauss
     sigma = np.sqrt(k * T * NF * B)
 
 
-:math:`\sigma^2` is the noise **variance**, and when compared to the signal power, $P$ provides the **Signal-to-Noise Ratio (SNR)**, often represented by :math:`\chi`.  
+:math:`\sigma^2` is the noise **variance**, and when compared to the signal power, :math:`P` provides the **Signal-to-Noise Ratio (SNR)**, often represented by :math:`\chi`.  
 
 :math:`\chi = \frac{P}{\sigma^2}`
 
