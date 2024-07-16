@@ -70,6 +70,7 @@ Sure, let's dive into each of these topics.
    - The term "chirp" comes from the similarity to the sound some birds make, which can vary in frequency.
 
 .. code-block:: python
+
     import numpy as np
     import matplotlib.pyplot as plt
     plt.close('all')
