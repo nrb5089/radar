@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 2 - Transmitter and Receivers &mdash; radar 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Radar Search and Track" href="lab3-RadarDesign.html" />
+    <link rel="prev" title="Lab 1 - Basic Signal Processing in Python" href="lab1-BasicSPPython.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            radar
+              <img src="../_static/apg81.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 2 - Transmitter and Receivers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#in-phase-quadrature-iq">In Phase &amp; Quadrature (IQ)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#baseband-iq-representation">Baseband IQ Representation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#passband-iq-representation">Passband IQ Representation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar-range-equation">Radar Range Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#power">Power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#noise-models">Noise Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project">Project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problem-1">Problem 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#problem-2">Problem 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#problem-3">Problem 3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#problem-4">Problem 4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#problem-5">Problem 5</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lab3-RadarDesign.html">Radar Search and Track</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">radar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lab 2 - Transmitter and Receivers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/lab2-TxRx.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lab-2-transmitter-and-receivers">
+<h1>Lab 2 - Transmitter and Receivers<a class="headerlink" href="#lab-2-transmitter-and-receivers" title="Link to this heading"></a></h1>
+<p>A transmitter converts bits into symbols which modulate electromagnetic propagation.  A receiver takes the modulated electromagnetic radiation syncs with symbols, demodulates, and produces bits.  The bits to bits pipeline is typically called the Physical layer, and will be the focus here.</p>
+<section id="in-phase-quadrature-iq">
+<h2>In Phase &amp; Quadrature (IQ)<a class="headerlink" href="#in-phase-quadrature-iq" title="Link to this heading"></a></h2>
+<p>In-phase Quadrature (IQ) signals are used extensively in signal processing and telecommunications. IQ representation of a signal is essential for the modulation and demodulation processes in communication systems.</p>
+<p>To understand IQ signals, let’s start with an introduction to basic concepts:</p>
+<ul class="simple">
+<li><p><strong>Baseband signal</strong>: A signal with frequency components that are close to zero (around DC). It’s the original frequency band of a signal before it’s modulated for transmission.</p></li>
+<li><p><strong>Passband signal</strong>: A signal that has been modulated to a higher frequency band for transmission. It’s called a passband signal because it’s within the frequency band, or “passband,” of the transmission channel.</p></li>
+<li><p><strong>In-phase component (I component)</strong>: This is the real part of a signal.</p></li>
+<li><p><strong>Quadrature component (Q component)</strong>: This is the imaginary part of a signal.</p></li>
+</ul>
+<section id="baseband-iq-representation">
+<h3>Baseband IQ Representation<a class="headerlink" href="#baseband-iq-representation" title="Link to this heading"></a></h3>
+<p>In the baseband IQ representation, a signal is represented by its I and Q components. The I component is the projection of the signal onto the real (or X) axis, and the Q component is the projection onto the imaginary (or Y) axis. You can think of an IQ signal as a 2D vector in this I-Q plane, with the I component representing the magnitude of the signal on the x-axis and the Q component representing the magnitude of the signal on the y-axis.</p>
+<p>In Python, you can create an IQ signal like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Number of samples</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Time array</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+<span class="c1"># IQ components</span>
+<span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># IQ signal</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">I</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">Q</span>
+
+<span class="c1"># Plotting I, Q and IQ signal</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Plots</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Q</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;In-Phase Component (I)&#39;</span><span class="p">,</span><span class="s1">&#39;Quadrature Component (Q)&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Important Note:</strong>  The baseband IQ represenation is a complex value, and in practice requires two data streams (for digital) or physical ports resources (for analog).</p>
+<p>We first expand to look at other types of signals used in radar and/or comms
+Sure, let’s dive into each of these topics.</p>
+<ol class="arabic simple">
+<li><p><strong>Linear Frequency Modulation (LFM) / Frequency Modulation (FM)</strong>:
+- LFM, commonly known as a chirp in radar systems, is a signal in which the frequency changes linearly with time.
+- In an LFM signal, the instantaneous frequency increases or decreases at a constant rate over the duration of the pulse.
+- It’s extensively used in radar and sonar systems, especially in pulse compression techniques, where the goal is to maintain a long pulse duration for energy purposes while achieving the range resolution of a shorter pulse through signal processing.
+- The term “chirp” comes from the similarity to the sound some birds make, which can vary in frequency.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span> <span class="c1">#Time Seconds</span>
+<span class="n">fmin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span> <span class="c1">#Start Frequency Hz</span>
+<span class="n">fmax</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1">#Stop Frequency Hz</span>
+<span class="n">modulation_time</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#Seconds</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">fmin</span><span class="p">,</span><span class="n">fmax</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+
+<span class="c1"># Analog</span>
+<span class="n">lfm_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">fmax</span><span class="o">-</span><span class="n">fmin</span><span class="p">)</span><span class="o">/</span><span class="n">modulation_time</span> <span class="o">*</span> <span class="n">t</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">lfm_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">lfm_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (seconds)&#39;</span><span class="p">)</span>
+
+
+<span class="c1">#Digital (way oversampled for visual, Nyquist would be &gt;20 Hz)</span>
+<span class="n">Fs</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#Sampling Rate Hz</span>
+<span class="n">num_samples</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">fmin</span><span class="p">,</span><span class="n">fmax</span><span class="p">,</span><span class="n">num_samples</span><span class="p">)</span>
+<span class="n">lfm_signal_dig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">Fs</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">lfm_signal_dig</span><span class="p">),</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">lfm_signal_dig</span><span class="p">),</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">lfm_signal_dig</span><span class="p">),</span><span class="s1">&#39;b.&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">lfm_signal_dig</span><span class="p">),</span><span class="s1">&#39;r.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/lfmdemo.png" src="../_images/lfmdemo.png" />
+<ol class="arabic simple" start="2">
+<li><p><strong>Nonlinear Frequency Modulation (NLFM)</strong>:
+- Unlike LFM, where the frequency changes at a constant rate, in NLFM, the rate of change of frequency is non-constant.
+- The goal of NLFM is often to achieve a constant time-bandwidth product but with a sidelobe level that is lower than what’s achieved with LFM.
+- In some applications, using NLFM can reduce the peak sidelobes in the autocorrelation function, which can reduce the probability of range sidelobe false alarms in radar systems.
+- Designing and implementing NLFM waveforms can be more complex than LFM waveforms.</p></li>
+</ol>
+<p>BPSK (Binary Phase Shift Keying) in the context of sensing or radar, especially in wireless sensor networks or remote sensing, has some unique applications and advantages. Sensing often requires sending out a known signal and examining how the environment modifies it, or it involves encoding the sensed data for transmission back to a base station.</p>
+<ol class="arabic simple" start="3">
+<li><p><strong>Binary Phase Shift Keying (BPSK)</strong>:
+- BPSK is a modulation scheme where data bits modulate the phase of a reference signal (carrier wave).
+- Specifically, there are two possible phase states: 0 degrees for binary “0” and 180 degrees for binary “1” (or vice versa). The magnitude or frequency of the carrier remains unchanged.
+- BPSK is a simple and robust modulation scheme, offering good resilience against noise and interference. However, it doesn’t use bandwidth as efficiently as higher order modulation schemes. This means it’s slower in terms of data rate for the same bandwidth in communications.
+- Radar systems send out pulses and listen for echoes to detect and locate objects. BPSK can modulate these pulses with a binary code, enhancing detection capabilities by correlating the received signal with the known transmitted sequence.  Longer sequences lead to higher gain, see [1] for more detail.
+- BPSK-modulated radar pulses can achieve better range resolution using pulse compression techniques.
+- It’s commonly used in deep space communication, digital modems, and other applications where data integrity is more crucial than bandwidth efficiency.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">1.3</span><span class="p">,</span><span class="mi">1300</span><span class="p">)</span>
+<span class="n">Fs</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1">#Sample Rate Hz</span>
+<span class="n">chip_rate</span> <span class="o">=</span> <span class="mf">.1</span> <span class="c1">#Seconds</span>
+<span class="n">samples_per_chip</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Fs</span><span class="o">*</span><span class="n">chip_rate</span><span class="p">)</span>
+
+<span class="n">sequence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span> <span class="c1">#13 Bit Barker Code</span>
+
+<span class="c1"># Analog/Digital</span>
+<span class="n">bpsk_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span><span class="n">samples_per_chip</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">bpsk_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">bpsk_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (seconds)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/bpskdemo.png" src="../_images/bpskdemo.png" />
+</section>
+<section id="passband-iq-representation">
+<h3>Passband IQ Representation<a class="headerlink" href="#passband-iq-representation" title="Link to this heading"></a></h3>
+<p>In the previous lab, you worked with a signal that was all-real, hence the baseband representation is also real.  <strong>The main takeaway from this subsection is that ANY signal may be represented as real OR complex</strong>.</p>
+<p>In passband representation, the baseband IQ signal is modulated to a higher frequency for transmission. Why does it need to be at a certain frequency?
+Let’s approach this using an analogy:</p>
+<p>Imagine you have a variety of different-sized musical instruments: a large drum, a middle-sized guitar, and a small flute. Each of these instruments is designed to resonate or produce sound at particular frequencies. The drum produces low-pitched sounds (low frequencies), the guitar produces mid-pitched sounds (middle frequencies), and the flute produces high-pitched sounds (high frequencies). If you try to play a high-pitched song on the drum, it wouldn’t sound right. Similarly, trying to get deep bass tones out of a flute would be futile. The physical design and size of each instrument make it naturally suited for specific tones or frequencies. Antennas are somewhat similar to musical instruments in this context. An antenna’s size and shape determine which frequencies it can efficiently “play” or resonate with. When radio waves of a specific frequency hit an antenna, if the antenna is of the right size and design for that frequency, it resonates efficiently, turning those radio waves into electrical signals (or vice versa: turning electrical signals into radio waves). However, if you send radio waves of an unsuitable frequency to an antenna (like trying to get bass out of a flute), the antenna won’t resonate well. It might still pick up the signal, but not efficiently, leading to weak reception or transmission.  So, just as you’d pick a specific musical instrument for a particular pitch or frequency range, engineers choose or design antennas for specific frequency ranges based on their applications. It ensures efficient transmission and reception of signals in communication systems.</p>
+<p>Reaching a higher frequency is typically achieved by mixing the baseband IQ signal with a <strong>carrier</strong> signal. The I component is mixed with a cosine wave, and the Q component is mixed with a sine wave.</p>
+<p>The passband signal <span class="math notranslate nohighlight">\(s(t)\)</span> can be expressed as:</p>
+<p><span class="math notranslate nohighlight">\(s(t) = I(t)\cos(2\pi f_c t) - Q(t)\sin(2\pi f_c t)\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(f_c\)</span> is the carrier frequency.</p>
+<p>In Python, you can modulate a baseband IQ signal to a passband signal as shown below, note that I and Q are just placeholders and need to be defined for the code to work:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Carrier frequency</span>
+<span class="n">fc</span> <span class="o">=</span> <span class="mf">10e6</span>
+
+<span class="c1"># Passband signal</span>
+<span class="n">s_passband</span> <span class="o">=</span> <span class="n">I</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Plotting passband signal</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s_passband</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Passband Signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In this tutorial, we saw how to represent a signal in baseband IQ form and passband form. Note that the passband representation is used for the actual transmission of the signal, and at the receiver side, the signal would be demodulated back to baseband for processing.  Balancing this link budget is done using the Friis transmission equation, but when I called it that on my first day of work I got a perplexed look from a senior engineer who corrected me that it was the…</p>
+</section>
+</section>
+<section id="radar-range-equation">
+<h2>Radar Range Equation<a class="headerlink" href="#radar-range-equation" title="Link to this heading"></a></h2>
+<p><strong>Radar</strong> stands for <strong>RAdio Detection And Ranging</strong>. It’s essentially a system that uses electromagnetic waves to detect objects, measure their distance, speed, and other characteristics.</p>
+<p>Imagine you’re in a pitch-black room, and you want to detect if someone’s there. One way is to shout and listen for an echo. If someone’s in the room, the sound bounces off them and returns to you as an echo. Based on the time it takes for the echo to return, you can estimate how far away they are.</p>
+<p>Radar does something similar but uses radio waves instead of sound waves.</p>
+<p>The radar range equation relates the range (distance) of a target to several factors:</p>
+<ol class="arabic simple">
+<li><p><strong>Transmitted Power</strong> (<span class="math notranslate nohighlight">\(P_t\)</span>): The amount of energy the radar sends out.</p></li>
+<li><p><strong>Transmitter Antenna Gain</strong> (<span class="math notranslate nohighlight">\(G_t\)</span>): A measure of how “focused” the transmitted/received energy is in a particular direction.</p></li>
+<li><p><strong>Receiver Antenna Gain</strong> (<span class="math notranslate nohighlight">\(G_r\)</span>): A measure of how “focused” the transmitted/received energy is in a particular direction.</p></li>
+<li><p><strong>Radar Cross Section</strong> (<span class="math notranslate nohighlight">\(\sigma\)</span>): A measure of how much radio energy an object reflects back towards the radar. Large metal objects have a high <span class="math notranslate nohighlight">\(\sigma\)</span>; stealth aircraft are designed to have a low <span class="math notranslate nohighlight">\(\sigma\)</span>.</p></li>
+<li><p><strong>Frequency</strong> (<span class="math notranslate nohighlight">\(f\)</span>) or Wavelength (<span class="math notranslate nohighlight">\(\lambda\)</span>): The frequency/wavelength of the radio wave used.</p></li>
+<li><p><strong>Range</strong> (<span class="math notranslate nohighlight">\(R\)</span>): The distance between the radar and the target.</p></li>
+</ol>
+<p>The basic radar equation looks like this:</p>
+<p><span class="math notranslate nohighlight">\(P_r = \frac{P_t  G_t G_r  \lambda^2  \sigma}{(4\pi)^3  R^4 }\)</span></p>
+<p>Where:
+- <span class="math notranslate nohighlight">\(P_r\)</span> is the received power.
+- <span class="math notranslate nohighlight">\(\lambda\)</span> is the wavelength of the transmitted signal.
+- Note that often the case with radars is <span class="math notranslate nohighlight">\(G_r = G_t = G\)</span></p>
+<p><strong>Layman Explanation</strong></p>
+<p>Think of <span class="math notranslate nohighlight">\(P_t\)</span> as the loudness of your shout, and <span class="math notranslate nohighlight">\(P_r\)</span> as how loud the echo is when it returns.</p>
+<ul class="simple">
+<li><p>If you shout louder (higher <span class="math notranslate nohighlight">\(P_t\)</span>), you’ll hear a louder echo (higher <span class="math notranslate nohighlight">\(P_r\)</span>).</p></li>
+<li><p>If the person (or object) you’re trying to detect is closer (smaller <span class="math notranslate nohighlight">\(R\)</span>), the echo will be louder.</p></li>
+<li><p>If the person is wearing reflective clothing (think of this as a higher <span class="math notranslate nohighlight">\(\sigma\)</span>), they’ll reflect more sound and produce a louder echo.</p></li>
+</ul>
+<p><strong>Antenna Gain (:math:`G`)</strong> is like cupping your hands around your mouth when shouting (and ears when listening). It focuses the sound in a particular direction, making it louder in that direction and quieter in others.</p>
+<p>Finally, the receiver’s sensitivity is akin to your hearing ability. If you have sharp hearing, you can detect even faint echoes.</p>
+<p>The radar range equation is fundamental in radar technology. It provides a relationship between how far away an object is and how easy it is to detect, given various parameters about the radar system and the target. This knowledge is crucial in both radar design.  The follow presentation by MIT Lincoln Labs provides an excellent introduction and overview of each piece:  <a class="reference external" href="https://www.ll.mit.edu/sites/default/files/outreach/doc/2018-07/lecture%202.pdf">https://www.ll.mit.edu/sites/default/files/outreach/doc/2018-07/lecture%202.pdf</a> and [2] also has a good introduction</p>
+</section>
+<section id="power">
+<h2>Power<a class="headerlink" href="#power" title="Link to this heading"></a></h2>
+<p><strong>Continuous Domain (Analog Signals):</strong></p>
+<p>For a continuous-time signal <span class="math notranslate nohighlight">\(x(t)\)</span>, the <strong>power</strong> is defined as the average power over an interval.</p>
+<p>For non-periodic signals, the average power <span class="math notranslate nohighlight">\(P\)</span> over all time is given by:</p>
+<p><span class="math notranslate nohighlight">\(P = \lim_{T \to \infty} \frac{1}{2T} \int_{-T}^{T} |x(t)|^2 \, dt\)</span></p>
+<p>For periodic signals with period <span class="math notranslate nohighlight">\(T_0\)</span>, the average power <span class="math notranslate nohighlight">\(P\)</span> is:</p>
+<p><span class="math notranslate nohighlight">\(P = \frac{1}{T_0} \int_{0}^{T_0} |x(t)|^2 \, dt\)</span></p>
+<p>Where:
+- <span class="math notranslate nohighlight">\(x(t)\)</span> is the signal.
+- <span class="math notranslate nohighlight">\(T_0\)</span> is the period of the signal.</p>
+<p><strong>Discrete Domain (Digital Signals):</strong></p>
+<p>For a discrete-time signal <span class="math notranslate nohighlight">\(x[n]\)</span>, the power is similarly defined.</p>
+<p>For non-periodic sequences, the average power <span class="math notranslate nohighlight">\(P\)</span> over all time is:
+<span class="math notranslate nohighlight">\(P = \lim_{N \to \infty} \frac{1}{2N + 1} \sum_{n=-N}^{N} |x[n]|^2\)</span></p>
+<p>For periodic sequences with period <span class="math notranslate nohighlight">\(N_0\)</span>, the average power <span class="math notranslate nohighlight">\(P\)</span> is:
+<span class="math notranslate nohighlight">\(P = \frac{1}{N_0} \sum_{n=0}^{N_0-1} |x[n]|^2\)</span></p>
+<p>Where:
+- <span class="math notranslate nohighlight">\(x[n]\)</span> is the signal.
+- <span class="math notranslate nohighlight">\(N_0\)</span> is the period of the sequence.</p>
+<p>In plain English, sum of squared absolute value of elements averaged over the length of the sequence.  A scaling factor <span class="math notranslate nohighlight">\(P\)</span> may be applied to a vector/array in order to obtain an “amplification” or “attenuation”.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Time variable</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1">#Signal Power</span>
+<span class="n">P</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1"># A 5 Hz waveform</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="n">power_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Notes</strong>:</p>
+<ol class="arabic simple">
+<li><p>The power of a signal represents the energy per unit of time.</p></li>
+<li><p>If a continuous or discrete signal’s energy is finite, and its duration is infinite, then we speak of the signal’s power rather than its energy.</p></li>
+<li><p>If the power is finite for a signal that extends from <span class="math notranslate nohighlight">\(-\infty\)</span> to <span class="math notranslate nohighlight">\(\infty\)</span>, then the signal is referred to as a power signal. If the energy is finite but the power is infinite, the signal is called an energy signal.</p></li>
+</ol>
+</section>
+<section id="noise-models">
+<h2>Noise Models<a class="headerlink" href="#noise-models" title="Link to this heading"></a></h2>
+<p>The performance of a communication receiver is significantly impacted by noise. Noise, in a receiver, generally refers to random and unpredictable electrical signals that can degrade the quality of the received signals. This noise can originate from various sources both external and intrinsic to the receiver components.</p>
+<p>Here are the most common types of noise in a receiver:</p>
+<ol class="arabic simple">
+<li><p><strong>Thermal Noise (or Johnson-Nyquist Noise):</strong> This noise originates due to the random motion of electrons in a conductor. Its power is proportional to temperature and bandwidth. It’s present in all electronic devices and components. Given by the equation:
+<span class="math notranslate nohighlight">\(N = k \times T \times B\)</span>
+where <span class="math notranslate nohighlight">\(k\)</span> is Boltzmann’s constant, <span class="math notranslate nohighlight">\(T\)</span> is the absolute temperature, and <span class="math notranslate nohighlight">\(B\)</span>  is the bandwidth.</p></li>
+<li><p><strong>Shot Noise:</strong> This noise results from the discrete nature of electron charge. It’s more prominent in semiconductor devices like diodes and transistors. The power of shot noise is proportional to the DC current and the bandwidth.</p></li>
+<li><p><strong>Quantization Noise:</strong> Relevant in digital receivers, this type of noise arises when analog signals are converted to digital. It depends on the resolution of the Analog-to-Digital Converter (ADC).</p></li>
+<li><p><strong>Phase Noise:</strong> Important in frequency synthesizers and oscillators, phase noise relates to the purity of the generated signals in terms of phase. It can affect the performance of systems, especially in higher order modulation schemes.</p></li>
+<li><p><strong>Intermodulation Noise:</strong> This type of noise arises when two or more different frequencies mix and create undesired additional frequencies, which can fall into the desired band and become a form of interference.</p></li>
+<li><p><strong>Flicker (:math:`1/f`) Noise:</strong> This is low-frequency noise and is more prominent in some semiconductor devices at low frequencies.</p></li>
+<li><p><strong>Environmental Noise:</strong> This includes interference from nearby electronic devices, cosmic sources, and even solar radiation.</p></li>
+</ol>
+<p>When designing or analyzing a receiver, engineers often consider the <strong>Noise Figure (NF)</strong> or <strong>Noise Factor (F)</strong>, which is a measure of how much the Signal-to-Noise Ratio (SNR) deteriorates as a signal passes through a component or system. A perfect component (with no noise) would have an NF of 0 dB, while real-world components always have an NF greater than 0 dB, some typical values range between 3-5 dB.</p>
+<p>Often, in receiver design and analysis, noise is modeled as Additive White Gaussian Noise (AWGN), which assumes that noise is added to the signal and has a Gaussian distribution. This is a simplification, but it provides a reasonable model for many communication system analyses.  The python code below shows how to develop such a model based on thermal noise that is 100% in band.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">k</span> <span class="o">=</span> <span class="mf">1.38e-23</span> <span class="c1">#Boltzmann&#39;s Constant</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">290</span> <span class="c1">#Kelvin</span>
+<span class="n">NF</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span> <span class="c1">#Noise Factor in Linear units</span>
+<span class="n">B</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="c1">#Bandwidth</span>
+
+<span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">T</span> <span class="o">*</span> <span class="n">NF</span> <span class="o">*</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><span class="math notranslate nohighlight">\(\sigma^2\)</span> is the noise <strong>variance</strong>, and when compared to the signal power, <span class="math notranslate nohighlight">\(P\)</span> provides the <strong>Signal-to-Noise Ratio (SNR)</strong>, often represented by <span class="math notranslate nohighlight">\(\chi\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(\chi = \frac{P}{\sigma^2}\)</span></p>
+<p>Interference may be causing additional noise <span class="math notranslate nohighlight">\(\sigma_i^2\)</span> from an ith source, the Signal-to-Interference-plus-Noise Ratio (SINR) is</p>
+<p><span class="math notranslate nohighlight">\(\frac{P}{\sigma^2 + \sigma_1^2 + \dots + \sigma_i + \dots}\)</span></p>
+<p>Note that interference models are generally much more complex.</p>
+<p>Building from our example from lab1, if all noise is in-band, i.e. AWGN:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Time variable</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1">#Signal Power</span>
+<span class="n">P</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># A 5 Hz waveform</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1">#Noise variances</span>
+<span class="n">sigmas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ii</span><span class="p">,</span><span class="n">sigma</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sigmas</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">n</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;SNR: </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">P</span><span class="o">/</span><span class="n">sigma</span><span class="p">))</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;lower right&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/snrdemo.png" src="../_images/snrdemo.png" />
+<p>References and Further Reading
+[1] Scheer, Jim, and William A. Holm. “Principles of modern radar.” (2010): Chapter 20 Section 12.
+[2] Scheer, Jim, and William A. Holm. “Principles of modern radar.” (2010): Chapter 2.
+[3]  Richards, Mark A. Fundamentals of radar signal processing McGraw-Hill Education, 2014: Chapter 6</p>
+</section>
+<section id="project">
+<h2>Project<a class="headerlink" href="#project" title="Link to this heading"></a></h2>
+<p>The problems for this lab pertain to creating your own radar simulation, much more information can be found on the broad topic of radar in the MIT Lincoln Labs Introduction to Radar Course, in particular, the first lecture <a class="reference external" href="https://www.ll.mit.edu/sites/default/files/outreach/doc/2018-07/lecture%201.pdf">https://www.ll.mit.edu/sites/default/files/outreach/doc/2018-07/lecture%201.pdf</a>.</p>
+<p>In particular, you will build this…</p>
+<img alt="../_images/lab2_diagram.png" src="../_images/lab2_diagram.png" />
+<section id="problem-1">
+<h3>Problem 1<a class="headerlink" href="#problem-1" title="Link to this heading"></a></h3>
+<p>Cool, so let’s build a radar receiver, but first, a little bit about Python objects/classes, we instantiate a class as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>class Person:</dt><dd><dl class="simple">
+<dt>def __init__(self, age, name, eye_color):</dt><dd><p>self.age = age
+self.name = name
+self.eye_color = eye_color</p>
+</dd>
+<dt>def calculate_age_plus_five_years(self):</dt><dd><p>return self.age + 5</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>The object class <code class="docutils literal notranslate"><span class="pre">Person</span></code> has accepts arguments <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">eye_color</span></code>, and <code class="docutils literal notranslate"><span class="pre">age</span></code> and assigns them to attributes that don’t necessarily need to be name the same thing.  We instantiate an instance of <code class="docutils literal notranslate"><span class="pre">Person</span></code> as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bob</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Brown&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can do some hardcore math with the method <code class="docutils literal notranslate"><span class="pre">calculate_age_plus_five_years</span></code> and calclate Bob’s age plus 5 years, which is 50.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bob</span><span class="o">.</span><span class="n">calculate_age_plus_five_years</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>It’s often useful to define model components as objects, for example, a Butterworth filter might use the following object wrapper</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">butter</span>
+
+<span class="k">class</span> <span class="nc">ButterFilter</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Wn</span><span class="p">,</span><span class="n">fs</span><span class="p">,</span><span class="n">btype</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">N</span>      <span class="c1">#Filter order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Wn</span> <span class="o">=</span> <span class="n">Wn</span>    <span class="c1">#Window limits, if low pass or high pass, it&#39;s the cutoff frequency, if bandpass, it&#39;s a tuple of start and stop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Fs</span> <span class="o">=</span> <span class="n">fs</span>    <span class="c1">#Sampling Frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btype</span> <span class="o">=</span> <span class="n">btype</span> <span class="c1">#Filter type &quot;bandpass&quot;, &quot;low&quot;, &quot;high&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="n">N</span> <span class="o">=</span> <span class="n">N</span><span class="p">,</span> <span class="n">Wn</span> <span class="o">=</span> <span class="n">Wn</span><span class="p">,</span> <span class="n">fs</span> <span class="o">=</span> <span class="n">fs</span><span class="p">,</span> <span class="n">btype</span> <span class="o">=</span> <span class="n">btype</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">filter_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">lfilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We instantiate <code class="docutils literal notranslate"><span class="pre">ButterFilter</span></code> as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mybutterfilter</span> <span class="o">=</span> <span class="n">ButterFilter</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and filter signals by invoking the method <code class="docutils literal notranslate"><span class="pre">mybutterfilter.filter_signal(x)</span></code>.</p>
+<p><strong>DO THIS</strong> Your first task is to create a Python <code class="docutils literal notranslate"><span class="pre">class</span></code> called <code class="docutils literal notranslate"><span class="pre">Receiver</span></code> with attributes corresponding to:</p>
+<ul class="simple">
+<li><p>RF Sampling Frequency in Hz - 500 MHz</p></li>
+<li><p>Intermediate Frequency (IF) Sampling Frequency in Hz - 100 MHz</p></li>
+<li><p>Baseband (BB) Sampling Frequency in Hz - 25 MHz</p></li>
+<li><p>RF Center Frequency in Hz - 115 MHz</p></li>
+<li><p>RF Bandwidth in Hz - 10 MHz</p></li>
+</ul>
+<p>Your class should include a function called <code class="docutils literal notranslate"><span class="pre">__init__</span></code> that receives args</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rf_sampling_frequency_hz</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">if_sampling_frequency_hz</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bb_sampling_frequency_hz</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rf_center_frequency_hz</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rf_bandwidth_hz</span></code></p></li>
+</ul>
+<p>and assigns them to object attributes, for example, <code class="docutils literal notranslate"><span class="pre">self.fc_rf</span> <span class="pre">=</span> <span class="pre">rf_center_frequency_hz</span></code>.  Your <code class="docutils literal notranslate"><span class="pre">__init__</span></code> function should also initialize three filters</p>
+<ul class="simple">
+<li><p>Butterworth front end wideband bandpass reject filter order 2 with limits 110 MHz and 120 MHz (covers the RF bandwidth)</p></li>
+<li><p>Chebyshev (use <code class="docutils literal notranslate"><span class="pre">scipy.signal.cheby1</span></code>) low pass order 5 with ripple factor 2 and cutoff 20 MHz</p></li>
+<li><p>FIR (use <code class="docutils literal notranslate"><span class="pre">scipy.signal.firwin</span></code>) with 31 taps and cutoff frequency of 1 MHz</p></li>
+</ul>
+<p>Your object, <code class="docutils literal notranslate"><span class="pre">Receiver</span></code>, should finally include a method for processing an incoming signal using components you’ve defined, for example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wf_object</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+    <span class="c1">### FOR PLOT PROCESSING ONLY ##########################</span>
+    <span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_rf</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_rf</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">affts</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;MHz&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="c1">#######################################################</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_bpfrontend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1">#Apply the Butterworth filter you constructed</span>
+    <span class="c1">#Downsample by a factor of 5</span>
+
+    <span class="c1">### FOR PLOT PROCESSING ONLY ##########################</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_if</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_if</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">affts</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;MHz&#39;</span><span class="p">)</span>
+    <span class="c1">#######################################################</span>
+
+    <span class="c1"># Apply the Cheby1 IF filter you constructed</span>
+
+    <span class="c1">### FOR PLOT PROCESSING ONLY ##########################</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="c1">#######################################################</span>
+
+    <span class="c1">#Downconvert to BB using a complex exponential.</span>
+
+    <span class="c1">### FOR PLOT PROCESSING ONLY ##########################</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">affts</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="c1">#######################################################</span>
+
+    <span class="c1">#Apply the FIR BB filter</span>
+    <span class="c1">#Downsample by a factor of 4</span>
+
+    <span class="c1">### FOR PLOT PROCESSING ONLY ##########################</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_bb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_bb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">affts</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;MHz&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="c1">#######################################################</span>
+    <span class="c1">#...</span>
+<span class="k">return</span> <span class="n">x</span>
+
+<span class="k">def</span> <span class="nf">ffts</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">affts</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ffts</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The downsample factor causes the original signal to alias the original RF center frequency to 15 MHz,  we use a 35 MHz cutoff in the Cheby1 filter to restrict the signal at IF.  The rest of the <code class="docutils literal notranslate"><span class="pre">process_signal</span></code> method should apply the Cheby1 IF filter, then multiply by a complex sinusoid at  the IF, which can be calculated by</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">fc_if</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">rf_sampling_frequency_hz</span><span class="p">,</span><span class="n">if_sampling_frequency_hz</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>MHz to downconvert to baseband.  Once at baseband, apply the FIR filter you defined and downsample by a factor of 4 to reach your BB sampling frequency.  This process models the RF front end of a receiver for conversion from analog to baseband.</p>
+<p>Write a test script to process the following LFM signal sampled at the RF receiver frequency, first instantiate an instance of your <code class="docutils literal notranslate"><span class="pre">`Receiver`</span></code> object, call it <code class="docutils literal notranslate"><span class="pre">`myreceiver`</span></code> or something that makes sense to you.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pulse_width</span> <span class="o">=</span> <span class="mf">10e-6</span>
+<span class="n">Fs_rf</span> <span class="o">=</span> <span class="mf">500e6</span>
+<span class="n">fc_rf</span> <span class="o">=</span> <span class="mf">115e6</span>
+<span class="n">lfm_min</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e6</span>
+<span class="n">lfm_max</span> <span class="o">=</span> <span class="mf">1e6</span>
+<span class="n">signal_length_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pulse_width</span> <span class="o">*</span> <span class="n">Fs_rf</span><span class="p">)</span> <span class="c1">#5000</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">Fs_rf</span> <span class="o">*</span> <span class="p">(</span><span class="n">fc_rf</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">signal_length_samples</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">lfm_min</span><span class="p">,</span><span class="n">lfm_max</span><span class="p">,</span><span class="n">signal_length_samples</span><span class="p">))))</span>
+</pre></div>
+</div>
+<p>The end result should look like the following:</p>
+<img alt="../_images/rfchaintest.png" src="../_images/rfchaintest.png" />
+</section>
+<section id="problem-2">
+<h3>Problem 2<a class="headerlink" href="#problem-2" title="Link to this heading"></a></h3>
+<p>In the first problem, you modeled the RF front end of a receiver.  Generally, the first two filter chains represent analog processes, which we try to capture functionality of in a computer simulation with discrete numbers.  A lot of times, the front end may be bypassed altogether in a model if it is not impacting to the overall setup trying to be modeled.  We now shift our focus to the signal processor, the meat of the backend that processes the raw sampled digital signal.</p>
+<p><strong>DO THIS</strong> Create a new Python class called <code class="docutils literal notranslate"><span class="pre">SinglePulseWaveform</span></code> with that has the following attributes:</p>
+<ul class="simple">
+<li><p>Pulse Width in seconds - 10 us</p></li>
+<li><p>Pulse Repetition Interval in seconds - 1000 us</p></li>
+<li><p>Linear Frequency Modulation Excursion in Hz- 2 MHz</p></li>
+<li><p>RF Sampling Frequency in Hz - 500 MHz</p></li>
+<li><p>Intermediate Frequency (IF) Sampling Frequency in Hz - 100 MHz</p></li>
+<li><p>Baseband (BB) Sampling Frequency in Hz - 25 MHz</p></li>
+<li><p>RF Center Frequency in Hz - 115 MHz</p></li>
+<li><p>RF Bandwidth in Hz - 10 MHz</p></li>
+</ul>
+<p>and accepts the following arguments:</p>
+<ul class="simple">
+<li><p>pulse_width_s</p></li>
+<li><p>pulse_repetition_interval_s</p></li>
+<li><p>lfm_excursion_hz</p></li>
+<li><p>rf_sampling_frequency_hz</p></li>
+<li><p>if_sampling_frequency_hz</p></li>
+<li><p>bb_sampling_frequency_hz</p></li>
+<li><p>rf_center_frequency_hz</p></li>
+</ul>
+<p>Assign each argument to a class attribute, similar to Problem 1.  It is of critical importance that we understand the number of samples in our timing intervals, be that a pulse width, pulse repetition interval, or in more complex cases, the coherent processing interval.  It is helpful to define a series of class attributes that precalculate these, for example, within your <code class="docutils literal notranslate"><span class="pre">`SinglePulseWaveform`</span></code> class,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SinglePulseWaveform</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">pulse_width_s</span><span class="p">,</span>
+                 <span class="c1">#...</span>
+                 <span class="p">):</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">pw</span> <span class="o">=</span> <span class="n">pulse_width_s</span>
+<span class="c1">#...</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pw_rf</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pw</span> <span class="o">*</span> <span class="n">rf_sampling_frequency_hz</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pw_if</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pw</span> <span class="o">*</span> <span class="n">if_sampling_frequency_hz</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pw_bb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pw</span> <span class="o">*</span> <span class="n">bb_sampling_frequency_hz</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above snippet has precalculations for the number of samples in a pulse at the various sampling rates we use in our receiver.  Add these for the pulse width and pulse repetition interval.  Add a third set of attributes for the number of samples in the receiving window, more on this later, but for now use the snippet below.  Additionally, for single pulse modes, we are only interested in a critical processing interval (CPI) of one pulse.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">samples_per_range_window_rf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pri_rf</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pw_rf</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">samples_per_range_window_if</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pri_if</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pw_if</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">samples_per_range_window_bb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pri_bb</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pw_bb</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">samples_per_cpi_rf</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pri_rf</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">samples_per_cpi_if</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pri_if</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">samples_per_cpi_bb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pri_bb</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>DO THIS</strong> Create an array representing the LFM pulse signal described by the class attributes in <code class="docutils literal notranslate"><span class="pre">`SinglePulseWaveform`</span></code>, note the sampling frequency is at RF.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">wf_single_pw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_rf</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_rf</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pw_rf</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmin_bb</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">fmax_bb</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pw_rf</span><span class="p">))))</span>
+</pre></div>
+</div>
+<p>Concatenate <code class="docutils literal notranslate"><span class="pre">self.wf_single_pw</span></code> with zeros (use <code class="docutils literal notranslate"><span class="pre">np.concantenate</span></code> and <code class="docutils literal notranslate"><span class="pre">np.zeros</span></code>) to form an array that represents one PRI.  The number of zeros should be specified by <code class="docutils literal notranslate"><span class="pre">self.samples_per_range_window_rf</span></code>.  When specifying the array of zeros, it’s often good practice to add <code class="docutils literal notranslate"><span class="pre">0j</span></code> to complexify it.  Sometimes Python will only preserve the real portion otherwise.  Name the final attribute of concatenated <code class="docutils literal notranslate"><span class="pre">self.wf_single_pw</span></code> and zeros as <code class="docutils literal notranslate"><span class="pre">self.wf</span></code></p>
+<p>Finally, add attributes for the matched filter taps at BB, I also like to add an attribute that’s a custom BB FIR (similar to what you constructed in Problem 1) custom to the waveform I’m describing so that I don’t mess things up later.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">mf_wf_bb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_bb</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">lfm_excursion_hz</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">lfm_excursion_hz</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_per_pw_bb</span><span class="p">))))</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">bb_filter</span> <span class="o">=</span> <span class="n">FIR</span><span class="p">(</span><span class="n">numtaps</span> <span class="o">=</span> <span class="mi">31</span><span class="p">,</span> <span class="n">cutoff</span> <span class="o">=</span> <span class="n">lfm_excursion_hz</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">fs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Fs_bb</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create an instance of <code class="docutils literal notranslate"><span class="pre">SinglePulseWaveform</span></code> called <code class="docutils literal notranslate"><span class="pre">mywf</span></code> with the argument values listed above as an attribute to your <code class="docutils literal notranslate"><span class="pre">Receiver</span></code> object in Problem 1.  Use the function <code class="docutils literal notranslate"><span class="pre">process_signal</span></code> on <code class="docutils literal notranslate"><span class="pre">mywf.wf_single_pw</span></code> that you constructed in Problem 1 for the RF frontend.  Apply your the matched filter by appending the following at the end of the  <code class="docutils literal notranslate"><span class="pre">process_signal</span></code> function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mywf</span><span class="o">.</span><span class="n">mf_wf_bb</span><span class="p">),</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;same&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The output should look like</p>
+<img alt="../_images/mftest.png" src="../_images/mftest.png" />
+</section>
+<section id="problem-3">
+<h3>Problem 3<a class="headerlink" href="#problem-3" title="Link to this heading"></a></h3>
+<img alt="../_images/radar_return.png" src="../_images/radar_return.png" />
+<p>(graphic from <a class="reference external" href="https://www.researchgate.net/figure/Radar-signal-concept_fig1_276184180">https://www.researchgate.net/figure/Radar-signal-concept_fig1_276184180</a>)</p>
+<p>All radar detection is based on delays relative to intervals in which measurements are processed.  In this problem, you’ll be shown how to simulate a delay within that interval.  Let’s say we have a target out at 50 km, with our chosen <span class="math notranslate nohighlight">\(T_{\textnormal{PRI}} = 1000\)</span> us we can detect a target, unambiguously, out to</p>
+<p><span class="math notranslate nohighlight">\(R_\textnormal{ua} = cT_{\textnormal{PRI}}/2 = 150 \textnormal{km}\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(c = 3\times 10^8\)</span> m/s is the speed of light in free space.  We can simulate the return signal within our receive window as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Calculate index of signal presence</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">50000</span> <span class="c1">#distance of target in meters</span>
+<span class="n">distance_samples_skin_return_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">myreceiver</span><span class="o">.</span><span class="n">mywf</span><span class="o">.</span><span class="n">samples_per_cpi_rf</span><span class="p">)</span> <span class="o">/</span> <span class="n">myreceiver</span><span class="o">.</span><span class="n">Fs_rf</span> <span class="o">*</span> <span class="mf">3e8</span><span class="o">/</span><span class="mi">2</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Maximum Distance: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">distance_samples_skin_return_m</span><span class="p">)</span><span class="si">}</span><span class="s1">, Target Distance: </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">min_range_sample_to_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">distance_samples_skin_return_m</span><span class="o">-</span><span class="n">d</span><span class="p">))</span>
+
+<span class="c1">#Truncate return signals outside cpi, and concatenate zeros</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">dcp</span><span class="p">(</span><span class="n">myreceiver</span><span class="o">.</span><span class="n">mywf</span><span class="o">.</span><span class="n">wf</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:(</span><span class="n">myreceiver</span><span class="o">.</span><span class="n">mywf</span><span class="o">.</span><span class="n">samples_per_cpi_rf</span><span class="o">-</span><span class="n">min_range_sample_to_d</span><span class="p">)]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">myreceiver</span><span class="o">.</span><span class="n">mywf</span><span class="o">.</span><span class="n">samples_per_cpi_rf</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="mf">0.0</span><span class="n">j</span><span class="p">,</span><span class="n">x</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>DO THIS</strong> Process <code class="docutils literal notranslate"><span class="pre">x</span></code> in the above snippet using your <code class="docutils literal notranslate"><span class="pre">process_signal</span></code> function constructed in Problem 1, then apply your matched filter from the <code class="docutils literal notranslate"><span class="pre">SinglePulseWaveform</span></code> instance you created, <code class="docutils literal notranslate"><span class="pre">mywf</span></code>.  The output should look like the following, note the delay is roughly a third of the way through the overall receive window samples.  Matching this sample to a moment in time, then scaling by <span class="math notranslate nohighlight">\(c/2\)</span> provides the distance estimation of the target.  But how do designate something as a detection, or not?  Surely noise can trigger detections if significant enough, let’s find out in the next lab…</p>
+<img alt="../_images/distance_delay_test.png" src="../_images/distance_delay_test.png" />
+</section>
+<section id="problem-4">
+<h3>Problem 4<a class="headerlink" href="#problem-4" title="Link to this heading"></a></h3>
+<p>So far we have only dealt with the noiseless response of the transmitter and receiver, in fact we are using the default magnitude (power) of the signals in the model that Python prescribes.  Let’s calibrate this to match a situation in real life.</p>
+<p>We can scale the transmit power of the waveform as follows, for a transmit power of <span class="math notranslate nohighlight">\(P_t\)</span>,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">transmit_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">P_t</span><span class="p">)</span> <span class="o">*</span> <span class="n">wf_rf</span>
+</pre></div>
+</div>
+<p><strong>DO THIS</strong> Create the following classes:</p>
+<p>Let’s add a wrapper class, <code class="docutils literal notranslate"><span class="pre">`Transmitter`</span></code> as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Transmitter</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+
+                <span class="c1">#Spatial Parameters</span>
+                <span class="n">x_loc_m</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">y_loc_m</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">z_loc_m</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span>
+                <span class="n">x_vel_mps</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">y_vel_mps</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">z_vel_mps</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">x_acc_mps2</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">y_acc_mps2</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">z_acc_mps2</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+
+                <span class="c1">#Transmitter and Sampling Parameters</span>
+                <span class="n">rf_sampling_frequency_hz</span> <span class="o">=</span> <span class="mf">500e6</span><span class="p">,</span>
+                <span class="n">if_sampling_frequency_hz</span> <span class="o">=</span> <span class="mf">100e6</span><span class="p">,</span>
+                <span class="n">bb_sampling_frequency_hz</span> <span class="o">=</span> <span class="mf">25e6</span><span class="p">,</span>
+                <span class="n">rf_center_frequency_hz</span> <span class="o">=</span> <span class="mf">115e6</span><span class="p">,</span>
+                <span class="n">rf_bandwidth_hz</span> <span class="o">=</span> <span class="mf">10e6</span><span class="p">,</span>
+                <span class="n">transmit_power_w</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_loc_m</span><span class="p">,</span><span class="n">y_loc_m</span><span class="p">,</span><span class="n">z_loc_m</span><span class="p">,</span><span class="n">x_vel_mps</span><span class="p">,</span><span class="n">y_vel_mps</span><span class="p">,</span><span class="n">z_vel_mps</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Fs_rf</span> <span class="o">=</span> <span class="n">rf_sampling_frequency_hz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Fs_if</span> <span class="o">=</span> <span class="n">if_sampling_frequency_hz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Fs_bb</span> <span class="o">=</span> <span class="n">bb_sampling_frequency_hz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc_rf</span> <span class="o">=</span> <span class="n">rf_center_frequency_hz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc_if</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">rf_center_frequency_hz</span><span class="p">,</span><span class="n">if_sampling_frequency_hz</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf_bw</span> <span class="o">=</span> <span class="n">rf_bandwidth_hz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ptx</span> <span class="o">=</span> <span class="n">transmit_power_w</span>
+
+    <span class="k">def</span> <span class="nf">transmit_waveform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wf_object</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ptx</span><span class="p">)</span> <span class="o">*</span> <span class="n">wf_object</span><span class="o">.</span><span class="n">wf</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Go ahead and and add the spatial parameters, i.e., <code class="docutils literal notranslate"><span class="pre">x_loc_m</span></code>, <code class="docutils literal notranslate"><span class="pre">y_loc_m</span></code>, etc. to your <code class="docutils literal notranslate"><span class="pre">Receiver</span></code> class as well.  Pull out the instantiation of the <code class="docutils literal notranslate"><span class="pre">SinglePulseWaveform</span></code> object, don’t delete it!  Modify your <code class="docutils literal notranslate"><span class="pre">Receiver</span></code> class to accept an argument</p>
+<p><code class="docutils literal notranslate"><span class="pre">receiver_noise_figure_db</span></code></p>
+<p>with a default value of 5 dB.  Make it an attribute in linear units, and compute the noise standard deviation, <span class="math notranslate nohighlight">\(\sigma_n\)</span></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">NF_lin</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">receiver_noise_figure_db</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sigma_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.38e-23</span> <span class="o">*</span> <span class="mi">290</span> <span class="o">*</span> <span class="n">rf_bandwidth_hz</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">NF_lin</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now add a method</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_receiver_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_n</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Finally, insert the <code class="docutils literal notranslate"><span class="pre">add_receiver_noise</span></code> method into your <code class="docutils literal notranslate"><span class="pre">process_signal</span></code> method you created earlier after the front end RF filter, but before the IF filter.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_receiver_noise</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Caution</em> We need to be careful, if the entire RF bandwidth is not processed in the RF chain, we need to adjust the noise bandwidth settings separately.  The revised <code class="docutils literal notranslate"><span class="pre">process_signal</span></code> method should be modified to match</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">wf_object</span><span class="p">):</span>
+        <span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_rf2if_filter</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1">#Can be bypassed if you don&#39;t have anything out of band.</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[::</span><span class="bp">self</span><span class="o">.</span><span class="n">rf2if_ds</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_receiver_noise</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_adc_filter</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_if</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc_if</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">wf_object</span><span class="o">.</span><span class="n">apply_bb_filter</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[::</span><span class="bp">self</span><span class="o">.</span><span class="n">if2bb_ds</span><span class="p">]</span>
+
+        <span class="c1">#fig.savefig(&#39;../SignalProcessingTutorial/figs/rfchaintest.png&#39;)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">wf_object</span><span class="o">.</span><span class="n">mf_wf_bb</span><span class="p">),</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;./sim_test.png&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+<p><strong>DO THIS</strong> Take things a step further and create <code class="docutils literal notranslate"><span class="pre">Receiver</span></code> and <code class="docutils literal notranslate"><span class="pre">Transmitter</span></code> as instantiations in (they don’t necessarily have to be child classes, but can be handy when they are often co-located) a higher level wrapper class, <code class="docutils literal notranslate"><span class="pre">Radar</span></code>.  Put the <code class="docutils literal notranslate"><span class="pre">SinglePulseWaveform</span></code> instantiation in the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Radar</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Basic single mode, single pulse radar</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transmitter</span> <span class="o">=</span> <span class="n">Transmitter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">receiver</span> <span class="o">=</span> <span class="n">Receiver</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mywf</span> <span class="o">=</span> <span class="n">SinglePulseWaveform</span><span class="p">(</span><span class="n">pulse_width_s</span> <span class="o">=</span> <span class="mf">10e-6</span><span class="p">,</span>
+                                        <span class="n">pulse_repetition_interval_s</span> <span class="o">=</span> <span class="mf">1000e-6</span><span class="p">,</span>
+                                        <span class="n">lfm_excursion_hz</span> <span class="o">=</span> <span class="mf">2e6</span><span class="p">,</span>
+                                        <span class="n">rf_sampling_frequency_hz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver</span><span class="o">.</span><span class="n">Fs_rf</span><span class="p">,</span>
+                                        <span class="n">if_sampling_frequency_hz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver</span><span class="o">.</span><span class="n">Fs_if</span><span class="p">,</span>
+                                        <span class="n">bb_sampling_frequency_hz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver</span><span class="o">.</span><span class="n">Fs_bb</span><span class="p">,</span>
+                                        <span class="n">rf_center_frequency_hz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver</span><span class="o">.</span><span class="n">fc_rf</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>DO THIS</strong> Add a class called <code class="docutils literal notranslate"><span class="pre">Scatterer</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Scatterer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+
+                <span class="c1">#Spatial Parameters</span>
+                <span class="n">x_loc_m</span> <span class="o">=</span> <span class="mi">50000</span><span class="p">,</span>
+                <span class="n">y_loc_m</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">z_loc_m</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
+                <span class="n">x_vel_mps</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">y_vel_mps</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">z_vel_mps</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">x_acc_mps2</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">y_acc_mps2</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">z_acc_mps2</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+
+                <span class="c1">#Signature</span>
+                <span class="n">radar_cross_section_dbsm</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_loc_m</span><span class="p">,</span><span class="n">y_loc_m</span><span class="p">,</span><span class="n">z_loc_m</span><span class="p">,</span><span class="n">x_vel_mps</span><span class="p">,</span><span class="n">y_vel_mps</span><span class="p">,</span><span class="n">z_vel_mps</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rcs_dbsm</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rcs_lin</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rcs_dbsm</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_scatterer_entity_geo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">entity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        x, y, and z distance relative to some entity, i.e. a transmitter.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">entity</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">entity</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">entity</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">zoa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">aoa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">zoa</span><span class="p">,</span><span class="n">aoa</span><span class="p">,</span><span class="n">d</span>
+</pre></div>
+</div>
+<p>Finally, make a class called <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> that acts as a common namespace and execution environment for your created entities. In the <code class="docutils literal notranslate"><span class="pre">process_environment</span></code> method, not the first few lines of code correspond to the previous Problem in that we set up the delay of the signal return.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Simulation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Top level simulation class for a 1v1 target vs track radar</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">Scatterer</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">radar</span> <span class="o">=</span> <span class="n">Radar</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">run_sim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wf_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">mywf</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">transmitter</span><span class="o">.</span><span class="n">transmit_waveform</span><span class="p">(</span><span class="n">wf_object</span><span class="p">)</span>
+
+        <span class="c1">#Truth target information</span>
+        <span class="n">zoa</span><span class="p">,</span><span class="n">aoa</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">get_scatterer_entity_geo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">transmitter</span><span class="p">)</span>
+        <span class="n">distance_samples_skin_return_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">wf_object</span><span class="o">.</span><span class="n">samples_per_cpi_rf</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">receiver</span><span class="o">.</span><span class="n">Fs_rf</span> <span class="o">*</span> <span class="mf">3e8</span><span class="o">/</span><span class="mi">2</span>
+
+        <span class="n">min_range_sample_to_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">distance_samples_skin_return_m</span><span class="o">-</span><span class="n">d</span><span class="p">))</span>
+
+        <span class="c1">#Truncate return signals outside cpi</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:(</span><span class="n">wf_object</span><span class="o">.</span><span class="n">samples_per_cpi_rf</span><span class="o">-</span><span class="n">min_range_sample_to_d</span><span class="p">)]</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">wf_object</span><span class="o">.</span><span class="n">samples_per_cpi_rf</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="mf">0.0</span><span class="n">j</span><span class="p">,</span><span class="n">x</span><span class="p">])</span>
+
+
+        <span class="c1">#RRE</span>
+        <span class="n">G2</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="mi">30</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span> <span class="c1">#placeholder gain for antenna transmit and receive</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">G2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">3e8</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">transmitter</span><span class="o">.</span><span class="n">fc_rf</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">rcs_lin</span> <span class="o">/</span> <span class="n">d</span><span class="o">**</span><span class="mi">4</span>  <span class="o">/</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">receiver</span><span class="o">.</span><span class="n">process_signal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">wf_object</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Maximum Distance: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">distance_samples_skin_return_m</span><span class="p">)</span><span class="si">}</span><span class="s1">, Target Distance: </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+<p>Instantiate an instance of <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> and run <code class="docutils literal notranslate"><span class="pre">run_sim</span></code></p>
+<img alt="../_images/sim_test.png" src="../_images/sim_test.png" />
+</section>
+<section id="problem-5">
+<h3>Problem 5<a class="headerlink" href="#problem-5" title="Link to this heading"></a></h3>
+<p>How do we detect a signal out of noise?  While there is a lot of interesting mathematics within Detection Theory, we defer the interested reader to [3] for more detail.</p>
+<p>In general for a detection problem, we are interested in three quantities defined in [3]</p>
+<ul class="simple">
+<li><p>Probability of Detection (<span class="math notranslate nohighlight">\(P_D\)</span>): The probability that a target IS declared when a target IS in fact present.</p></li>
+<li><p>Probability of False Alarm (<span class="math notranslate nohighlight">\(P_{FA}\)</span>): The probability that a target IS declared when a target is in fact NOT present.</p></li>
+<li><p>Probability of Missed Detection (<span class="math notranslate nohighlight">\(P_{MD}\)</span>): The probability that a target is NOT declared when a target IS in fact present.</p></li>
+</ul>
+<p>A good detector will maximize <span class="math notranslate nohighlight">\(P_D\)</span>, based on a user-choosen <span class="math notranslate nohighlight">\(P_{FA}\)</span> as to not cause too many missed detections.  For now, we apply a barebones detector known as a Constant False Alarm Rate (CFAR), that works by comparing averages of sections of the return signal with itself.  In particular, we use the Cell- Averaging (CA) CFAR from Section 6.5.4 of [3], which calculated a threshold based on the samples around the “tested cell”.  We require two pieces</p>
+<ul class="simple">
+<li><p>Moving Window Average of samples</p></li>
+<li><p>Constant to scale the threshold</p></li>
+</ul>
+<p>The moving windows consists of reference cells, <span class="math notranslate nohighlight">\(x_i\)</span>, and guard cells that are indicated by respective colors for 1D and 2D CFARs, for this portion, we only are concerned with 1D CFARs.</p>
+<img alt="../_images/cfar_windows.png" src="../_images/cfar_windows.png" />
+<p>We compute the moving window average of <span class="math notranslate nohighlight">\(N\)</span> reference cells as</p>
+<p><span class="math notranslate nohighlight">\(T_N = \frac{1}{N}\sum_{i = 1}^N |x_i|\)</span></p>
+<p>for a linear detector, and</p>
+<p><span class="math notranslate nohighlight">\(T_N = \frac{1}{N}\sum_{i = 1}^N |x_i|^2\)</span></p>
+<p>for a square law detector.  As an array, a sliding window with 5 reference cells (one-sided, <span class="math notranslate nohighlight">\(N = 10\)</span>) and 2 guard cells (one sided) looks like</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sliding_window</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The middle element is the cell under test (CUT).</p>
+<p>We choose the CFAR constant based on a designer choice of <span class="math notranslate nohighlight">\(P_{FA}\)</span>, a value <span class="math notranslate nohighlight">\(1e-3 \leq P_{FA} \leq 1e-8\)</span> is appropriate, depending on the design, we’ll go for <span class="math notranslate nohighlight">\(P_{FA} = 1e-6\)</span> here.  We compute the constant by</p>
+<p><span class="math notranslate nohighlight">\(\alpha = N(P_{FA}^{-1/N} -1)\)</span></p>
+<p>The CFAR class wrapper for a CA 1D is</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CA_CFAR1D</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num_reference_cells_one_sided</span><span class="p">,</span>
+                  <span class="n">num_guard_cells_one_sided</span><span class="p">,</span>
+                  <span class="n">probability_of_false_alarm</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_ref</span> <span class="o">=</span> <span class="n">num_reference_cells_one_sided</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_guard</span> <span class="o">=</span> <span class="n">num_guard_cells_one_sided</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pfa</span> <span class="o">=</span> <span class="n">probability_of_false_alarm</span>
+
+        <span class="n">N</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">num_reference_cells_one_sided</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfar_constant</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="p">(</span><span class="n">probability_of_false_alarm</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">N</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfar_window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfar_constant</span><span class="o">/</span><span class="n">N</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ref</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">num_guard</span><span class="o">+</span> <span class="mi">1</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ref</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">calculate_cfar_thresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">cfar_window</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;same&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">build_detection_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_cfar_thresh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">det_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+        <span class="n">det_vec</span><span class="p">[</span><span class="n">x</span><span class="o">&gt;</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">det_vec</span>
+</pre></div>
+</div>
+<p>Add the following args and kwarg to your <code class="docutils literal notranslate"><span class="pre">Receiver</span></code> class</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">reference_cells_one_sided</span> <span class="pre">=</span> <span class="pre">30</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">guard_cells_one_sided</span> <span class="pre">=</span> <span class="pre">5</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">probability_false_alarm</span> <span class="pre">=</span> <span class="pre">1e-6</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">detector_type</span> <span class="pre">=</span> <span class="pre">'square'</span></code></p></li>
+</ul>
+<p>along with an attribute</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">det_type</span> <span class="o">=</span> <span class="n">detector_type</span>
+</pre></div>
+</div>
+<p>and within the <code class="docutils literal notranslate"><span class="pre">`__init__`</span></code> method, add</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">cfar</span> <span class="o">=</span> <span class="n">CA_CFAR1D</span><span class="p">(</span><span class="n">reference_cells_one_sided</span><span class="p">,</span> <span class="n">guard_cells_one_sided</span><span class="p">,</span><span class="n">probability_false_alarm</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Also add the following methods to <code class="docutils literal notranslate"><span class="pre">`Receiver`</span></code> class</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">detector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">det_type</span> <span class="o">==</span> <span class="s1">&#39;square&#39;</span><span class="p">:</span> <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+            <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">detect_single_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfar</span><span class="o">.</span><span class="n">calculate_cfar_thresh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">T</span>
+</pre></div>
+</div>
+<p>Finally, in the <code class="docutils literal notranslate"><span class="pre">process_signal</span></code> method for <code class="docutils literal notranslate"><span class="pre">Receiver</span></code> add the following line after your matched filter application</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">,</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_single_signal</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">wf_object</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_rf2if_filter</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1">#Can be bypassed if you don&#39;t have anything out of band.</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[::</span><span class="bp">self</span><span class="o">.</span><span class="n">rf2if_ds</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_receiver_noise</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_adc_filter</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Fs_if</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc_if</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">wf_object</span><span class="o">.</span><span class="n">apply_bb_filter</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[::</span><span class="bp">self</span><span class="o">.</span><span class="n">if2bb_ds</span><span class="p">]</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">wf_object</span><span class="o">.</span><span class="n">mf_wf_bb</span><span class="p">),</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="c1">#####NEW##################</span>
+        <span class="n">x</span><span class="p">,</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_single_signal</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1">##########################</span>
+
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">T</span>
+</pre></div>
+</div>
+<p>Run the radar with your new CFAR detector and plot the threshold and signal.</p>
+<img alt="../_images/cfar_test.png" src="../_images/cfar_test.png" />
+<p>Zoom in on the spike, unless you initialized your random number generator <code class="docutils literal notranslate"><span class="pre">`np.random.seed(seed</span> <span class="pre">=</span> <span class="pre">0)`</span></code>, your results may look slightly different. Note that the processed signal (blue line) does not exceed the threshold (orange line).  This situation results in a missed detection.</p>
+<img alt="../_images/cfar_demo_zoomed.png" src="../_images/cfar_demo_zoomed.png" />
+<p>Incrementally add more transmitter power, increments of 1000 should be ok (i.e., go from 1000 to 2000 to 3000…) until you break the threshold.  This is just one way in which a receiver may be tuned, feel free to play with other parameters and see their effects.</p>
+<img alt="../_images/cfar_demo_zoomed_break.png" src="../_images/cfar_demo_zoomed_break.png" />
+<p>Use the <code class="docutils literal notranslate"><span class="pre">`build_detection_vector`</span></code> method for your <code class="docutils literal notranslate"><span class="pre">`CACFAR_1D`</span></code> class to generate a binary array indicating where the signal breaks the threshold.</p>
+<img alt="../_images/det_vec.png" src="../_images/det_vec.png" />
+<p>Congratulations, you have now turned bits into symbols and turned symbols into bits!  You have a toolkit to construct basic generic single-pulse radars!</p>
+<img alt="../_images/lab2_diagram.png" src="../_images/lab2_diagram.png" />
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lab1-BasicSPPython.html" class="btn btn-neutral float-left" title="Lab 1 - Basic Signal Processing in Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lab3-RadarDesign.html" class="btn btn-neutral float-right" title="Radar Search and Track" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Blinn.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

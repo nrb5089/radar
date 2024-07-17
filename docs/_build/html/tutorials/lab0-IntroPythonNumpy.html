@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 0 - Introduction to Python and Numpy &mdash; radar 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab 1 - Basic Signal Processing in Python" href="lab1-BasicSPPython.html" />
+    <link rel="prev" title="Installation" href="../setup_and_installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            radar
+              <img src="../_static/apg81.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 0 - Introduction to Python and Numpy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-python-environment">Setting up Python environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#recommended-development-environment-setup">Recommended Development Environment Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spyder-pycharm-or-some-other-ide">Spyder, Pycharm, or some other IDE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-frills-cmd-and-notepad">No frills CMD and Notepad++</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-python">Why Python?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-numpy-arrays">Using Numpy Arrays</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#importing-and-using-numpy">Importing and using NumPy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-numpy-array">Creating a NumPy array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#array-indexing">Array Indexing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#array-slicing">Array Slicing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-array-operations">Basic Array Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mathematical-functions">Mathematical Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#statistical-functions">Statistical Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#linear-algebra-operations">Linear Algebra Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#matrix-vector-multiplication">Matrix-Vector Multiplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#matrix-matrix-multiplication">Matrix-Matrix Multiplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complex-numbers">Complex Numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transpose-and-hermitian">Transpose and Hermitian</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inverse">Inverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#determinant">Determinant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#solve-the-system-of-linear-equations">Solve the System of Linear Equations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eigenvalue-decomposition">Eigenvalue Decomposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#further-reading">Further reading:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#project">Project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problem-1-matrix-operations">Problem 1: Matrix Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#problem-2-determinant-and-inverse">Problem 2: Determinant and Inverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#problem-3-eigenvalues-and-eigenvectors">Problem 3: Eigenvalues and Eigenvectors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3-RadarDesign.html">Radar Search and Track</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">radar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lab 0 - Introduction to Python and Numpy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/lab0-IntroPythonNumpy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lab-0-introduction-to-python-and-numpy">
+<h1>Lab 0 - Introduction to Python and Numpy<a class="headerlink" href="#lab-0-introduction-to-python-and-numpy" title="Link to this heading"></a></h1>
+<section id="setting-up-python-environment">
+<h2>Setting up Python environment<a class="headerlink" href="#setting-up-python-environment" title="Link to this heading"></a></h2>
+<p>Python should be installed on your machine under the C:Python</p>
+<section id="recommended-development-environment-setup">
+<h3>Recommended Development Environment Setup<a class="headerlink" href="#recommended-development-environment-setup" title="Link to this heading"></a></h3>
+<p>This is my environment I use, but feel free to use whatever makes sense.</p>
+</section>
+<section id="spyder-pycharm-or-some-other-ide">
+<h3>Spyder, Pycharm, or some other IDE<a class="headerlink" href="#spyder-pycharm-or-some-other-ide" title="Link to this heading"></a></h3>
+<p>Contact IT for installation.</p>
+</section>
+<section id="no-frills-cmd-and-notepad">
+<h3>No frills CMD and Notepad++<a class="headerlink" href="#no-frills-cmd-and-notepad" title="Link to this heading"></a></h3>
+<p>Open up the <code class="docutils literal notranslate"><span class="pre">Command</span> <span class="pre">Prompt</span></code> using any method you like (I press the <code class="docutils literal notranslate"><span class="pre">Windows</span></code> key and type <code class="docutils literal notranslate"><span class="pre">cmd</span></code> and hit <code class="docutils literal notranslate"><span class="pre">enter</span></code>).</p>
+<p>Create a batch file by typing</p>
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span>notepad mysetup.bat
+</pre></div>
+</div>
+<p>Place the following text in the batch file (Note that you may need to adjust the paths)</p>
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span><span class="p">@</span><span class="k">ECHO</span> OFF
+DOSKEY py=<span class="s2">&quot;&lt;full path&gt;/Python/python.exe&quot;</span>
+DOSKEY npp=<span class="s2">&quot;&lt;full path&gt;/Notepad++/notepad++.exe&quot;</span>
+</pre></div>
+</div>
+<p>At the time of this writing, Python should be in <code class="docutils literal notranslate"><span class="pre">C:</span></code> and Notepad++ should be in either <code class="docutils literal notranslate"><span class="pre">C:/Program</span> <span class="pre">Files</span></code> or <code class="docutils literal notranslate"><span class="pre">C:/Program</span> <span class="pre">Files</span> <span class="pre">x86</span></code> on the associated DEV machines.  Save and/or save and close the batch file.  Type <code class="docutils literal notranslate"><span class="pre">mysetup.bat</span></code>, this should initialize the cmd prompt to now use your short hand expressions <code class="docutils literal notranslate"><span class="pre">py</span></code> and <code class="docutils literal notranslate"><span class="pre">npp</span></code> for the respective programs.  Create a new <code class="docutils literal notranslate"><span class="pre">.py</span></code> file by typing <code class="docutils literal notranslate"><span class="pre">npp</span> <span class="pre">hello_world.py</span></code>.  If  <strong>Notepad++</strong> opens up with this new file, this portion works correctly.  Now add <code class="docutils literal notranslate"><span class="pre">print('hello</span> <span class="pre">world!')</span></code> to your new <code class="docutils literal notranslate"><span class="pre">.py</span></code> file.  Save and/or save and close the new <code class="docutils literal notranslate"><span class="pre">hello_world.py</span></code> file.  In the CMD Prompt, type <code class="docutils literal notranslate"><span class="pre">py</span> <span class="pre">hello_world.py</span></code>.  If you received a message in the next line <code class="docutils literal notranslate"><span class="pre">hello</span> <span class="pre">world!</span></code>, then everything is working.  This is the method by which you can execute <code class="docutils literal notranslate"><span class="pre">.py</span></code> files</p>
+<p><strong>Note</strong> : You will have to refresh <code class="docutils literal notranslate"><span class="pre">mysetup.bat</span></code> for each new CMD window openned.</p>
+</section>
+<section id="why-python">
+<h3>Why Python?<a class="headerlink" href="#why-python" title="Link to this heading"></a></h3>
+<p>Python is a relatively easy programming language that we use for signal processing demonstration and prototyping of algorithms.  The key mathematics come from operations in linear algebra and concepts in statistics/probability.  We use the analogy of 1D and 2D arrays to correspond to vectors and matrices, respectively.  Ideally, we would do most of our low-level signal processing at the hardware level either via ASICs or FPGAs.   The following tutorial provides some basic arithmetic and implementation syntax, along with the mathematical equivalent statements.</p>
+</section>
+</section>
+<section id="using-numpy-arrays">
+<h2>Using Numpy Arrays<a class="headerlink" href="#using-numpy-arrays" title="Link to this heading"></a></h2>
+<p>NumPy is a Python library used for working with arrays. It also has functions for working in the domain of linear algebra, fourier transform, and matrices.</p>
+<p>NumPy stands for ‘Numerical Python’ and comes with Python distributions such as Anaconda.</p>
+<section id="importing-and-using-numpy">
+<h3>Importing and using NumPy<a class="headerlink" href="#importing-and-using-numpy" title="Link to this heading"></a></h3>
+<p>Once NumPy is installed, you need to import it into your Python environment. You can do so with the following line of code:</p>
+<p><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">numpy</span> <span class="pre">as</span> <span class="pre">np</span></code></p>
+<p>We use <code class="docutils literal notranslate"><span class="pre">as</span> <span class="pre">np</span></code> so that we can refer to numpy with the shortened ‘np’ instead of typing out ‘numpy’ each time we want to use it.</p>
+</section>
+<section id="creating-a-numpy-array">
+<h3>Creating a NumPy array<a class="headerlink" href="#creating-a-numpy-array" title="Link to this heading"></a></h3>
+<p>Vectors and Matrices are critical to understanding signal processing algorithms, we denote vectors as bold lower case <span class="math notranslate nohighlight">\(\textbf{v}\)</span> and matrices as bold upper case <span class="math notranslate nohighlight">\(\textbf{M}\)</span>.  Tensors (informally, matrices with greater than 2 dimensions), are also represented by multidimensional arrays.  The starting example are all real elements, but extend to complex numbers as well.  Python/Numpy uses <span class="math notranslate nohighlight">\(1j\)</span> or <span class="math notranslate nohighlight">\(1i\)</span> to denote imaginary numbers, i.e., <span class="math notranslate nohighlight">\(1 + 2j\)</span>.</p>
+<p>A numpy array is a grid of values, all of the same type, and is indexed by a tuple of nonnegative integers.</p>
+<p>You can create a numpy array from a Python list or tuple using the <cite>array</cite> function. Here’s an example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1">## Creating a 1D array (Vector)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+<span class="c1">## Creating a 2D array (Matrix)</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+
+<span class="c1">## Creating a 3D array (Tensor)</span>
+<span class="n">mytensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mytensor</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="array-indexing">
+<h3>Array Indexing<a class="headerlink" href="#array-indexing" title="Link to this heading"></a></h3>
+<p>The <span class="math notranslate nohighlight">\(n^{\textnormal{th}}\)</span> element of a vector may be denoted as <span class="math notranslate nohighlight">\(v[n]\)</span> or <span class="math notranslate nohighlight">\(v_n\)</span>.  We will denote this in unbolded since it is scalar, i.e., <span class="math notranslate nohighlight">\(\textbf{v} = [v_0,\dots,v_n,\dots]\)</span>.</p>
+<p>You can access the array elements as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># Output: 2</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>  <span class="c1"># Output: 7</span>
+</pre></div>
+</div>
+<p>Likewise for matrices <span class="math notranslate nohighlight">\(M[m,n]\)</span> or <span class="math notranslate nohighlight">\(M_{m,n}\)</span> denotes the element in row <span class="math notranslate nohighlight">\(m\)</span> and column <span class="math notranslate nohighlight">\(n\)</span>.
+For 2D arrays, you need to use comma-separated indices</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]])</span>
+
+<span class="c1"># Accessing the element at 1st row and 2nd column</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># Output: 8</span>
+</pre></div>
+</div>
+</section>
+<section id="array-slicing">
+<h3>Array Slicing<a class="headerlink" href="#array-slicing" title="Link to this heading"></a></h3>
+<p>Slices of vectors or matrices are denoted <span class="math notranslate nohighlight">\(\textbf{v}[m:n]\)</span> or <span class="math notranslate nohighlight">\(\textbf{v}_{m:n}\)</span>, and for matrices, <span class="math notranslate nohighlight">\(\textbf{M}[m:n,p:q]\)</span> or <span class="math notranslate nohighlight">\(\textbf{M}_{m:n,p:q}\)</span>.
+NumPy arrays can be sliced, You can slice a NumPy array like this</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>  <span class="c1"># Output: array([2, 3, 4, 5])</span>
+</pre></div>
+</div>
+<p>For 2D arrays, it works similarly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]])</span>
+
+<span class="c1"># Accessing the first 2 elements of the first 2 rows</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># Output: array([[1, 2], [6, 7]])</span>
+</pre></div>
+</div>
+</section>
+<section id="basic-array-operations">
+<h3>Basic Array Operations<a class="headerlink" href="#basic-array-operations" title="Link to this heading"></a></h3>
+<p>You can perform element-wise operations on arrays like addition, subtraction, etc.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">arr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="n">arr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+
+<span class="c1">## Addition</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr1</span> <span class="o">+</span> <span class="n">arr2</span><span class="p">)</span>  <span class="c1"># Output: array([5, 7, 9])</span>
+
+<span class="c1">## Multiplication</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr1</span> <span class="o">*</span> <span class="n">arr2</span><span class="p">)</span>  <span class="c1"># Output: array([ 4, 10, 18])</span>
+
+<span class="c1">## Subtraction</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr1</span> <span class="o">-</span> <span class="n">arr2</span><span class="p">)</span>  <span class="c1"># Output: array([-3, -3, -3])</span>
+
+<span class="c1">## Division</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr1</span> <span class="o">/</span> <span class="n">arr2</span><span class="p">)</span>  <span class="c1"># Output: array([0.25, 0.4 , 0.5 ])</span>
+</pre></div>
+</div>
+</section>
+<section id="mathematical-functions">
+<h3>Mathematical Functions<a class="headerlink" href="#mathematical-functions" title="Link to this heading"></a></h3>
+<p>NumPy provides standard mathematical functions like sin, cos, exp, etc. These functions operate element-wise on an array, producing an array as output.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+
+<span class="c1">## Convert to radians by multiplying by pi/180</span>
+<span class="n">arr_radians</span> <span class="o">=</span> <span class="n">arr</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arr_radians</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="statistical-functions">
+<h3>Statistical Functions<a class="headerlink" href="#statistical-functions" title="Link to this heading"></a></h3>
+<p>NumPy provides functions to calculate statistical metrics like mean, median, standard deviation, etc.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="c1"># Mean</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>  <span class="c1"># Output: 3.0</span>
+
+<span class="c1"># Median</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>  <span class="c1"># Output: 3.0</span>
+
+<span class="c1"># Standard Deviation</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>  <span class="c1"># Output: 1.4142135623730951</span>
+</pre></div>
+</div>
+<p>Remember, this is just a basic tutorial and NumPy offers many more features and functions. For a comprehensive understanding, you should refer to the official documentation, <a class="reference external" href="https://numpy.org/doc/">https://numpy.org/doc/</a>.</p>
+</section>
+</section>
+<section id="linear-algebra-operations">
+<h2>Linear Algebra Operations<a class="headerlink" href="#linear-algebra-operations" title="Link to this heading"></a></h2>
+<p>Here are a few linear algebra operations related to using NumPy arrays in the context of linear algebra.</p>
+<section id="matrix-vector-multiplication">
+<h3>Matrix-Vector Multiplication<a class="headerlink" href="#matrix-vector-multiplication" title="Link to this heading"></a></h3>
+<p>3x3 matrix, <span class="math notranslate nohighlight">\(\textbf{A}\)</span>, and a 3x1 vector, <span class="math notranslate nohighlight">\(\textbf{v}\)</span>. Perform matrix-vector multiplication.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Define a 3x3 matrix</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]])</span>
+
+<span class="c1"># Define a 3x1 vector</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+
+<span class="c1"># Multiply the matrix and vector</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">v</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="matrix-matrix-multiplication">
+<h3>Matrix-Matrix Multiplication<a class="headerlink" href="#matrix-matrix-multiplication" title="Link to this heading"></a></h3>
+<p>3x3 matrices, <span class="math notranslate nohighlight">\(\textbf{A}\)</span>, <span class="math notranslate nohighlight">\(\textbf{B}\)</span>, compute the element-wise (Hadamard) product <span class="math notranslate nohighlight">\(\textbf{A}\circ\textbf{B}\)</span> and the more common matrix-matrix multiplciation <span class="math notranslate nohighlight">\(\textbf{A}\textbf{B}\)</span>.  When we talk about matrix-matrix multplication, we always mean the latter here, but will be denoted with <span class="math notranslate nohighlight">\(\circ\)</span> otherwise.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Define two 3x3 matrices</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]])</span>
+
+<span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">18</span><span class="p">]])</span>
+
+<span class="c1"># Perform element-wise (Hadamard) product</span>
+<span class="n">result_dot</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">B</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Result using dot function:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">result_dot</span><span class="p">)</span>
+
+<span class="c1"># Perform matrix multiplication using the @ operator</span>
+<span class="n">result_operator</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">B</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Result using @ operator:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">result_operator</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="complex-numbers">
+<h3>Complex Numbers<a class="headerlink" href="#complex-numbers" title="Link to this heading"></a></h3>
+<p>Python has built-in support for complex numbers, which are written with a <code class="docutils literal notranslate"><span class="pre">j</span></code> as the imaginary part. Here’s a quick introduction:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Creating complex numbers</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">4</span><span class="n">j</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span><span class="n">j</span>
+
+<span class="c1"># Real and Imaginary parts</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>  <span class="c1"># Outputs: 3.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>  <span class="c1"># Outputs: 4.0</span>
+
+<span class="c1"># Conjugate</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">conjugate</span><span class="p">())</span>  <span class="c1"># Outputs: (3-4j)</span>
+
+<span class="c1"># Magnitude</span>
+<span class="n">magnitude</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">magnitude</span><span class="p">)</span>  <span class="c1"># Outputs: 5.0</span>
+
+<span class="c1">#Phase (wrapped)</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+<span class="c1"># Addition</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>  <span class="c1"># Outputs: (5+1j)</span>
+
+<span class="c1"># Subtraction</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>  <span class="c1"># Outputs: (1+7j)</span>
+
+<span class="c1"># Multiplication</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>  <span class="c1"># Outputs: (18+1j)</span>
+
+<span class="c1"># Division</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>  <span class="c1"># Outputs: (-0.15384615384615385+1.2307692307692308j)</span>
+</pre></div>
+</div>
+</section>
+<section id="transpose-and-hermitian">
+<h3>Transpose and Hermitian<a class="headerlink" href="#transpose-and-hermitian" title="Link to this heading"></a></h3>
+<p>Compute the transpose, <span class="math notranslate nohighlight">\(\textbf{A}^T\)</span>, and Hermitian (conjugate transpose), <span class="math notranslate nohighlight">\(\textbf{C}^H\)</span> of a matrix.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Define a Real 3x2 matrix</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+
+<span class="c1">#Complex Portion</span>
+<span class="n">B</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">]])</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="n">A</span> <span class="o">+</span> <span class="n">B</span>
+
+<span class="c1"># Compute the transpose</span>
+<span class="n">A_T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="c1">#alternatively A_T = A.T</span>
+
+<span class="c1">#Hermitian</span>
+<span class="n">C_H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A_T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">C_H</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="inverse">
+<h3>Inverse<a class="headerlink" href="#inverse" title="Link to this heading"></a></h3>
+<p>Compute the inverse of a matrix, <span class="math notranslate nohighlight">\(\textbf{A}^{-1}\)</span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Define a 3x3 matrix</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+
+<span class="c1"># Compute the inverse</span>
+<span class="n">A_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">A_inv</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="determinant">
+<h3>Determinant<a class="headerlink" href="#determinant" title="Link to this heading"></a></h3>
+<p>Compute the determinant of a matrix, <span class="math notranslate nohighlight">\(\textrm{det}(\textbf{A})\)</span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Define a 3x3 matrix</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]])</span>
+
+<span class="c1"># Compute the determinant</span>
+<span class="n">det_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">det_A</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="solve-the-system-of-linear-equations">
+<h3>Solve the System of Linear Equations<a class="headerlink" href="#solve-the-system-of-linear-equations" title="Link to this heading"></a></h3>
+<p><span class="math notranslate nohighlight">\(3x + y = 9\)</span> and <span class="math notranslate nohighlight">\(x + 2y = 8\)</span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Define the system&#39;s matrix</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+
+<span class="c1"># Define the constant vector</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+
+<span class="c1"># Solve for [x, y]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="eigenvalue-decomposition">
+<h3>Eigenvalue Decomposition<a class="headerlink" href="#eigenvalue-decomposition" title="Link to this heading"></a></h3>
+<p>Find the eigenvalues and eigenvectors of a matrix, <span class="math notranslate nohighlight">\(A = \textbf{V}\textbf{D}\textbf{V}^{-1}\)</span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Define a 2x2 matrix</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+
+<span class="c1"># Compute the eigenvalues and eigenvectors</span>
+<span class="n">D</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Eigenvalues:&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Eigenvectors:&quot;</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Numpy includes just about any linear algebraic operation you would require, definitely check out the documentation [4].  Additionally, more detail on matrix algebra and computations involving them can be found in [1,2].  The original Numpy paper is [3].</p>
+</section>
+<section id="further-reading">
+<h3>Further reading:<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h3>
+<p>[1] Golub, Gene H., and Charles F. Van Loan. Matrix computations. JHU press, 2013.</p>
+<p>[2] Strang, Gilbert. Linear algebra and its applications. 2012.</p>
+<p>[3] Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array programming with NumPy. Nature 585, 357–362 (2020). DOI: 10.1038/s41586-020-2649-2. (Publisher link).</p>
+<p>[4] <a class="reference external" href="https://numpy.org/doc/stable/user/index.html#user">https://numpy.org/doc/stable/user/index.html#user</a></p>
+</section>
+</section>
+<section id="project">
+<h2>Project<a class="headerlink" href="#project" title="Link to this heading"></a></h2>
+<p>Here are 3 problems related to using the linear algebra capabilities in NumPy, along with their solutions.</p>
+<section id="problem-1-matrix-operations">
+<h3>Problem 1: Matrix Operations<a class="headerlink" href="#problem-1-matrix-operations" title="Link to this heading"></a></h3>
+<p>Given two matrices <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">=</span> <span class="pre">np.array([[1,</span> <span class="pre">2],</span> <span class="pre">[3,</span> <span class="pre">4],</span> <span class="pre">[5,</span> <span class="pre">6]])</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">np.array([[2,</span> <span class="pre">5,</span> <span class="pre">11],</span> <span class="pre">[7,</span> <span class="pre">10,3]])</span></code></p>
+<p>Write a Python script to perform the following operations using <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>, <code class="docutils literal notranslate"><span class="pre">.T</span></code>, and <code class="docutils literal notranslate"><span class="pre">*</span></code>:</p>
+<ol class="arabic simple">
+<li><p>Matrix Multiplication of A and B</p></li>
+<li><p>Element-wise Multiplication of A’s transpose and B</p></li>
+</ol>
+<p><strong>Output</strong>
+Matrix multiplication of <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[16 25 17]
+[34 55 45]
+[52 85 73]]
+</pre></div>
+</div>
+<p>Element-wise multiplication of <code class="docutils literal notranslate"><span class="pre">A</span></code>’s transpose and <code class="docutils literal notranslate"><span class="pre">B`</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[ 2 15 55]
+[14 40 18]]
+</pre></div>
+</div>
+</section>
+<section id="problem-2-determinant-and-inverse">
+<h3>Problem 2: Determinant and Inverse<a class="headerlink" href="#problem-2-determinant-and-inverse" title="Link to this heading"></a></h3>
+<p>Given a matrix <code class="docutils literal notranslate"><span class="pre">C</span> <span class="pre">=</span> <span class="pre">np.array([[4,</span> <span class="pre">7,</span> <span class="pre">9,</span> <span class="pre">12],</span> <span class="pre">[2,</span> <span class="pre">6,</span> <span class="pre">1,</span> <span class="pre">0.5],</span> <span class="pre">[1,</span> <span class="pre">10,</span> <span class="pre">1,</span> <span class="pre">4],</span> <span class="pre">[5,</span> <span class="pre">4,</span> <span class="pre">6,</span> <span class="pre">1]])</span></code>, calculate:</p>
+<ol class="arabic simple">
+<li><p>The determinant of <code class="docutils literal notranslate"><span class="pre">C</span></code></p></li>
+<li><p>The inverse of <code class="docutils literal notranslate"><span class="pre">C</span></code></p></li>
+</ol>
+<p><strong>Output</strong>
+Determinant of <code class="docutils literal notranslate"><span class="pre">C</span></code>: <code class="docutils literal notranslate"><span class="pre">-239.5000000000001</span></code></p>
+<p>Inverse of <code class="docutils literal notranslate"><span class="pre">C</span></code>:
+.. code-block:: none</p>
+<blockquote>
+<div><p>[[ 0.434238    2.35908142 -1.39457203 -0.81210856]
+[-0.11064718 -0.37995825  0.33611691  0.17327766]
+[-0.32985386 -1.84968685  1.02087683  0.79958246]
+[ 0.25052192  0.82254697 -0.49686848 -0.43006263]]</p>
+</div></blockquote>
+</section>
+<section id="problem-3-eigenvalues-and-eigenvectors">
+<h3>Problem 3: Eigenvalues and Eigenvectors<a class="headerlink" href="#problem-3-eigenvalues-and-eigenvectors" title="Link to this heading"></a></h3>
+<p>For the same matrix <code class="docutils literal notranslate"><span class="pre">C</span></code>, compute</p>
+<ol class="arabic simple">
+<li><p>The eigenvalues of <code class="docutils literal notranslate"><span class="pre">C</span></code></p></li>
+<li><p>The eigenvectors of <code class="docutils literal notranslate"><span class="pre">C</span></code></p></li>
+<li><p>Build a diagonal matrix of the vector of eigenvalues <code class="docutils literal notranslate"><span class="pre">np.diag()</span></code></p></li>
+<li><p>Reconstruct C using the diagonal matrix and matrix of eigenvectors. The result will be complex.</p></li>
+</ol>
+<p><strong>Output</strong>
+Eigenvalues of <code class="docutils literal notranslate"><span class="pre">C</span></code>
+.. code-block:: none</p>
+<blockquote>
+<div><dl class="simple">
+<dt>[16.06533523+0.j         -5.9476733 +0.j          0.94116903+1.27306956j</dt><dd><p>0.94116903-1.27306956j]</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Eigenvectors of <code class="docutils literal notranslate"><span class="pre">C</span></code>
+.. code-block:: none</p>
+<blockquote>
+<div><dl class="simple">
+<dt>[[ 0.80738772+0.j          0.50074368+0.j          0.76290198+0.j</dt><dd><p>0.76290198-0.j        ]</p>
+</dd>
+<dt>[ 0.21412914+0.j         -0.09361387+0.j         -0.21182191-0.08063397j</dt><dd><p>-0.21182191+0.08063397j]</p>
+</dd>
+<dt>[ 0.3153099 +0.j          0.47556472+0.j         -0.50580583+0.11882169j</dt><dd><p>-0.50580583-0.11882169j]</p>
+</dd>
+<dt>[ 0.45039254+0.j         -0.71716833+0.j          0.30845146+0.03885582j</dt><dd><p>0.30845146-0.03885582j]]</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Reconstructed <code class="docutils literal notranslate"><span class="pre">C</span></code></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[ 4. -1.25389341e-16j  7. +6.32484664e-15j  9. -6.24830406e-15j
+ 12. -3.00509803e-17j]
+[ 2. +1.42874811e-17j  6. +1.86223409e-15j  1. -1.84380385e-15j
+  0.5+4.81857318e-18j]
+[ 1. +3.03449671e-17j 10. +2.96493222e-15j  1. -2.72124588e-15j
+  4. +2.15705682e-17j]
+[ 5. -3.99186102e-17j  4. +3.76743004e-15j  6. -3.91085454e-15j
+  1. -2.77193111e-17j]]
+</pre></div>
+</div>
+<p>Clean Reconstructed <code class="docutils literal notranslate"><span class="pre">C</span></code></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[ 4.   7.   9.  12. ]
+[ 2.   6.   1.   0.5]
+[ 1.  10.   1.   4. ]
+[ 5.   4.   6.   1. ]]
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../setup_and_installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lab1-BasicSPPython.html" class="btn btn-neutral float-right" title="Lab 1 - Basic Signal Processing in Python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Blinn.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

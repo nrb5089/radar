@@ -22,14 +22,6 @@ Contents
     :caption: Getting Started
     
     setup_and_installation
-
-.. toctree::
-    :maxdepth: 2
-    :caption: Functional Blocks
-    
-    api
-    functional_blocks
-    
     
 .. toctree::
     :maxdepth: 2
@@ -38,4 +30,4 @@ Contents
     tutorials/lab0-IntroPythonNumpy
     tutorials/lab1-BasicSPPython
     tutorials/lab2-TxRx
-    
+    tutorials/lab3-RadarDesign
