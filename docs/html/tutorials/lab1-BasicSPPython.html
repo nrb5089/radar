@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 1 - Basic Signal Processing in Python &mdash; radar 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab 2 - Transmitter and Receivers" href="lab2-TxRx.html" />
+    <link rel="prev" title="Lab 0 - Introduction to Python and Numpy" href="lab0-IntroPythonNumpy.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            radar
+              <img src="../_static/radar_thumbnail.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html">radar.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html#module-radar.core">radar.core</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 1 - Basic Signal Processing in Python</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-all-the-emphasis-on-arrays">Why all the emphasis on arrays?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-signal-processing-in-python-numpy">Basic Signal Processing in Python/NumPy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generating-a-simple-signal">Generating a Simple Signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-noise-to-the-signal">Adding Noise to the Signal</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fourier-transform">Fourier Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#signal-filtering">Signal Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multi-rate-signal-processing">Multi-Rate Signal Processing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#decimation-downsampling">Decimation (Downsampling)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interpolation-upsampling">Interpolation (Upsampling)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#center-frequency-and-mixing">Center Frequency and Mixing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reasons-for-frequency-conversion">Reasons for Frequency Conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-of-intermediate-frequency-stages">Use of Intermediate Frequency Stages:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#center-frequency">Center Frequency</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mixing-a-signal-with-a-carrier">Mixing a Signal with a Carrier</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#upconversion">Upconversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#downconversion">Downconversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complex-carrier">Complex Carrier</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#project">Project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problem-1-efficient-filtering">Problem 1: Efficient Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#problem-2">Problem 2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">radar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lab 1 - Basic Signal Processing in Python</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/lab1-BasicSPPython.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lab-1-basic-signal-processing-in-python">
+<h1>Lab 1 - Basic Signal Processing in Python<a class="headerlink" href="#lab-1-basic-signal-processing-in-python" title="Link to this heading"></a></h1>
+<section id="why-all-the-emphasis-on-arrays">
+<h2>Why all the emphasis on arrays?<a class="headerlink" href="#why-all-the-emphasis-on-arrays" title="Link to this heading"></a></h2>
+<p>Arrays are a fundamental part of handling and manipulating signals and images in computational and data science contexts. Both <strong>digital</strong> signals and images can be represented as arrays of numerical data (<strong>analog</strong> can only be approximated), which can then be processed and analyzed using a variety of techniques.</p>
+<ol class="arabic simple">
+<li><p><strong>Signals</strong>: Signals, such as audio signals, can be represented as one-dimensional arrays. In this context, each element in the array represents the amplitude of the signal at a given point in time. The sequence of these amplitudes over time forms the audio signal. This representation allows for digital signal processing techniques to be applied, such as filtering, Fourier transformation, or any other form of signal analysis.</p></li>
+<li><p><strong>Images</strong>: Images can be represented as multi-dimensional arrays (typically two or three dimensions). In a grayscale image, a two-dimensional array can be used where each element represents the intensity of a pixel in the image. For color images, usually a three-dimensional array is used. The first two dimensions represent the x and y coordinates of a pixel, and the third dimension represents the red, green, and blue (RGB) color channels. Each element in this array is again a numerical value representing the intensity of the corresponding color channel at a given pixel, i.e. an 8-bit grayscale image would be a 2D array of values ranging 0-255 (<span class="math notranslate nohighlight">\(2^8-1\)</span>).</p></li>
+</ol>
+<p>By representing signals and images as arrays, powerful mathematical and computational operations can be applied to them. This includes convolution for image filtering, Fourier transforms for frequency analysis of signals, or linear algebra operations for image transformations. It also opens the possibility for machine learning algorithms to learn from these arrays of data, which has led to advances in areas such as speech recognition, image recognition, and more.</p>
+<p>Signal processing involves various operations such as filtering, convolution, Fourier transformation, and sampling. Here, we’ll cover some basic operations using NumPy:</p>
+</section>
+<section id="basic-signal-processing-in-python-numpy">
+<h2>Basic Signal Processing in Python/NumPy<a class="headerlink" href="#basic-signal-processing-in-python-numpy" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+<section id="generating-a-simple-signal">
+<h3>Generating a Simple Signal<a class="headerlink" href="#generating-a-simple-signal" title="Link to this heading"></a></h3>
+<p>A simple signal could be a sine wave. To generate a sine wave:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Time variable</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># A 5 Hz waveform</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>What’s this other import <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot</span></code>?
+Matplotlib is a popular data visualization library in Python that allows users to create a wide range of high-quality plots, charts, and graphs. It provides a comprehensive set of tools for creating static, animated, and interactive visualizations.  With Matplotlib, users can generate line plots, scatter plots, bar charts, histograms, pie charts, and many other types of visual representations. It offers precise control over every aspect of a plot, including the axes, labels, colors, markers, and styles, allowing users to customize their visualizations to suit their needs.  Matplotlib is widely used in various fields such as data analysis, scientific research, engineering, finance, and more. It integrates well with other libraries and frameworks in the Python ecosystem, making it a versatile tool for data exploration and presentation.  In addition to its core functionality, Matplotlib also provides support for creating interactive plots using widgets and event handling, saving plots in different file formats, and incorporating mathematical expressions and LaTeX typesetting.</p>
+<p>In this code, we generate a time variable <code class="docutils literal notranslate"><span class="pre">t</span></code>, and a signal <code class="docutils literal notranslate"><span class="pre">a</span></code> that is a 5Hz sine wave. Then we plot the signal using <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>.</p>
+<img alt="../_images/cosine_wave.png" src="../_images/cosine_wave.png" />
+</section>
+<section id="adding-noise-to-the-signal">
+<h3>Adding Noise to the Signal<a class="headerlink" href="#adding-noise-to-the-signal" title="Link to this heading"></a></h3>
+<p>Real-world signals often come with noise. Let’s add some random noise, <span class="math notranslate nohighlight">\(n\sim \mathcal{N}(\textbf{0},\sigma^2\textbf{I})\)</span>, where <span class="math notranslate nohighlight">\(n\)</span> is a Gaussian random vector with mean <span class="math notranslate nohighlight">\(\textbf{0} = [0,\dots,0]\)</span> and covariance matrix <span class="math notranslate nohighlight">\(\sigma^2\mathbf{I}\)</span>, where <span class="math notranslate nohighlight">\(\textbf{I}\)</span> is the identity matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Time variable</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># A 5 Hz waveform</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">n</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In this code, we generate random noise with the same shape as our signal, then add this noise to the original signal <cite>a</cite>.</p>
+<img alt="../_images/cosine_wave_noise.png" src="../_images/cosine_wave_noise.png" />
+<p># Spectral Domain vs. Time Domain and a better waveform model
+Let’s start with an analogy. Imagine you are listening to a symphony orchestra playing a piece of music. All the different instruments playing together create a rich, complex sound that changes over time. This is similar to a signal in the time domain.</p>
+<p><strong>Time Domain:</strong> The time domain is a representation of a signal (like the music from the orchestra) that shows how the signal changes over time. When you plot the signal in the time domain, you can see the amplitude (how loud the orchestra is playing) at each point in time. However, in this representation, it’s very hard to distinguish between the sounds made by different instruments.</p>
+<p>Now, imagine you have a magical pair of glasses. When you put on these glasses while listening to the orchestra, instead of hearing all the sounds mixed together, you start to hear each instrument separately. The violin, the trumpet, the drums, all become individually distinguishable. This is similar to a signal in the frequency (or spectral) domain.</p>
+<p><strong>Frequency (Spectral) Domain:</strong> The frequency domain is a representation of a signal that shows the different frequencies (like the individual notes played by different instruments) that make up the overall signal. When you plot the signal in the frequency domain, you can see the amplitude (how loud each instrument is playing) for each frequency (each instrument’s note). This representation is very useful when you want to analyze the signal in terms of its constituent frequencies.</p>
+<p>In summary:</p>
+<ul class="simple">
+<li><p>The time domain representation of a signal shows how the signal changes over time.</p></li>
+<li><p>The frequency domain representation of a signal shows the constituent frequencies of the signal.</p></li>
+</ul>
+<p>In signal processing, we often convert signals from the time domain to the frequency domain (and vice versa) because certain types of analysis and processing are easier to perform in the frequency domain. This transformation is typically done using a mathematical technique called the Fourier transform.</p>
+</section>
+</section>
+<section id="fourier-transform">
+<h2>Fourier Transform<a class="headerlink" href="#fourier-transform" title="Link to this heading"></a></h2>
+<p>Fourier transform is a way to transform a signal from time domain to frequency domain (roughly speaking). We can use the <code class="docutils literal notranslate"><span class="pre">np.fft.fft</span></code> function to compute the one-dimensional n-point discrete Fourier Transform (DFT).  We use <code class="docutils literal notranslate"><span class="pre">np.abs</span></code> to compute the absolute value of each element in the array to get what is called the magnitude response of the spectrum:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="c1"># Time variable</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># A 5 Hz waveform</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1">#Add Noise</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">n</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this code, we apply the Fourier transform to our noisy signal, but how would we visualize this and identify the frequencies?  For this we must incorporate the sampling rate.  At the end of the day, were working with digital signals, therefore it is more accurate to use a waveform model</p>
+<p>Also… let’s start using values/units closer to reality.  The RF spectrum we work with generally ranges from VHF through Ka Band (30 MHz to 40 GHz).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="mf">100e6</span> <span class="c1">#Center frequency, 100 MHz</span>
+<span class="n">Fs</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="c1">#Sampling frequency, 1 GHz (1 GSps)</span>
+
+<span class="n">sample_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span> <span class="c1">#Index tracking sample number np.arange gives a range of values [0,1,2,...,499] (increments by 1 by default)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc</span> <span class="o">*</span> <span class="n">sample_num</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sample_num</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">40</span><span class="p">]</span><span class="o">/</span><span class="n">Fs</span><span class="p">,</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">40</span><span class="p">],</span><span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">.3</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;time (seconds)&#39;</span><span class="p">)</span>
+
+<span class="c1">#Add Noise</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">n</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="c1">#f = np.linspace(0,Fs,len(A))</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">Fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">Fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="c1">#Magnitude</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="c1">#Phase</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;frequency (MHz)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/time_freq.png" src="../_images/time_freq.png" />
+<p>The key to mapping frequency from sample rate in the x-axis tick marks for the spectrum is <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">=</span> <span class="pre">np.linspace(-Fs/2,Fs/2,len(A))</span></code>.  Remember the FFT utilizes provides the normalized frequency spectrum between <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(2\pi\)</span>, but often a centered spectrum is easier to analyze, hence we use <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">=</span> <span class="pre">np.fft.fftshift(A)</span></code>.  <strong>CAUTION</strong> do not use <code class="docutils literal notranslate"><span class="pre">`fftshift`</span></code> in combination with computations involving the FFT, it will be incorrect.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Simulation vs. Reality</strong> : Let’s take a moment to elaborate on what was generated, a cosine (or sine) wave consists of a single frequency, therefore in the frequency domain we expect a single point whose peak is proportional to the signal power.  The reason for the two lines here is that the real-valued component (in this case the signal is all-real) has a symmetry about the y-axis (a negative frequency).  This negative frequency, while purely theoretical, must be incorporated in our models for real-life applications where issues with unwanted images get included.</p>
+</div>
+</section>
+<section id="signal-filtering">
+<h2>Signal Filtering<a class="headerlink" href="#signal-filtering" title="Link to this heading"></a></h2>
+<p>Filtering is a method to remove certain ranges of frequencies. For example, we could use a simple mean filter (also known as a moving average filter) to smooth our signal, <span class="math notranslate nohighlight">\(\textbf{y} = \textbf{a} * \textbf{h}\)</span>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Time variable</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># A 5 Hz waveform</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1">#Add Noise</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">n</span>
+
+<span class="n">window_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">window_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">window_size</span>
+
+<span class="c1"># convolve the input signal with the filter kernel</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This applies a moving average filter to our noisy signal and plots the smoothed signal.  Convolution is an operation found in various areas of, refer to [1,2] for more details on the discrete time (vector) implementation.</p>
+<img alt="../_images/cosine_wave_noise_filtered.png" src="../_images/cosine_wave_noise_filtered.png" />
+<p>Remember, this is a very basic introduction. For more sophisticated signal processing tasks, you might want to look at the SciPy library, which provides more specific signal processing functionality. For complex filters, you would use convolution in the frequency domain, or use libraries such as SciPy’s <cite>signal</cite> module, which provide ready-to-use filter design and application functions.</p>
+<p>Generate noisy sine waves with a frequency of 200 MHz and 1200 MHz (1.2 GHz) and then apply a low-pass Butterworth filter to it with a cut-off frequency of 500 MHz.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">butter</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">freqz</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+
+<span class="n">fft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span>
+<span class="k">def</span> <span class="nf">ffts</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c1"># Generate a noisy sine wave</span>
+<span class="n">fc1</span> <span class="o">=</span> <span class="mf">200e6</span> <span class="c1">#Center frequency, 200 MHz</span>
+<span class="n">fc2</span> <span class="o">=</span> <span class="mf">1200e6</span> <span class="c1">#Center frequency, 300 MHz</span>
+<span class="n">Fs</span> <span class="o">=</span> <span class="mf">10e9</span> <span class="c1">#Sampling frequency, 10 GHz (10 GSps)</span>
+
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#Noise standard deviation</span>
+
+
+<span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">y2</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y1</span><span class="p">))</span>
+<span class="n">Ys</span> <span class="o">=</span> <span class="n">ffts</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Design the Butterworth filter</span>
+<span class="n">cutoff</span> <span class="o">=</span> <span class="mf">500e6</span>
+<span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">Wn</span> <span class="o">=</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">btype</span><span class="o">=</span><span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="n">fs</span> <span class="o">=</span> <span class="n">Fs</span><span class="p">,</span> <span class="n">analog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1">#Determine frequency response</span>
+<span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">freqz</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span> <span class="n">worN</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Ys</span><span class="p">)),</span> <span class="n">whole</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="c1"># H = np.hstack([np.conj(h[-1:1:-1]),h])</span>
+
+<span class="c1"># Apply the filter</span>
+<span class="n">y_filtered</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">Ys_filtered</span> <span class="o">=</span> <span class="n">ffts</span><span class="p">(</span><span class="n">y_filtered</span><span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">Fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">Fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">Ys</span><span class="p">))</span>
+<span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">sharex</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Ys</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">300</span><span class="p">])</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Ys_filtered</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">300</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;frequency (MHz)&#39;</span><span class="p">)</span>
+
+<span class="n">fig1</span><span class="p">,</span><span class="n">axes1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">axes1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+<span class="n">axes1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+<span class="n">axes1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;frequency (MHz)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/filtered_sine.png" src="../_images/filtered_sine.png" />
+<p>Note in the figure on the bottom that the higher frequency sine wave has been removed.  Here is a look at the frequency response of the filter to provide some more insight.  The top plot shows the magnitude response, which we see that outside our cutoff (or stopband) frequency, 500 MHz, is significantly lower.  The phase response on the bottom, while it may not appear to yield much insight at first, shows that inside the <span class="math notranslate nohighlight">\(\pm\)</span> 500 MHz (or the passband) that the phase is “linear”.  It is typical in good filter design to produce linear or near-linear phase so that the distortions accumulated while filtering are predictable, i.e. group delay.  Most signal processing texts will go into more detail, see [1,2,3].</p>
+<img alt="../_images/butter_freq_filter_response.png" src="../_images/butter_freq_filter_response.png" />
+</section>
+<section id="multi-rate-signal-processing">
+<h2>Multi-Rate Signal Processing<a class="headerlink" href="#multi-rate-signal-processing" title="Link to this heading"></a></h2>
+<p>Imagine you’re at a sports game and you want to capture the most crucial moments, both as photographs and videos.</p>
+<ol class="arabic simple">
+<li><p><strong>Photographs (Lower Rate):</strong> You snap a few photos occasionally — maybe one every few minutes. This is analogous to “down-sampling” or “decimation” in multi-rate signal processing. You’re capturing fewer frames over a certain period, thereby reducing the “data rate.”</p></li>
+<li><p><strong>Videos (Higher Rate):</strong> Now, when there’s a crucial play, you switch to recording a video at 60 frames per second. Here, you’re capturing a lot of frames in a short amount of time. This is similar to “up-sampling” or “interpolation,” where you increase the data rate.</p></li>
+</ol>
+<p>In the world of digital signal processing, “sampling” is like taking these photos or videos. It’s how we convert real-world signals (like sound or radio waves) into digital data that computers and electronics can understand.  Just like in our sports game scenario, sometimes we want to process some parts of a signal at a higher “frame rate” (or data rate) because there’s more happening there. Other times, when there’s less happening, we might choose a lower rate to save on data and processing power.</p>
+<p><strong>Why Do We Do Multi-Rate Signal Processing?</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Efficiency:</strong> By processing signals at rates that match their content, we can save computational resources, storage, and bandwidth.</p></li>
+<li><p><strong>Flexibility:</strong> Multi-rate processing allows us to design systems that can adapt to different situations. Think of a music streaming service that switches to a lower quality (rate) when your internet connection is weak and a higher quality when it’s strong.</p></li>
+<li><p><strong>Quality:</strong> Sometimes, to achieve certain results (like filtering out noise or other unwanted parts of a signal), it’s beneficial to first increase the rate of the signal, process it, and then bring it back down.</p></li>
+</ol>
+<p>In Summary:</p>
+<p>Multi-rate digital signal processing is like having a camera that can switch between taking occasional photos and shooting high-frame-rate videos, depending on what’s happening. It’s about adapting the “rate” of processing to best match the signal’s content or the system’s requirements, leading to more efficient and flexible systems. Refer to [3] for more details.</p>
+<section id="decimation-downsampling">
+<h3>Decimation (Downsampling)<a class="headerlink" href="#decimation-downsampling" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">butter</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">freqz</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+
+<span class="n">fft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span>
+<span class="k">def</span> <span class="nf">ffts</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c1"># Generate a noisy sine wave</span>
+<span class="n">fc1</span> <span class="o">=</span> <span class="mf">200e6</span> <span class="c1">#Center frequency, 200 MHz</span>
+<span class="n">fc2</span> <span class="o">=</span> <span class="mf">1200e6</span> <span class="c1">#Center frequency, 300 MHz</span>
+<span class="n">Fs</span> <span class="o">=</span> <span class="mf">10e9</span> <span class="c1">#Sampling frequency, 10 GHz (10 GSps)</span>
+<span class="n">ds_fac</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1">#Decimation (Downsample) factor</span>
+<span class="n">Fs_dec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Fs</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
+
+
+<span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">y2</span>
+
+<span class="c1"># Design the Butterworth filter</span>
+<span class="n">cutoff</span> <span class="o">=</span> <span class="mf">500e6</span>
+<span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">Wn</span> <span class="o">=</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">btype</span><span class="o">=</span><span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="n">fs</span> <span class="o">=</span> <span class="n">Fs</span><span class="p">,</span> <span class="n">analog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">y1_dec</span> <span class="o">=</span> <span class="n">y1</span><span class="p">[::</span><span class="n">ds_fac</span><span class="p">]</span>
+<span class="n">y_dec</span> <span class="o">=</span> <span class="n">y</span><span class="p">[::</span><span class="n">ds_fac</span><span class="p">]</span>
+<span class="n">y_filtered</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">y_filtered_dec</span> <span class="o">=</span> <span class="n">y_filtered</span><span class="p">[::</span><span class="n">ds_fac</span><span class="p">]</span>
+
+
+
+<span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y1_dec</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y_dec</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y_filtered_dec</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Original&#39;</span><span class="p">,</span><span class="s1">&#39;Decimated&#39;</span><span class="p">,</span><span class="s1">&#39;Filtered, then Decimated&#39;</span><span class="p">])</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;sample&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/filter_decimation.png" src="../_images/filter_decimation.png" />
+</section>
+<section id="interpolation-upsampling">
+<h3>Interpolation (Upsampling)<a class="headerlink" href="#interpolation-upsampling" title="Link to this heading"></a></h3>
+<p>More than just inserting zeros…</p>
+<p>Imagine you are looking at a connect-the-dots puzzle, but some of the dots are missing. You can still visualize the shape or picture by drawing straight lines between the dots you can see, even if there are gaps.  Interpolation is like filling in those missing dots so that the picture is more complete and flows smoothly. Instead of having jagged straight lines, you can get a curve or a smoother line that makes more sense and provides a better idea of the whole picture.  For a simpler example, think about the temperature readings at noon over a week. If you only have readings for Monday, Wednesday, and Friday, but you want to guess (or estimate) what the temperature was on Tuesday and Thursday, you could use the readings from the days you know to make a good guess. Interpolation is the mathematical way of making that guess.  In essence, interpolation is about using what you know to estimate what you don’t know. It helps in filling gaps or making smoother transitions between known points or values.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">linear_interpolation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">upsample_factor</span><span class="p">):</span>
+    <span class="n">xnew</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">x_new_ii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">upsample_factor</span><span class="p">)</span>
+        <span class="n">xnew</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x_new_ii</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xnew</span>
+
+
+<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">upsample_factor</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">xnew</span> <span class="o">=</span> <span class="n">linear_interpolation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">upsample_factor</span><span class="p">)</span>
+<span class="n">tnew</span> <span class="o">=</span> <span class="n">linear_interpolation</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">upsample_factor</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+<span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tnew</span><span class="p">,</span><span class="n">xnew</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Interpolated Signal&#39;</span><span class="p">,</span><span class="s1">&#39;Original Samples&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="../_images/linear_interp_simple.png" src="../_images/linear_interp_simple.png" />
+<p>The Nyquist-Shannon sampling theorem provides a prescription for how to perfectly reconstruct a continuous-time signal from its samples, under certain conditions. Specifically, it states that a band-limited signal <span class="math notranslate nohighlight">\(x(t)\)</span> that contains no frequency components higher than <span class="math notranslate nohighlight">\(f_{\text{max}}\)</span> can be completely reconstructed from its samples if it is sampled at a rate <span class="math notranslate nohighlight">\(f_s &gt; 2 f_{\text{max}}\)</span>.</p>
+<p>The formula for reconstruction is:</p>
+<p><span class="math notranslate nohighlight">\(x(t) = \sum_{n=-\infty}^{\infty} x[n] \cdot \text{sinc}\left(\frac{t - nT}{T}\right)\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(x[n]\)</span> are the samples of the signal <span class="math notranslate nohighlight">\(x(t)\)</span> taken at intervals <span class="math notranslate nohighlight">\(T = 1/f_s\)</span>, and <span class="math notranslate nohighlight">\(\text{sinc}(x) = \frac{\sin(\pi x)}{\pi x}\)</span>.</p>
+<p>Here’s a Python example that demonstrates the reconstruction of a signal using sinc functions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="c1"># Define parameters</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="mi">500</span>  <span class="c1"># Sampling frequency in Hz</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">fs</span>  <span class="c1"># Sampling interval</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fs</span><span class="p">)</span>  <span class="c1"># Time vector from 0 to 1 second</span>
+
+<span class="c1"># Create a sample signal: sum of two sine waves</span>
+<span class="n">f1</span><span class="p">,</span> <span class="n">f2</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">50</span>  <span class="c1"># frequencies of the sine waves in Hz</span>
+<span class="c1">#x = np.sin(2 * np.pi * f1 * t)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f2</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Plot original signal</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Samples&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
+
+<span class="c1"># Now let&#39;s reconstruct the signal from its samples</span>
+<span class="n">reconstructed_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># We only consider a finite number of samples for the reconstruction for demonstration purposes.</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+    <span class="n">sinc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sinc</span><span class="p">((</span><span class="n">t</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span>  <span class="c1"># sinc function centered at nT</span>
+    <span class="n">reconstructed_signal</span> <span class="o">+=</span> <span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">*</span> <span class="n">sinc</span>
+
+<span class="c1"># Plot reconstructed signal</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Reconstructed Signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">reconstructed_signal</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time [s]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This code snippet creates a sample signal that is a sine wave at 50 Hz. It then reconstructs the signal from its samples using sinc functions, following the Nyquist-Shannon sampling theorem.</p>
+<p>Remember that in this example we consider a finite number of samples for reconstruction. In the ideal mathematical model, the reconstruction sum goes from :math:` -infty` to <span class="math notranslate nohighlight">\(\infty\)</span>, but this is not possible to implement on a computer. Nonetheless, even with the finite sum, you will see that the original and reconstructed signals closely match, illustrating the power of the theorem.</p>
+<img alt="../_images/signal_reconstruction.png" src="../_images/signal_reconstruction.png" />
+</section>
+</section>
+<section id="center-frequency-and-mixing">
+<h2>Center Frequency and Mixing<a class="headerlink" href="#center-frequency-and-mixing" title="Link to this heading"></a></h2>
+<p>Frequency conversion and the use of intermediate frequency (IF) stages are fundamental concepts in radio and radar systems. These techniques are employed for several reasons, enhancing the performance, flexibility, and functionality of communication and sensing systems. Here’s a detailed overview:</p>
+<section id="reasons-for-frequency-conversion">
+<h3>Reasons for Frequency Conversion<a class="headerlink" href="#reasons-for-frequency-conversion" title="Link to this heading"></a></h3>
+<p><strong>Improving Antenna Performance:</strong>
+- Antennas are typically more efficient when they are about half the wavelength of the transmitted or received signal. For high-frequency signals (like those in the GHz range), this would mean very small antennas. By converting to a lower IF, you can use a more efficiently sized antenna.</p>
+<p><strong>Easing Filter Requirements:</strong>
+- Filtering high-frequency signals to remove unwanted components (like noise or adjacent channel signals) is challenging because it requires very sharp filters. It’s easier and more cost-effective to filter at a lower IF.</p>
+<p><strong>Enhancing Frequency Selectivity:</strong>
+- When signals are downconverted to IF, it’s easier to achieve high selectivity (distinguishing the desired signal from nearby frequencies), as filter performance is generally better at lower frequencies.</p>
+<p><strong>Facilitating Amplification:</strong>
+- Amplifying high-frequency signals without distortion is more challenging and expensive than amplifying lower-frequency signals. Downconversion allows for more effective and efficient amplification at IF.</p>
+<p><strong>Allowing for Frequency Multiplexing:</strong>
+- Multiple signals can be upconverted to different carrier frequencies, combined, and transmitted simultaneously over a single channel (frequency multiplexing). At the receiver, they are then downconverted and separated, which is more manageable at IF.</p>
+</section>
+<section id="use-of-intermediate-frequency-stages">
+<h3>Use of Intermediate Frequency Stages:<a class="headerlink" href="#use-of-intermediate-frequency-stages" title="Link to this heading"></a></h3>
+<p><strong>Improving Gain and Noise Performance:</strong>
+- By using multiple stages of IF, the system can achieve high gain more linearly and with better noise performance. This is crucial in both communication and radar systems for detecting weak signals.</p>
+<p><strong>Simplifying Tuning:</strong>
+- In receivers, especially those with wide tuning ranges (like in a broadcast receiver), it’s easier to implement the variable tuning at a fixed IF rather than at the variable incoming frequency.</p>
+<p><strong>Enabling Complex Signal Processing:</strong>
+- Many advanced signal processing techniques (like certain types of demodulation or digital signal processing) are more effectively implemented at lower frequencies. Downconverting to IF facilitates this.</p>
+<p><strong>Facilitating Doppler Processing in Radar Systems:</strong>
+- In radar, downconverting to IF allows for effective Doppler processing, which is used to measure the velocity of targets.</p>
+<p><strong>Allowing for Better Integration and Miniaturization:</strong>
+- Modern electronic components (like integrated circuits) are better suited for lower-frequency operations. Using IF stages makes it easier to integrate and miniaturize the system.</p>
+<p>In summary, frequency conversion and IF stages are critical in radio and radar technology, as they allow for more efficient antenna design, easier filtering and amplification, improved frequency selectivity, and effective implementation of advanced signal processing techniques. These techniques enable the practical realization of high-performance, versatile, and compact communication and sensing systems.</p>
+<p>Let’s take a look at some examples:</p>
+</section>
+<section id="center-frequency">
+<h3>Center Frequency<a class="headerlink" href="#center-frequency" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>This is the frequency at the center of a bandwidth of interest in a signal. In radio communications, it refers to the frequency of a carrier wave.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Carrier Signal</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Sampling frequency</span>
+<span class="n">fc</span> <span class="o">=</span> <span class="mi">100</span>   <span class="c1"># Center frequency (carrier frequency)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">fs</span>
+<span class="n">carrier</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">carrier</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Carrier Signal at Center Frequency&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Amplitude&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="mixing-a-signal-with-a-carrier">
+<h4>Mixing a Signal with a Carrier<a class="headerlink" href="#mixing-a-signal-with-a-carrier" title="Link to this heading"></a></h4>
+<blockquote>
+<div><ul class="simple">
+<li><p>Mixing involves combining two signals. In the context of radio communications, it typically refers to combining a baseband signal (like audio or data) with a carrier signal (a sinusoidal wave at a much higher frequency). This process is fundamental to modulating a signal for transmission.</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="upconversion">
+<h3>Upconversion<a class="headerlink" href="#upconversion" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Upconversion is the process of shifting a signal from a lower frequency (baseband) to a higher frequency. This is typically done for transmission purposes, where a low-frequency baseband signal is shifted to a high-frequency carrier.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Carrier Signal</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Sampling frequency</span>
+<span class="n">fc</span> <span class="o">=</span> <span class="mi">100</span>   <span class="c1"># Center frequency (carrier frequency)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">fs</span>
+<span class="n">carrier</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Baseband Signal (On-Off Keying)</span>
+<span class="n">num_chips</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">symbol_rate</span> <span class="o">=</span> <span class="mi">20</span><span class="o">/</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">num_chips</span><span class="p">)</span>  <span class="c1"># Random binary data</span>
+<span class="n">baseband</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="n">num_chips</span><span class="p">))</span>  <span class="c1"># Repeat each bit for a duration</span>
+
+<span class="c1"># Mixing</span>
+<span class="n">mixed_signal</span> <span class="o">=</span> <span class="n">baseband</span> <span class="o">*</span> <span class="n">carrier</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">carrier</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Carrier&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">baseband</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Baseband&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">mixed_signal</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Mixed Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Amplitude&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">14</span><span class="p">)</span>
+
+
+<span class="c1"># Frequency Domain</span>
+<span class="n">Carrier</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">carrier</span><span class="p">))</span>
+<span class="n">Baseband</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">baseband</span><span class="p">))</span>
+<span class="n">Mixed_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">mixed_signal</span><span class="p">))</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Carrier</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Carrier&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Baseband</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Baseband&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Mixed_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Mixed Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Frequency (Hz)&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Magnitude&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">14</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/ook_mixed_time.png" src="../_images/ook_mixed_time.png" />
+<img alt="../_images/ook_mixed_freq.png" src="../_images/ook_mixed_freq.png" />
+<p>Let’s look at the frequency domain closer, in the mixed signal, note that there is an <strong>image</strong> in the “negative” frequencies.  While practically the concept of “negative frequency” isn’t really a thing, this theoretical concept plays a role in practice.  Note that the carrier used was an all real signal, and that the spectrum of a real signal is always symmetric (if <code class="docutils literal notranslate"><span class="pre">`sine`</span></code> used, it’s actually negative symmetric). One might try downconversion by simply upconverting the image.  Let’s see what happens</p>
+</section>
+<section id="downconversion">
+<h3>Downconversion<a class="headerlink" href="#downconversion" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Downconversion is the opposite of upconversion. It’s the process of shifting a signal from a higher frequency to a lower frequency. This is usually done at the receiver end to convert the received high-frequency signal back to its original baseband form.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">butter</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">freqz</span>
+
+<span class="c1"># Carrier Signal</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Sampling frequency</span>
+<span class="n">fc</span> <span class="o">=</span> <span class="mi">100</span>   <span class="c1"># Center frequency (carrier frequency)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">fs</span>
+<span class="n">carrier</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Baseband Signal (On-Off Keying)</span>
+<span class="n">num_chips</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">symbol_rate</span> <span class="o">=</span> <span class="n">num_chips</span><span class="o">/</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">num_chips</span><span class="p">)</span>  <span class="c1"># Random binary data</span>
+<span class="n">baseband</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="n">num_chips</span><span class="p">))</span>  <span class="c1"># Repeat each bit for a duration</span>
+
+<span class="c1"># Design the Butterworth filter</span>
+<span class="n">cutoff</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">Wn</span> <span class="o">=</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">btype</span><span class="o">=</span><span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="n">fs</span> <span class="o">=</span> <span class="n">fs</span><span class="p">,</span> <span class="n">analog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Mixing</span>
+<span class="n">mixed_signal</span> <span class="o">=</span> <span class="n">baseband</span> <span class="o">*</span> <span class="n">carrier</span>
+<span class="n">downconverted_signal</span> <span class="o">=</span> <span class="n">mixed_signal</span> <span class="o">*</span> <span class="n">carrier</span>
+
+<span class="c1">#Filtering</span>
+<span class="n">downconverted_filtered_signal</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">downconverted_signal</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">baseband</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Original Signal&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">downconverted_signal</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Downconverted Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">downconverted_filtered_signal</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Downconverted and Filtered Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Amplitude&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">14</span><span class="p">)</span>
+
+<span class="c1"># Frequency Domain</span>
+<span class="n">Baseband</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">baseband</span><span class="p">))</span>
+<span class="n">Mixed_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">mixed_signal</span><span class="p">))</span>
+<span class="n">Downconverted_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">downconverted_signal</span><span class="p">))</span>
+<span class="n">Downconverted_filtered_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">downconverted_filtered_signal</span><span class="p">))</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Baseband</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Original Signal&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Downconverted_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Downconverted Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Downconverted_filtered_signal</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Downconverted and Filtered Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Frequency (Hz)&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Magnitude&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">14</span><span class="p">)</span>
+
+
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/ook_dc_time.png" src="../_images/ook_dc_time.png" />
+<p>![Alt text](../figs/ook_dc_freq.png?raw=true)</p>
+<p>As you can see, downconversion alone is not sufficient without filtering.  The added high-frequency components added in the additional image can cause processing errors. Hence, we applied a low-pass filter and design our <code class="docutils literal notranslate"><span class="pre">cutoff</span></code> to be the frequency at which we are sending On-Off Keyed symbols (40 per second or 40 Hz).</p>
+</section>
+<section id="complex-carrier">
+<h3>Complex Carrier<a class="headerlink" href="#complex-carrier" title="Link to this heading"></a></h3>
+<p>Often a real carrier is adopted for analog processes due to the need for two RF paths with complex-valued signal processing.  However, in the digital domain, it often makes more sense to work with complex values as follows.  We reuse our example, but use a complex exponential <code class="docutils literal notranslate"><span class="pre">np.exp()</span></code> instead.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">butter</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">freqz</span>
+
+<span class="c1"># Carrier Signal</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Sampling frequency</span>
+<span class="n">fc</span> <span class="o">=</span> <span class="mi">100</span>   <span class="c1"># Center frequency (carrier frequency)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">fs</span>
+<span class="n">carrier</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Baseband Signal (On-Off Keying)</span>
+<span class="n">num_chips</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">symbol_rate</span> <span class="o">=</span> <span class="n">num_chips</span><span class="o">/</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">num_chips</span><span class="p">)</span>  <span class="c1"># Random binary data</span>
+<span class="n">baseband</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="n">num_chips</span><span class="p">))</span>  <span class="c1"># Repeat each bit for a duration</span>
+
+<span class="c1"># Mixing</span>
+<span class="n">mixed_signal</span> <span class="o">=</span> <span class="n">baseband</span> <span class="o">*</span> <span class="n">carrier</span>
+<span class="n">downconverted_signal</span> <span class="o">=</span> <span class="n">mixed_signal</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">carrier</span><span class="p">)</span>
+
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">carrier</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">carrier</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Carrier&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">baseband</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">baseband</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Baseband&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">mixed_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">mixed_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Mixed Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">downconverted_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">downconverted_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Downconverted Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Amplitude&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">14</span><span class="p">)</span>
+
+
+<span class="c1"># Frequency Domain</span>
+<span class="n">Carrier</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">carrier</span><span class="p">))</span>
+<span class="n">Baseband</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">baseband</span><span class="p">))</span>
+<span class="n">Mixed_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">mixed_signal</span><span class="p">))</span>
+<span class="n">Downconverted_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">downconverted_signal</span><span class="p">))</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Carrier</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Carrier&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Baseband</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Baseband&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Mixed_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Mixed Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Downconverted_signal</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Downconverted Signal&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Frequency (Hz)&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Magnitude&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">14</span><span class="p">)</span>
+
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/ook_complex_time.png" src="../_images/ook_complex_time.png" />
+<img alt="../_images/ook_complex_freq.png" src="../_images/ook_complex_freq.png" />
+<p>There you have it, no filtering needed, you just need a conjugate (negative imaginary part) for downconversion of the carrier used previously for upconversion.</p>
+<p>You will see some more use of complex-valued signals in the next lab.</p>
+<p>References and Further Reading</p>
+<p>[1] Alan V. Oppenheim and Ronald W. Schafer. 2009. Discrete-Time Signal Processing (3rd. ed.). Prentice Hall Press, USA.</p>
+<p>[2] John G. Proakis and Dimitris G. Manolakis. 1996. Digital signal processing (3rd ed.): principles, algorithms, and applications. Prentice-Hall, Inc., USA.</p>
+<p>[3] Harris, Fredric J. Multirate signal processing for communication systems. CRC Press, 2022.</p>
+</section>
+</section>
+<section id="project">
+<h2>Project<a class="headerlink" href="#project" title="Link to this heading"></a></h2>
+<section id="problem-1-efficient-filtering">
+<h3>Problem 1: Efficient Filtering<a class="headerlink" href="#problem-1-efficient-filtering" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">lfilter</span></code> function applies the convolution in the time domain, which is colloquially known as linear filtering, but is actually inefficient compared to other methods.  In this problem we set up a demonstration that you will fill in the blanks for FFT convolution.  Both vectors being convolved must be zero padded to have the same length, the FFT of each vector is then multiplied together, and then we take the IFFT. Uncomment the line and fill in the <code class="docutils literal notranslate"><span class="pre">?</span></code> below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">butter</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">freqz</span><span class="p">,</span> <span class="n">firwin</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="n">fft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span>
+<span class="n">ifft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span>
+
+<span class="k">def</span> <span class="nf">ffts</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c1"># Generate a noisy sine wave</span>
+<span class="n">fc1</span> <span class="o">=</span> <span class="mf">200e6</span> <span class="c1">#Center frequency, 200 MHz</span>
+<span class="n">fc2</span> <span class="o">=</span> <span class="mf">1200e6</span> <span class="c1">#Center frequency, 1200 MHz</span>
+<span class="n">Fs</span> <span class="o">=</span> <span class="mf">10e9</span> <span class="c1">#Sampling frequency, 10 GHz (10 GSps)</span>
+
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#Noise standard deviation</span>
+
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x1</span><span class="p">))</span>
+
+<span class="c1"># Design the FIR filter</span>
+<span class="n">cutoff</span> <span class="o">=</span> <span class="mf">500e6</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">firwin</span><span class="p">(</span><span class="n">num_taps</span><span class="p">,</span> <span class="n">cutoff</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">Fs</span><span class="p">))</span>
+
+
+<span class="c1">#Determine convolution output length</span>
+<span class="c1">#num_zeros_pad_x = ?</span>
+<span class="c1">#num_zeros_pad_h = ?</span>
+<span class="c1">#convolution_output_length = ?</span>
+<span class="n">x_prefiltered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_zeros_pad_x</span><span class="p">)])</span>
+<span class="n">h_prefiltered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">h</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_zeros_pad_h</span><span class="p">)])</span>
+
+<span class="c1">#Perform convolution via FFT</span>
+<span class="c1">#X_prefiltered = ? #FFT x</span>
+<span class="c1">#H_prefiltered = ? #FFT h</span>
+<span class="c1">#X_fft_filtered = ? #Perform the filtering</span>
+<span class="c1">#x_fft_filtered = ? #IFFT of filtered output</span>
+
+<span class="c1">#Perform linear convolution</span>
+<span class="c1">#x_filtered = np.convolve(?,?,mode = &#39;full&#39;)</span>
+
+
+
+<span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">Fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">Fs</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">convolution_output_length</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">sharex</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ffts</span><span class="p">(</span><span class="n">x_prefiltered</span><span class="p">)))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ffts</span><span class="p">(</span><span class="n">x_filtered</span><span class="p">)))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ffts</span><span class="p">(</span><span class="n">x_fft_filtered</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>The expected output is</p>
+<img alt="../_images/fft_conv_problem_output.png" src="../_images/fft_conv_problem_output.png" />
+</section>
+<section id="problem-2">
+<h3>Problem 2<a class="headerlink" href="#problem-2" title="Link to this heading"></a></h3>
+<p>The following code generates a really annoying alternating set of beeping sounds between a low frequency (less annoying) and high frequency (extremely annoying).  CD audio samples at 44.1 kHz, and the human audible spectrum is between 20 Hz and 20 kHz, although, most people are deaf a lower than 20 kHz…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.io.wavfile</span> <span class="kn">import</span> <span class="n">write</span>
+
+<span class="n">rate</span> <span class="o">=</span> <span class="mi">44100</span> <span class="c1">#Sampling Rate (Hz)</span>
+<span class="n">LOW_FREQ</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># Low frequency (Hz)</span>
+<span class="n">HIGH_FREQ</span> <span class="o">=</span> <span class="mi">2000</span>  <span class="c1"># High frequency (Hz)</span>
+<span class="n">PULSE_DURATION</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Duration for each pulse (seconds)</span>
+<span class="n">NUM_PULSES</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Number of pulses for each frequency</span>
+
+<span class="c1"># Generate a single pulse for a given frequency</span>
+<span class="k">def</span> <span class="nf">generate_pulse</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">fs</span> <span class="o">*</span> <span class="n">duration</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">freq</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span>
+
+<span class="c1"># Create pulsed signal</span>
+<span class="n">low_pulse</span> <span class="o">=</span> <span class="n">generate_pulse</span><span class="p">(</span><span class="n">LOW_FREQ</span><span class="p">,</span> <span class="n">PULSE_DURATION</span><span class="p">,</span> <span class="n">rate</span><span class="p">)</span>
+<span class="n">high_pulse</span> <span class="o">=</span> <span class="n">generate_pulse</span><span class="p">(</span><span class="n">HIGH_FREQ</span><span class="p">,</span> <span class="n">PULSE_DURATION</span><span class="p">,</span> <span class="n">rate</span><span class="p">)</span>
+
+<span class="c1"># Concatenate the pulses to alternate between low and high frequencies</span>
+<span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">low_pulse</span><span class="p">,</span> <span class="n">high_pulse</span><span class="p">]),</span> <span class="n">NUM_PULSES</span><span class="p">)</span>
+
+<span class="n">scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">(</span><span class="n">signal</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span> <span class="o">*</span> <span class="mi">32767</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="s1">&#39;output_audio.wav&#39;</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">scaled</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Your task is to create filters to
+1. Read the <code class="docutils literal notranslate"><span class="pre">output_audio.wav</span></code> into a numpy array and filter out the high frequency (2 kHz signal).  Save the new signal as a new audio file and enjoy the “relaxing” low frequency pulse.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.io.wavfile</span> <span class="kn">import</span> <span class="n">write</span><span class="p">,</span> <span class="n">read</span>
+
+<span class="n">rate</span> <span class="o">=</span> <span class="mi">44100</span>
+<span class="n">LOW_FREQ</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># Low frequency (Hz)</span>
+<span class="n">HIGH_FREQ</span> <span class="o">=</span> <span class="mi">2000</span>  <span class="c1"># High frequency (Hz)</span>
+<span class="n">PULSE_DURATION</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Duration for each pulse (seconds)</span>
+<span class="n">NUM_PULSES</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Number of pulses for each frequency</span>
+<span class="n">signal</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;output_audio.wav&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">32767.0</span>
+
+<span class="c1"># Design the LPF and filter it here</span>
+<span class="c1">#new_signal = filter_signal(signal)</span>
+
+<span class="n">scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">(</span><span class="n">new_signal</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">new_signal</span><span class="p">))</span> <span class="o">*</span> <span class="mi">32767</span><span class="p">)</span>
+
+<span class="n">write</span><span class="p">(</span><span class="s1">&#39;filtered_out_high_audio.wav&#39;</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">scaled</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lab0-IntroPythonNumpy.html" class="btn btn-neutral float-left" title="Lab 0 - Introduction to Python and Numpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lab2-TxRx.html" class="btn btn-neutral float-right" title="Lab 2 - Transmitter and Receivers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Blinn.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

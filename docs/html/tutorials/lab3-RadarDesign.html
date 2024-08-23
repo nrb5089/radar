@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 3 - Radar Search and Track &mdash; radar 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Lab 2 - Transmitter and Receivers" href="lab2-TxRx.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            radar
+              <img src="../_static/radar_thumbnail.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html">radar.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html#module-radar.core">radar.core</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 3 - Radar Search and Track</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#scanning-the-area-or-volume">Scanning the Area or Volume:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#design-example-basic-360-azimuth-scan">Design Example: Basic 360 Azimuth Scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#design-example-dwell-and-switch">Design Example: Dwell and Switch</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">radar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lab 3 - Radar Search and Track</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/lab3-RadarDesign.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lab-3-radar-search-and-track">
+<h1>Lab 3 - Radar Search and Track<a class="headerlink" href="#lab-3-radar-search-and-track" title="Link to this heading"></a></h1>
+<p>The search function of a radar system refers to its capability to scan a volume of space to detect and locate targets. This function is crucial in various applications, including air traffic control, weather monitoring, military surveillance, and maritime navigation. The implementation of the search function can vary depending on the specific type of radar and its intended use. Here’s a general description of how a search function typically works in a radar system:</p>
+<section id="scanning-the-area-or-volume">
+<h2>Scanning the Area or Volume:<a class="headerlink" href="#scanning-the-area-or-volume" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Mechanical Scanning:</strong> Traditional radar systems use a rotating antenna to sweep a radar beam across the sky or sea surface. The rotation speed and the beamwidth determine how quickly an area is scanned.</p></li>
+<li><p><strong>Electronic Scanning (Phased Array):</strong> More advanced systems use electronically steered phased array antennas. These systems can steer the radar beam rapidly in different directions without moving the antenna, allowing for quicker and more flexible scanning.</p></li>
+</ul>
+</div></blockquote>
+<p>In radar systems, especially sophisticated ones like phased array radars, the <strong>scheduling hierarchy</strong> is crucial for effective surveillance and tracking. This hierarchy typically involves organizing scan positions, dwells, and multiple Pulse Repetition Intervals (PRIs) within each dwell. Here’s an overview of how this hierarchy is structured:</p>
+<dl class="simple">
+<dt><strong>Scan Positions</strong></dt><dd><ul class="simple">
+<li><p><strong>Definition</strong>: A scan position refers to a specific orientation or angle of the radar beam. In mechanically steered radars, this would be a physical position of the antenna. In phased array radars, it refers to the beam’s electronic steering to a particular azimuth and elevation.</p></li>
+<li><p><strong>Purpose</strong>: By changing scan positions, the radar covers different areas of the surveillance volume.</p></li>
+<li><p><strong>Scheduling</strong>: The radar system schedules scan positions to ensure complete coverage of the search area. This can be done in a predetermined pattern or adaptively based on the situation (e.g., focusing on areas of interest).</p></li>
+</ul>
+</dd>
+<dt><strong>Dwells</strong></dt><dd><ul class="simple">
+<li><p><strong>Definition</strong>: A dwell is a period during which the radar beam is focused on a specific scan position. During a dwell, the radar transmits and receives multiple pulses to gather data from that position.</p></li>
+<li><p><strong>Purpose</strong>: Dwelling allows the radar to collect enough data to determine target information at that scan position, including range, velocity (through Doppler processing), and sometimes angular information.</p></li>
+<li><p><strong>Scheduling</strong>: The duration and frequency of dwells are scheduled based on operational requirements. Longer dwells can provide more data (improving detection and resolution) but reduce the radar’s ability to quickly scan other areas.</p></li>
+</ul>
+</dd>
+<dt><strong>Multiple PRIs per Dwell Position</strong></dt><dd><ul class="simple">
+<li><p><strong>Definition</strong>: Within each dwell, the radar may use multiple PRIs. The PRI is the time interval between consecutive radar pulses. Using multiple PRIs helps in <strong>resolving range and velocity ambiguities</strong>.</p></li>
+<li><p><strong>Purpose</strong>: By varying the PRI, the radar can distinguish between targets that would otherwise appear in the same range or velocity bins due to the folding effect in range or Doppler processing.</p></li>
+<li><p><strong>Scheduling</strong>: The selection and scheduling of PRIs within a dwell are critical. The pattern of PRIs can be staggered or switched between different values to optimize ambiguity resolution. This scheduling is often based on algorithms designed to maximize target detection and resolution while managing ambiguities.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Combined Hierarchy</strong>
+- In operation, the radar system schedules a series of scan positions, covering the required search area.
+- At each scan position, the radar dwells for a certain time, transmitting and receiving multiple pulses.
+- Within each dwell, the radar cycles through a sequence of PRIs, adapting as necessary to resolve ambiguities and optimize target detection.</p>
+<p>This hierarchical scheduling allows radar systems to balance the competing needs of area coverage, target detection, and target tracking. Advanced radar systems, especially those with electronic beam steering, can dynamically adjust this hierarchy based on real-time data and mission priorities. For example, a radar might momentarily focus on an area of interest with longer dwells and specific PRI patterns before resuming its broader search pattern.</p>
+<p><strong>Specialized Features:</strong>
+- <strong>Search Patterns:</strong> Some radars can perform specialized search patterns, like sector scans (scanning a specific sector more intensely) or random search patterns (to avoid detection or jamming in military applications).
+- <strong>Resolution and Accuracy:</strong> Higher resolution radars can distinguish between closely spaced targets and provide more accurate position information.
+- <strong>Integration with Other Systems:</strong> Radars are often integrated with other sensor systems and databases for enhanced target identification and situational awareness.</p>
+<p>The specific implementation of a radar’s search function will depend on its intended application and technological capabilities. Advanced systems can perform complex search patterns and integrate data from multiple sources for a comprehensive understanding of the scanned environment.</p>
+<p><strong>Bottom Line: At the end of the day, any hirarchical scheduler is just a nested state machine</strong></p>
+<p>In this section we decide to introduce the problems within the sections themselves</p>
+<p>Please use the following parameters for the following design problems:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">radar_params</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1">#Transmitter Parameters</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;x_loc_m_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;y_loc_m_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;z_loc_m_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;x_vel_mps_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;y_vel_mps_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;z_vel_mps_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;x_acc_mps2_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;y_acc_mps2_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;z_acc_mps2_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;rf_sampling_frequency_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">500e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;if_sampling_frequency_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;bb_sampling_frequency_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">25e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;rf_center_frequency_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">115e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;rf_bandwidth_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">20e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;transmit_power_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1">#per element</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;internal_loss_db_tx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1">#Receiver Parameters</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;x_loc_m_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;y_loc_m_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;z_loc_m_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;x_vel_mps_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;y_vel_mps_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;z_vel_mps_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;x_acc_mps2_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;y_acc_mps2_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;z_acc_mps2_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;rf_sampling_frequency_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">500e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;if_sampling_frequency_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;bb_sampling_frequency_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">25e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;rf_center_frequency_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">115e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;rf_bandwidth_hz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">20e6</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;internal_loss_db_rx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1">#Detection</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;num_reference_cells_range_one_sided&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;num_guard_cells_range_one_sided&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;num_reference_cells_doppler_one_sided&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;num_guard_cells_doppler_one_sided&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;probability_false_alarm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;probability_false_alarm_2D&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-2</span>
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;detector_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;square&#39;</span>
+
+<span class="c1">#Scatterer/Target</span>
+<span class="n">target_params</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;x_loc_m&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">31000.0</span> <span class="c1">#100 nmi</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;y_loc_m&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;z_loc_m&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10668</span> <span class="c1">#35kft</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;x_vel_mps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">250</span> <span class="c1">#550 knots Remember this is relative to the radar</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;y_vel_mps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;z_vel_mps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;x_acc_mps2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">.1</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;y_acc_mps2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">.001</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;z_acc_mps2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">.001</span>
+<span class="n">target_params</span><span class="p">[</span><span class="s1">&#39;radar_cross_section_dbsm&#39;</span><span class="p">]</span> <span class="o">=</span><span class="mi">25</span>
+</pre></div>
+</div>
+</section>
+<section id="design-example-basic-360-azimuth-scan">
+<h2>Design Example: Basic 360 Azimuth Scan<a class="headerlink" href="#design-example-basic-360-azimuth-scan" title="Link to this heading"></a></h2>
+<p>![Alt text](../figs/ppi_scope.png?raw=true)</p>
+<p>Design a 360 degree continuous scan (approximation). This is the process that genrates the data to eventually display on a Planned Position Indicator (PPI) as shown above (image source from <a class="reference external" href="https://en.wikipedia.org/wiki/File:Ppi_scope.png">https://en.wikipedia.org/wiki/File:Ppi_scope.png</a>).  Within your simulation <code class="docutils literal notranslate"><span class="pre">`init`</span></code>, initialize a sinc antenna pattern, which is a generic pattern for several directional antennas (i.e., Yagi, horn).</p>
+<p>The parameter dicts passed to your <code class="docutils literal notranslate"><span class="pre">`init`</span></code> looks like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">antenna_params</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">antenna_params</span><span class="p">[</span><span class="s1">&#39;azimuth_beam_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+<span class="n">antenna_params</span><span class="p">[</span><span class="s1">&#39;elevation_beam_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+<span class="n">antenna_params</span><span class="p">[</span><span class="s1">&#39;peak_antenna_gain_db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">antenna_params</span><span class="p">[</span><span class="s1">&#39;first_side_lobe_down_az_db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">antenna_params</span><span class="p">[</span><span class="s1">&#39;first_side_lobe_down_el_db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">antenna_params</span><span class="p">[</span><span class="s1">&#39;second_side_lobe_down_az_db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">antenna_params</span><span class="p">[</span><span class="s1">&#39;second_side_lobe_down_el_db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">antenna_params</span><span class="p">[</span><span class="s1">&#39;back_lobe_down_db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span>
+
+
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;wf_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;single&#39;</span><span class="p">,</span> <span class="s1">&#39;pw&#39;</span><span class="p">:</span> <span class="mf">100e-6</span><span class="p">,</span> <span class="s1">&#39;pri&#39;</span><span class="p">:</span> <span class="mf">1500e-6</span><span class="p">,</span> <span class="s1">&#39;lfm_excursion&#39;</span> <span class="p">:</span> <span class="mf">2e6</span><span class="p">,</span> <span class="s1">&#39;pris_per_cpi&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+                        <span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;single&#39;</span><span class="p">,</span> <span class="s1">&#39;pw&#39;</span><span class="p">:</span> <span class="mf">100e-6</span><span class="p">,</span> <span class="s1">&#39;pri&#39;</span><span class="p">:</span> <span class="mf">1550e-6</span><span class="p">,</span> <span class="s1">&#39;lfm_excursion&#39;</span> <span class="p">:</span> <span class="mf">2e6</span><span class="p">,</span> <span class="s1">&#39;pris_per_cpi&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+                        <span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;single&#39;</span><span class="p">,</span> <span class="s1">&#39;pw&#39;</span><span class="p">:</span> <span class="mf">100e-6</span><span class="p">,</span> <span class="s1">&#39;pri&#39;</span><span class="p">:</span> <span class="mf">1100e-6</span><span class="p">,</span> <span class="s1">&#39;lfm_excursion&#39;</span> <span class="p">:</span> <span class="mf">2e6</span><span class="p">,</span> <span class="s1">&#39;pris_per_cpi&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}]</span>
+
+<span class="n">radar_params</span><span class="p">[</span><span class="s1">&#39;wf_sequences&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span> <span class="p">:</span> <span class="s1">&#39;single_pulse_stagger&#39;</span><span class="p">,</span> <span class="s1">&#39;sequence&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
+                      <span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span> <span class="p">:</span> <span class="s1">&#39;single_pulse_stagger&#39;</span><span class="p">,</span> <span class="s1">&#39;sequence&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]}]</span>
+</pre></div>
+</div>
+<p>the required imports followed by the class and within <code class="docutils literal notranslate"><span class="pre">`init`</span></code>,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">dcp</span>
+<span class="kn">from</span> <span class="nn">core</span> <span class="kn">import</span> <span class="n">MonostaticRadar</span><span class="p">,</span> <span class="n">SincAntennaPattern</span>
+
+<span class="k">class</span> <span class="nc">Simulation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Top level simulation class for a 1v1 target vs track radar</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_params</span><span class="p">,</span> <span class="n">target_params</span><span class="p">,</span> <span class="n">radar_params</span><span class="p">,</span> <span class="n">antenna_params</span><span class="p">,</span> <span class="n">demo</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_params</span> <span class="o">=</span> <span class="n">sim_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_params</span> <span class="o">=</span> <span class="n">target_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radar_params</span> <span class="o">=</span> <span class="n">radar_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna_params</span> <span class="o">=</span> <span class="n">antenna_params</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">DWNATarget</span><span class="p">(</span><span class="n">target_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radar</span> <span class="o">=</span> <span class="n">MonostaticRadar</span><span class="p">(</span><span class="n">radar_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna_pattern</span> <span class="o">=</span> <span class="n">SincAntennaPattern</span><span class="p">(</span><span class="n">antenna_params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_rf</span> <span class="o">=</span> <span class="n">sim_params</span><span class="p">[</span><span class="s1">&#39;process_rf&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_lam</span> <span class="o">=</span> <span class="mf">3e8</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">process_rf</span>
+</pre></div>
+</div>
+<p>Note the line</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">antenna_pattern</span> <span class="o">=</span> <span class="n">SincAntennaPattern</span><span class="p">(</span><span class="n">antenna_params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Feel free to look at the object within <code class="docutils literal notranslate"><span class="pre">`core`</span></code> where the <code class="docutils literal notranslate"><span class="pre">`SincAntennaPattern`</span></code> object resides.</p>
+<p>We are approximating a continuous scan, meaning that in reality the antenna is moving during the PRI.  However, the position change of the antenna during round trip time (PRI) on the order of 1000s of microseconds is negligible for the fidelity we usually work in.  If you feel like splitting hairs on this, feel free to waste your life and time.  A template for a single scan is shown below, we wish the scan to be an integer multiple of CPIs, henc</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">perform_360_scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">full_rotation_time_s</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+
+    <span class="n">length_cpi_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">pris_in_mode_sequence</span><span class="p">)</span>
+    <span class="n">num_cpis_per_rotation</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">full_rotation_time_s</span><span class="o">/</span><span class="n">length_cpi_s</span><span class="p">))</span>
+    <span class="n">steered_azs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">num_cpis_per_rotation</span><span class="p">)</span>
+    <span class="n">actual_rotation_time_s</span> <span class="o">=</span> <span class="n">num_cpis_per_rotation</span> <span class="o">*</span> <span class="n">length_cpi_s</span>
+
+    <span class="o">...</span>
+
+    <span class="k">for</span> <span class="n">steered_az</span> <span class="ow">in</span> <span class="n">steered_azs</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">wf_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">waveform_scheduler_cpi</span><span class="p">()</span>
+
+        <span class="o">...</span>
+
+        <span class="c1">#Tx/Rx Antenna Gain</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_pattern</span><span class="o">.</span><span class="n">gain_val</span><span class="p">(</span><span class="n">steered_az</span><span class="o">-</span><span class="n">aoa</span><span class="p">,</span><span class="n">steered_z</span><span class="o">-</span><span class="n">zoa</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+
+        <span class="o">...</span>
+
+        <span class="c1">#Target motion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">wf_object</span><span class="o">.</span><span class="n">cpi_duration_s</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For all intents and purposes, you can generate a lot of data depending on the granularity of your scan.  I do not necessarily suggest trying to build a PPI…</p>
+<p>Let’s take a closer look at what we are doing in the main loop, at each <code class="docutils literal notranslate"><span class="pre">`steered_az`</span></code>, we produce a <code class="docutils literal notranslate"><span class="pre">`wf_object`</span></code> that comprises of the waveform for a particular PRI.  We defined waveforms in the nested dictionary <code class="docutils literal notranslate"><span class="pre">`radar_params['wf_list']`</span></code>, and the sequences in which these waveforms are traversed in <code class="docutils literal notranslate"><span class="pre">`radar_params['wf_sequences']`</span></code>.  Upon instantiating <code class="docutils literal notranslate"><span class="pre">`MonostaticRadar`</span></code>, an attribute <code class="docutils literal notranslate"><span class="pre">`self.wf_bank`</span></code> is created that is a <strong>list of waveform objects</strong> (<code class="docutils literal notranslate"><span class="pre">`wf_object`</span></code>).  Upon calling <code class="docutils literal notranslate"><span class="pre">`self.radar.waveform_scheduler_cpi`</span></code>, the next <code class="docutils literal notranslate"><span class="pre">`wf_object`</span></code>, as prescribed in <code class="docutils literal notranslate"><span class="pre">`radar_params['wf_sequences']`</span></code>, is produced.  This is effectively how the radar scheduler has been implemented and can be manipulated using these tools.   We will cover examples of other waveform modes other than <code class="docutils literal notranslate"><span class="pre">`single_pulse_stagger`</span></code> to come.</p>
+</section>
+<section id="design-example-dwell-and-switch">
+<h2>Design Example: Dwell and Switch<a class="headerlink" href="#design-example-dwell-and-switch" title="Link to this heading"></a></h2>
+<p>![Alt text](../figs/dwell_and_switch.png?raw=true)</p>
+<p>In reality, were more concerned with radars that perform electronic scanning over a sector.  The radar may also task schedule share between tracking assignments, which we will discuss later.  The above illustration shows such a scenario of multiple tasking (image source <a class="reference external" href="https://www.researchgate.net/figure/RT1-Mode-Volume-Search-Mode-with-Rotating-Antenna_fig1_224127198">https://www.researchgate.net/figure/RT1-Mode-Volume-Search-Mode-with-Rotating-Antenna_fig1_224127198</a>).</p>
+<p>### Problem: Multi-PRI Processing</p>
+<p># Radar Tracking</p>
+<p>## Track Association</p>
+<p>## Filtering</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lab2-TxRx.html" class="btn btn-neutral float-left" title="Lab 2 - Transmitter and Receivers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Blinn.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
