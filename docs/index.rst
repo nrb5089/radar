@@ -1,5 +1,7 @@
-Welcome to the documentation for radar!
+Welcome to the documentation for...
 ========================================
+
+.. image:: media/radar_logo_white_bg.png
 
 **radar** is a Python library intended to teach the user basics of 
 radar signal processing as to prototype for Software-Defined Radio 
@@ -22,6 +24,12 @@ Contents
     :caption: Getting Started
     
     setup_and_installation
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Functional Blocks
+    
+    functional_blocks
     
 .. toctree::
     :maxdepth: 2

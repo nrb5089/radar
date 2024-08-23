@@ -91,7 +91,8 @@ In summary:
 
 In signal processing, we often convert signals from the time domain to the frequency domain (and vice versa) because certain types of analysis and processing are easier to perform in the frequency domain. This transformation is typically done using a mathematical technique called the Fourier transform.
 
-## Fourier Transform
+Fourier Transform
+=====================
 
 Fourier transform is a way to transform a signal from time domain to frequency domain (roughly speaking). We can use the ``np.fft.fft`` function to compute the one-dimensional n-point discrete Fourier Transform (DFT).  We use ``np.abs`` to compute the absolute value of each element in the array to get what is called the magnitude response of the spectrum:
 
@@ -152,11 +153,8 @@ Also... let's start using values/units closer to reality.  The RF spectrum we wo
 The key to mapping frequency from sample rate in the x-axis tick marks for the spectrum is ``f = np.linspace(-Fs/2,Fs/2,len(A))``.  Remember the FFT utilizes provides the normalized frequency spectrum between :math:`0` and :math:`2\pi`, but often a centered spectrum is easier to analyze, hence we use ``A = np.fft.fftshift(A)``.  **CAUTION** do not use ```fftshift``` in combination with computations involving the FFT, it will be incorrect.
 
 
-
-Simulation vs. Reality
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Let's take a moment to elaborate on what was generated, a cosine (or sine) wave consists of a single frequency, therefore in the frequency domain we expect a single point whose peak is proportional to the signal power.  The reason for the two lines here is that the real-valued component (in this case the signal is all-real) has a symmetry about the y-axis (a negative frequency).  This negative frequency, while purely theoretical, must be incorporated in our models for real-life applications where issues with unwanted images get included.
+.. note::
+    **Simulation vs. Reality** : Let's take a moment to elaborate on what was generated, a cosine (or sine) wave consists of a single frequency, therefore in the frequency domain we expect a single point whose peak is proportional to the signal power.  The reason for the two lines here is that the real-valued component (in this case the signal is all-real) has a symmetry about the y-axis (a negative frequency).  This negative frequency, while purely theoretical, must be incorporated in our models for real-life applications where issues with unwanted images get included.
 
 Signal Filtering
 =================
@@ -446,7 +444,8 @@ Reasons for Frequency Conversion
 **Allowing for Frequency Multiplexing:**
 - Multiple signals can be upconverted to different carrier frequencies, combined, and transmitted simultaneously over a single channel (frequency multiplexing). At the receiver, they are then downconverted and separated, which is more manageable at IF.
 
-### Use of Intermediate Frequency Stages:
+Use of Intermediate Frequency Stages:
+-------------------------------------------
 
 **Improving Gain and Noise Performance:**
 - By using multiple stages of IF, the system can achieve high gain more linearly and with better noise performance. This is crucial in both communication and radar systems for detecting weak signals.

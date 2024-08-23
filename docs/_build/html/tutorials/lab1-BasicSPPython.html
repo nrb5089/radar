@@ -36,7 +36,7 @@
           
           <a href="../index.html" class="icon icon-home">
             radar
-              <img src="../_static/apg81.png" class="logo" alt="Logo"/>
+              <img src="../_static/radar_thumbnail.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -50,6 +50,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html">radar.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html#module-radar.core">radar.core</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
@@ -57,12 +62,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#why-all-the-emphasis-on-arrays">Why all the emphasis on arrays?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#basic-signal-processing-in-python-numpy">Basic Signal Processing in Python/NumPy</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#generating-a-simple-signal">Generating a Simple Signal</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#adding-noise-to-the-signal">Adding Noise to the Signal</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#simulation-vs-reality">Simulation vs. Reality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-noise-to-the-signal">Adding Noise to the Signal</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#fourier-transform">Fourier Transform</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#signal-filtering">Signal Filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multi-rate-signal-processing">Multi-Rate Signal Processing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#decimation-downsampling">Decimation (Downsampling)</a></li>
@@ -71,6 +74,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#center-frequency-and-mixing">Center Frequency and Mixing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#reasons-for-frequency-conversion">Reasons for Frequency Conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-of-intermediate-frequency-stages">Use of Intermediate Frequency Stages:</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#center-frequency">Center Frequency</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#mixing-a-signal-with-a-carrier">Mixing a Signal with a Carrier</a></li>
 </ul>
@@ -88,7 +92,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab3-RadarDesign.html">Radar Search and Track</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a></li>
 </ul>
 
         </div>
@@ -185,7 +189,10 @@ Let’s start with an analogy. Imagine you are listening to a symphony orchestra
 <li><p>The frequency domain representation of a signal shows the constituent frequencies of the signal.</p></li>
 </ul>
 <p>In signal processing, we often convert signals from the time domain to the frequency domain (and vice versa) because certain types of analysis and processing are easier to perform in the frequency domain. This transformation is typically done using a mathematical technique called the Fourier transform.</p>
-<p>## Fourier Transform</p>
+</section>
+</section>
+<section id="fourier-transform">
+<h2>Fourier Transform<a class="headerlink" href="#fourier-transform" title="Link to this heading"></a></h2>
 <p>Fourier transform is a way to transform a signal from time domain to frequency domain (roughly speaking). We can use the <code class="docutils literal notranslate"><span class="pre">np.fft.fft</span></code> function to compute the one-dimensional n-point discrete Fourier Transform (DFT).  We use <code class="docutils literal notranslate"><span class="pre">np.abs</span></code> to compute the absolute value of each element in the array to get what is called the magnitude response of the spectrum:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -237,11 +244,10 @@ Let’s start with an analogy. Imagine you are listening to a symphony orchestra
 </div>
 <img alt="../_images/time_freq.png" src="../_images/time_freq.png" />
 <p>The key to mapping frequency from sample rate in the x-axis tick marks for the spectrum is <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">=</span> <span class="pre">np.linspace(-Fs/2,Fs/2,len(A))</span></code>.  Remember the FFT utilizes provides the normalized frequency spectrum between <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(2\pi\)</span>, but often a centered spectrum is easier to analyze, hence we use <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">=</span> <span class="pre">np.fft.fftshift(A)</span></code>.  <strong>CAUTION</strong> do not use <code class="docutils literal notranslate"><span class="pre">`fftshift`</span></code> in combination with computations involving the FFT, it will be incorrect.</p>
-<section id="simulation-vs-reality">
-<h4>Simulation vs. Reality<a class="headerlink" href="#simulation-vs-reality" title="Link to this heading"></a></h4>
-<p>Let’s take a moment to elaborate on what was generated, a cosine (or sine) wave consists of a single frequency, therefore in the frequency domain we expect a single point whose peak is proportional to the signal power.  The reason for the two lines here is that the real-valued component (in this case the signal is all-real) has a symmetry about the y-axis (a negative frequency).  This negative frequency, while purely theoretical, must be incorporated in our models for real-life applications where issues with unwanted images get included.</p>
-</section>
-</section>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Simulation vs. Reality</strong> : Let’s take a moment to elaborate on what was generated, a cosine (or sine) wave consists of a single frequency, therefore in the frequency domain we expect a single point whose peak is proportional to the signal power.  The reason for the two lines here is that the real-valued component (in this case the signal is all-real) has a symmetry about the y-axis (a negative frequency).  This negative frequency, while purely theoretical, must be incorporated in our models for real-life applications where issues with unwanted images get included.</p>
+</div>
 </section>
 <section id="signal-filtering">
 <h2>Signal Filtering<a class="headerlink" href="#signal-filtering" title="Link to this heading"></a></h2>
@@ -484,7 +490,9 @@ Let’s start with an analogy. Imagine you are listening to a symphony orchestra
 - Amplifying high-frequency signals without distortion is more challenging and expensive than amplifying lower-frequency signals. Downconversion allows for more effective and efficient amplification at IF.</p>
 <p><strong>Allowing for Frequency Multiplexing:</strong>
 - Multiple signals can be upconverted to different carrier frequencies, combined, and transmitted simultaneously over a single channel (frequency multiplexing). At the receiver, they are then downconverted and separated, which is more manageable at IF.</p>
-<p>### Use of Intermediate Frequency Stages:</p>
+</section>
+<section id="use-of-intermediate-frequency-stages">
+<h3>Use of Intermediate Frequency Stages:<a class="headerlink" href="#use-of-intermediate-frequency-stages" title="Link to this heading"></a></h3>
 <p><strong>Improving Gain and Noise Performance:</strong>
 - By using multiple stages of IF, the system can achieve high gain more linearly and with better noise performance. This is crucial in both communication and radar systems for detecting weak signals.</p>
 <p><strong>Simplifying Tuning:</strong>

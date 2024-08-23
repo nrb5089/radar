@@ -1,6 +1,6 @@
-=======================
-Radar Search and Track
-=======================
+===============================
+Lab 3 - Radar Search and Track
+===============================
 
 The search function of a radar system refers to its capability to scan a volume of space to detect and locate targets. This function is crucial in various applications, including air traffic control, weather monitoring, military surveillance, and maritime navigation. The implementation of the search function can vary depending on the specific type of radar and its intended use. Here’s a general description of how a search function typically works in a radar system:
 

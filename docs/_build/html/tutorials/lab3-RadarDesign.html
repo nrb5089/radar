@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Radar Search and Track &mdash; radar 0.1 documentation</title>
+  <title>Lab 3 - Radar Search and Track &mdash; radar 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -34,7 +34,7 @@
           
           <a href="../index.html" class="icon icon-home">
             radar
-              <img src="../_static/apg81.png" class="logo" alt="Logo"/>
+              <img src="../_static/radar_thumbnail.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -48,12 +48,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html">radar.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html#module-radar.core">radar.core</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Radar Search and Track</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 3 - Radar Search and Track</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#scanning-the-area-or-volume">Scanning the Area or Volume:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#design-example-basic-360-azimuth-scan">Design Example: Basic 360 Azimuth Scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#design-example-dwell-and-switch">Design Example: Dwell and Switch</a></li>
@@ -75,7 +80,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Radar Search and Track</li>
+      <li class="breadcrumb-item active">Lab 3 - Radar Search and Track</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorials/lab3-RadarDesign.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -85,8 +90,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="radar-search-and-track">
-<h1>Radar Search and Track<a class="headerlink" href="#radar-search-and-track" title="Link to this heading"></a></h1>
+  <section id="lab-3-radar-search-and-track">
+<h1>Lab 3 - Radar Search and Track<a class="headerlink" href="#lab-3-radar-search-and-track" title="Link to this heading"></a></h1>
 <p>The search function of a radar system refers to its capability to scan a volume of space to detect and locate targets. This function is crucial in various applications, including air traffic control, weather monitoring, military surveillance, and maritime navigation. The implementation of the search function can vary depending on the specific type of radar and its intended use. Here’s a general description of how a search function typically works in a radar system:</p>
 <section id="scanning-the-area-or-volume">
 <h2>Scanning the Area or Volume:<a class="headerlink" href="#scanning-the-area-or-volume" title="Link to this heading"></a></h2>

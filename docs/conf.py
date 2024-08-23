@@ -3,6 +3,13 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import sys
+import os
+sys.path.insert(0, os.path.abspath('../radar'))
+sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('.'))
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -34,7 +41,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # -- Options for HTML output
 
 html_theme = 'sphinx_rtd_theme'
-html_logo = 'apg81.png'
+html_logo = 'media/radar_thumbnail.png'
 # html_theme = 'alabaster'
 html_static_path = ['_static']
 

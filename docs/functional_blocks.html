@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>radar.util &mdash; radar 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lab 0 - Introduction to Python and Numpy" href="tutorials/lab0-IntroPythonNumpy.html" />
+    <link rel="prev" title="Installation" href="setup_and_installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            radar
+              <img src="_static/radar_thumbnail.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="setup_and_installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">radar.util</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#radar.util.affts"><code class="docutils literal notranslate"><span class="pre">affts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.util.ffts"><code class="docutils literal notranslate"><span class="pre">ffts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.util.init_figs"><code class="docutils literal notranslate"><span class="pre">init_figs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.util.log2lin"><code class="docutils literal notranslate"><span class="pre">log2lin()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#module-radar.core">radar.core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.BasicReceiver"><code class="docutils literal notranslate"><span class="pre">BasicReceiver</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicReceiver.add_receiver_noise"><code class="docutils literal notranslate"><span class="pre">BasicReceiver.add_receiver_noise()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicReceiver.apply_adc_filter"><code class="docutils literal notranslate"><span class="pre">BasicReceiver.apply_adc_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicReceiver.apply_bb_filter"><code class="docutils literal notranslate"><span class="pre">BasicReceiver.apply_bb_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicReceiver.apply_rf2if_filter"><code class="docutils literal notranslate"><span class="pre">BasicReceiver.apply_rf2if_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicReceiver.detect_burst_signal"><code class="docutils literal notranslate"><span class="pre">BasicReceiver.detect_burst_signal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicReceiver.detect_single_signal"><code class="docutils literal notranslate"><span class="pre">BasicReceiver.detect_single_signal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicReceiver.detector"><code class="docutils literal notranslate"><span class="pre">BasicReceiver.detector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicReceiver.process_burst_signal"><code class="docutils literal notranslate"><span class="pre">BasicReceiver.process_burst_signal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicReceiver.process_single_signal"><code class="docutils literal notranslate"><span class="pre">BasicReceiver.process_single_signal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.BasicTransmitter"><code class="docutils literal notranslate"><span class="pre">BasicTransmitter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.BasicTransmitter.transmit_waveform"><code class="docutils literal notranslate"><span class="pre">BasicTransmitter.transmit_waveform()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.ButterFilter"><code class="docutils literal notranslate"><span class="pre">ButterFilter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.ButterFilter.filter_signal"><code class="docutils literal notranslate"><span class="pre">ButterFilter.filter_signal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.CA_CFAR1D"><code class="docutils literal notranslate"><span class="pre">CA_CFAR1D</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.CA_CFAR1D.build_detection_vector"><code class="docutils literal notranslate"><span class="pre">CA_CFAR1D.build_detection_vector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.CA_CFAR1D.calculate_cfar_thresh"><code class="docutils literal notranslate"><span class="pre">CA_CFAR1D.calculate_cfar_thresh()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.CA_CFAR2D"><code class="docutils literal notranslate"><span class="pre">CA_CFAR2D</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.CA_CFAR2D.build_detection_matrix"><code class="docutils literal notranslate"><span class="pre">CA_CFAR2D.build_detection_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.CA_CFAR2D.calculate_cfar_thresh"><code class="docutils literal notranslate"><span class="pre">CA_CFAR2D.calculate_cfar_thresh()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.Cheby1Filter"><code class="docutils literal notranslate"><span class="pre">Cheby1Filter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.Cheby1Filter.filter_signal"><code class="docutils literal notranslate"><span class="pre">Cheby1Filter.filter_signal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.CoherentOscillator"><code class="docutils literal notranslate"><span class="pre">CoherentOscillator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.CustomAESA"><code class="docutils literal notranslate"><span class="pre">CustomAESA</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.CustomAESA.array_response"><code class="docutils literal notranslate"><span class="pre">CustomAESA.array_response()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.DiscreteScan"><code class="docutils literal notranslate"><span class="pre">DiscreteScan</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.DiscreteScan.next_steered_position"><code class="docutils literal notranslate"><span class="pre">DiscreteScan.next_steered_position()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.FIR"><code class="docutils literal notranslate"><span class="pre">FIR</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.FIR.filter_signal"><code class="docutils literal notranslate"><span class="pre">FIR.filter_signal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.MTIBasic"><code class="docutils literal notranslate"><span class="pre">MTIBasic</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.MTIBasic.filter_signal"><code class="docutils literal notranslate"><span class="pre">MTIBasic.filter_signal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.PlanarAESA"><code class="docutils literal notranslate"><span class="pre">PlanarAESA</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.PlanarAESA.array_response"><code class="docutils literal notranslate"><span class="pre">PlanarAESA.array_response()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.PlanarAESA.build_rvec"><code class="docutils literal notranslate"><span class="pre">PlanarAESA.build_rvec()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.SincAntennaPattern"><code class="docutils literal notranslate"><span class="pre">SincAntennaPattern</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.SincAntennaPattern.azimuth_slice"><code class="docutils literal notranslate"><span class="pre">SincAntennaPattern.azimuth_slice()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.SincAntennaPattern.elevation_slice"><code class="docutils literal notranslate"><span class="pre">SincAntennaPattern.elevation_slice()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.SincAntennaPattern.gain_val"><code class="docutils literal notranslate"><span class="pre">SincAntennaPattern.gain_val()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#radar.core.Waveform"><code class="docutils literal notranslate"><span class="pre">Waveform</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.Waveform.apply_bb_filter"><code class="docutils literal notranslate"><span class="pre">Waveform.apply_bb_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.Waveform.apply_matched_filter"><code class="docutils literal notranslate"><span class="pre">Waveform.apply_matched_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.Waveform.apply_rcv_mask"><code class="docutils literal notranslate"><span class="pre">Waveform.apply_rcv_mask()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.Waveform.help"><code class="docutils literal notranslate"><span class="pre">Waveform.help()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar.core.Waveform.wf"><code class="docutils literal notranslate"><span class="pre">Waveform.wf()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">radar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">radar.util</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/functional_blocks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-radar.util">
+<span id="radar-util"></span><h1>radar.util<a class="headerlink" href="#module-radar.util" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="radar.util.affts">
+<span class="sig-prename descclassname"><span class="pre">radar.util.</span></span><span class="sig-name descname"><span class="pre">affts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.util.affts" title="Link to this definition"></a></dt>
+<dd><p>Performs shifted and normalized fft along with absolute value</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="radar.util.ffts">
+<span class="sig-prename descclassname"><span class="pre">radar.util.</span></span><span class="sig-name descname"><span class="pre">ffts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.util.ffts" title="Link to this definition"></a></dt>
+<dd><p>Performs shifted and normalized fft</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="radar.util.init_figs">
+<span class="sig-prename descclassname"><span class="pre">radar.util.</span></span><span class="sig-name descname"><span class="pre">init_figs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#radar.util.init_figs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="radar.util.log2lin">
+<span class="sig-prename descclassname"><span class="pre">radar.util.</span></span><span class="sig-name descname"><span class="pre">log2lin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.util.log2lin" title="Link to this definition"></a></dt>
+<dd><p>Returns the inverse logarithm</p>
+</dd></dl>
+
+</section>
+<section id="module-radar.core">
+<span id="radar-core"></span><h1>radar.core<a class="headerlink" href="#module-radar.core" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">BasicReceiver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver" title="Link to this definition"></a></dt>
+<dd><p>Transmits a sequence of lfm pulses as a pulse-Doppler burst and executes basic MTI and FFT processing</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver.add_receiver_noise">
+<span class="sig-name descname"><span class="pre">add_receiver_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver.add_receiver_noise" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver.apply_adc_filter">
+<span class="sig-name descname"><span class="pre">apply_adc_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver.apply_adc_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver.apply_bb_filter">
+<span class="sig-name descname"><span class="pre">apply_bb_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf_object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver.apply_bb_filter" title="Link to this definition"></a></dt>
+<dd><p>BB filter is custom to the MF waveform</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver.apply_rf2if_filter">
+<span class="sig-name descname"><span class="pre">apply_rf2if_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver.apply_rf2if_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver.detect_burst_signal">
+<span class="sig-name descname"><span class="pre">detect_burst_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver.detect_burst_signal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver.detect_single_signal">
+<span class="sig-name descname"><span class="pre">detect_single_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver.detect_single_signal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver.detector">
+<span class="sig-name descname"><span class="pre">detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver.detector" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver.process_burst_signal">
+<span class="sig-name descname"><span class="pre">process_burst_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver.process_burst_signal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicReceiver.process_single_signal">
+<span class="sig-name descname"><span class="pre">process_single_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">premasked</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicReceiver.process_single_signal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.BasicTransmitter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">BasicTransmitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicTransmitter" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="radar.core.BasicTransmitter.transmit_waveform">
+<span class="sig-name descname"><span class="pre">transmit_waveform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf_object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.BasicTransmitter.transmit_waveform" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.ButterFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">ButterFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">btype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.ButterFilter" title="Link to this definition"></a></dt>
+<dd><p>Class wrapper for scipy.signal.butter class object.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>N<span class="classifier">int</span></dt><dd><p>Number of filter taps.</p>
+</dd>
+<dt>Wn<span class="classifier">float or tuple</span></dt><dd><p>Designates bandlimits of filter, dtype is float if btype is ‘low’ or ‘high’.  For btype ‘bandpass’, should be a tuple specifying start and stop band in Hertz.</p>
+</dd>
+<dt>Fs<span class="classifier">float</span></dt><dd><p>Sampling frequency in Hertz.</p>
+</dd>
+<dt>btype<span class="classifier">str</span></dt><dd><p>Filter type. Valid options are ‘low’, ‘high’, and ‘bandpass’.</p>
+</dd>
+</dl>
+</section>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>N<span class="classifier">int</span></dt><dd><p>Number of filter taps.</p>
+</dd>
+<dt>Wn<span class="classifier">float or tuple</span></dt><dd><p>Designates bandlimits of filter, dtype is float if btype is ‘low’ or ‘high’.  For btype ‘bandpass’, should be a tuple specifying start and stop band in Hertz.</p>
+</dd>
+<dt>Fs<span class="classifier">float</span></dt><dd><p>Sampling frequency in Hertz.</p>
+</dd>
+<dt>btype<span class="classifier">str</span></dt><dd><p>Filter type. Valid options are ‘low’, ‘high’, and ‘bandpass’.</p>
+</dd>
+<dt>a<span class="classifier">numpy.ndarray</span></dt><dd><p>Numerator coefficients in frequency response. dtype is float32 or float64.</p>
+</dd>
+<dt>b<span class="classifier">numpy.ndarray</span></dt><dd><p>Denominator coefficients in frequency response. dtype os float32 or float64</p>
+</dd>
+</dl>
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>filter_signal(x)</dt><dd><p>Applies scipy.signal.lfilter(self.a,self.b,x) to signal x.  dtype of x should be float32, float 64, complex64, or complex128.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.ButterFilter.filter_signal">
+<span class="sig-name descname"><span class="pre">filter_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.ButterFilter.filter_signal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.CA_CFAR1D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">CA_CFAR1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_reference_cells_one_sided</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_guard_cells_one_sided</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability_of_false_alarm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.CA_CFAR1D" title="Link to this definition"></a></dt>
+<dd><p>One dimensional cell-averaging CFAR, calculates the threshold and builds detection
+vector with input signal.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>num_reference_cells_one_sided<span class="classifier">int</span></dt><dd><p>Number of taps on CFAR window on one side of the cell under test.</p>
+</dd>
+<dt>num_guard_cells_one_sided<span class="classifier">int</span></dt><dd><p>Number of guard cell taps on the CFAR window on one side of the cell under test.</p>
+</dd>
+<dt>probability_false_alarm<span class="classifier">float</span></dt><dd><p>Probability of false alarm that characterizes the CFAR.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Attributes<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>num_ref<span class="classifier">int</span></dt><dd><p>Number of taps on CFAR window on one side of the cell under test.</p>
+</dd>
+<dt>num_guard<span class="classifier">int</span></dt><dd><p>Number of guard cell taps on the CFAR window on one side of the cell under test.</p>
+</dd>
+<dt>pfa<span class="classifier">float</span></dt><dd><p>Probability of false alarm that characterizes the CFAR.</p>
+</dd>
+<dt>cfar_constant<span class="classifier">float</span></dt><dd><p>CFAR constant.</p>
+</dd>
+<dt>cfar_window<span class="classifier">numpy.ndarray</span></dt><dd><p>Array of 1s and 0s that is convolved with incoming signal to induce CA-CFAR operation.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h2>Methods<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>calculate_cfar_thresh(x)</dt><dd><p>Applies numpy.convolve(x,self.cfar_window, mode = ‘same’) to signal numpy.ndarray x.  dtype of x should be float32, float 64, complex64, or complex128.</p>
+</dd>
+<dt>build_detection_vector(x,T)</dt><dd><p>Returns vector consisting of 1s and 0s, where 1 indicates that the signal has broken the detection threshold T, which is an numpy.ndarray.</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<p>CA-CFAR theory derived from M. A. Richards, Fundamentals of Radar Signal Processing, 2nd ed. New York, NY, USA: McGraw-Hill Education, 2014.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.CA_CFAR1D.build_detection_vector">
+<span class="sig-name descname"><span class="pre">build_detection_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.CA_CFAR1D.build_detection_vector" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.CA_CFAR1D.calculate_cfar_thresh">
+<span class="sig-name descname"><span class="pre">calculate_cfar_thresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.CA_CFAR1D.calculate_cfar_thresh" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.CA_CFAR2D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">CA_CFAR2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_reference_cells_doppler_one_sided</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_reference_cells_range_one_sided</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_guard_cells_doppler_one_sided</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_guard_cells_range_one_sided</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability_false_alarm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.CA_CFAR2D" title="Link to this definition"></a></dt>
+<dd><p>Two dimensional cell-averaging CFAR, calculates the threshold and builds detection
+vector with input signal.</p>
+<section id="id4">
+<h2>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>num_reference_cells_doppler_one_sided<span class="classifier">int</span></dt><dd><p>Number of taps on CFAR window on one side of the cell under test along Doppler dimension.</p>
+</dd>
+<dt>num_reference_cells_range_one_sided<span class="classifier">int</span></dt><dd><p>Number of taps on CFAR window on one side of the cell under test along range dimension.</p>
+</dd>
+<dt>num_guard_cells_doppler_one_sided<span class="classifier">int</span></dt><dd><p>Number of guard cell taps on the CFAR window on one side of the cell under test along Doppler dimension.</p>
+</dd>
+<dt>num_guard_cells_range_one_sided<span class="classifier">int</span></dt><dd><p>Number of guard cell taps on the CFAR window on one side of the cell under test along range dimension.</p>
+</dd>
+<dt>probability_false_alarm<span class="classifier">float</span></dt><dd><p>Probability of false alarm that characterizes the CFAR.</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h2>Attributes<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>num_ref_d<span class="classifier">int</span></dt><dd><p>Number of taps on CFAR window on one side of the cell under test along Doppler dimension.</p>
+</dd>
+<dt>num_ref_r<span class="classifier">int</span></dt><dd><p>Number of taps on CFAR window on one side of the cell under test along range dimension.</p>
+</dd>
+<dt>num_guard_d<span class="classifier">int</span></dt><dd><p>Number of guard cell taps on the CFAR window on one side of the cell under test along Doppler dimension.</p>
+</dd>
+<dt>num_guard_r<span class="classifier">int</span></dt><dd><p>Number of guard cell taps on the CFAR window on one side of the cell under test along range dimension.</p>
+</dd>
+<dt>pfa<span class="classifier">float</span></dt><dd><p>Probability of false alarm that characterizes the CFAR.</p>
+</dd>
+<dt>cfar_constant<span class="classifier">float</span></dt><dd><p>CFAR constant.</p>
+</dd>
+<dt>cfar_window<span class="classifier">numpy.ndarray</span></dt><dd><p>Matrix of 1s and 0s that is convolved with incoming signal to induce CA-CFAR operation.</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>Methods<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>calculate_cfar_thresh(x)</dt><dd><p>Applies numpy.convolve(x,self.cfar_window, mode = ‘same’) to signal numpy.ndarray x.  dtype of x should be float32, float 64, complex64, or complex128.</p>
+</dd>
+<dt>build_detection_matrix(x,T)</dt><dd><p>Returns vector consisting of 1s and 0s, where 1 indicates that the signal has broken the detection threshold T, which is an numpy.ndarray.</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h2>Notes<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<p>CA-CFAR theory derived from M. A. Richards, Fundamentals of Radar Signal Processing, 2nd ed. New York, NY, USA: McGraw-Hill Education, 2014.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.CA_CFAR2D.build_detection_matrix">
+<span class="sig-name descname"><span class="pre">build_detection_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.CA_CFAR2D.build_detection_matrix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.CA_CFAR2D.calculate_cfar_thresh">
+<span class="sig-name descname"><span class="pre">calculate_cfar_thresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.CA_CFAR2D.calculate_cfar_thresh" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.Cheby1Filter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">Cheby1Filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">btype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.Cheby1Filter" title="Link to this definition"></a></dt>
+<dd><p>Class wrapper for scipy.signal.cheby1 class object.</p>
+<section id="id8">
+<h2>Parameters<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>N<span class="classifier">int</span></dt><dd><p>Number of filter taps.</p>
+</dd>
+<dt>Wn<span class="classifier">float or tuple</span></dt><dd><p>Designates bandlimits of filter, dtype is float if btype is ‘low’ or ‘high’.  For btype ‘bandpass’, should be a tuple specifying start and stop band in Hertz.</p>
+</dd>
+<dt>Fs<span class="classifier">float</span></dt><dd><p>Sampling frequency in Hertz.</p>
+</dd>
+<dt>rp<span class="classifier">float</span></dt><dd><p>Specifies passband ripple in dB.</p>
+</dd>
+<dt>btype<span class="classifier">str</span></dt><dd><p>Filter type. Valid options are ‘low’, ‘high’, and ‘bandpass’.</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h2>Attributes<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>N<span class="classifier">int</span></dt><dd><p>Number of filter taps.</p>
+</dd>
+<dt>Wn<span class="classifier">float or tuple</span></dt><dd><p>Designates bandlimits of filter, dtype is float if btype is ‘low’ or ‘high’.  For btype ‘bandpass’, should be a tuple specifying start and stop band in Hertz.</p>
+</dd>
+<dt>Fs<span class="classifier">float</span></dt><dd><p>Sampling frequency in Hertz.</p>
+</dd>
+<dt>rp<span class="classifier">float</span></dt><dd><p>Specifies passband ripple in dB.</p>
+</dd>
+<dt>btype<span class="classifier">str</span></dt><dd><p>Filter type. Valid options are ‘low’, ‘high’, and ‘bandpass’.</p>
+</dd>
+<dt>a<span class="classifier">numpy.ndarray</span></dt><dd><p>Numerator coefficients in frequency response. dtype is float32 or float64.</p>
+</dd>
+<dt>b<span class="classifier">numpy.ndarray</span></dt><dd><p>Denominator coefficients in frequency response. dtype is float32 or float64.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h2>Methods<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>filter_signal(x)</dt><dd><p>Applies scipy.signal.lfilter(self.a,self.b,x) to signal x.  dtype of x should be float32, float 64, complex64, or complex128.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.Cheby1Filter.filter_signal">
+<span class="sig-name descname"><span class="pre">filter_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.Cheby1Filter.filter_signal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.CoherentOscillator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">CoherentOscillator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequency_hz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_phase</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.CoherentOscillator" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.CustomAESA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">CustomAESA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_array_elements_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.CustomAESA" title="Link to this definition"></a></dt>
+<dd><p>Calculates the gain for a particular set of azimuth and elevation angles</p>
+<p>Not intended to be a true time delay model</p>
+<p>Accepts ‘array_elements_file’ where each line is 3 elements representing the x y z coordinates
+of an array element.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.CustomAESA.array_response">
+<span class="sig-name descname"><span class="pre">array_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">azimth_angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zenith_angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.CustomAESA.array_response" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.DiscreteScan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">DiscreteScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.DiscreteScan" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="radar.core.DiscreteScan.next_steered_position">
+<span class="sig-name descname"><span class="pre">next_steered_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.DiscreteScan.next_steered_position" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.FIR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">FIR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numtaps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.FIR" title="Link to this definition"></a></dt>
+<dd><p>Class wrapper for scipy.signal.firwin class object.</p>
+<section id="id11">
+<h2>Parameters<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>numtaps<span class="classifier">int</span></dt><dd><p>Number of filter taps.</p>
+</dd>
+<dt>cutoff<span class="classifier">float </span></dt><dd><p>Designates bandlimit of filter, dtype is float with units in Hertz.</p>
+</dd>
+<dt>fs<span class="classifier">float</span></dt><dd><p>Sampling frequency in Hertz.</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h2>Attributes<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>numtaps<span class="classifier">int</span></dt><dd><p>Number of filter taps.</p>
+</dd>
+<dt>cutoff<span class="classifier">float </span></dt><dd><p>Designates bandlimit of filter, dtype is float with units in Hertz.</p>
+</dd>
+<dt>fs<span class="classifier">float</span></dt><dd><p>Sampling frequency in Hertz.</p>
+</dd>
+<dt>h<span class="classifier">numpy.ndarray</span></dt><dd><p>Impulse response filter coefficients. dtype is float32 or float64.</p>
+</dd>
+</dl>
+</section>
+<section id="id13">
+<h2>Methods<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>filter_signal(x)</dt><dd><p>Applies numpy.convolve(x,self.h) to signal x.  dtype of x should be float32, float 64, complex64, or complex128.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.FIR.filter_signal">
+<span class="sig-name descname"><span class="pre">filter_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.FIR.filter_signal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.MTIBasic">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">MTIBasic</span></span><a class="headerlink" href="#radar.core.MTIBasic" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="radar.core.MTIBasic.filter_signal">
+<span class="sig-name descname"><span class="pre">filter_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.MTIBasic.filter_signal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.PlanarAESA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">PlanarAESA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_sided_elements</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_element_spacing</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.PlanarAESA" title="Link to this definition"></a></dt>
+<dd><p>Calculates the gain for a particular set of azimuth and elevation angles</p>
+<p>Not intended to be a true time delay model</p>
+<p>By default produces a square grid array</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.PlanarAESA.array_response">
+<span class="sig-name descname"><span class="pre">array_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">azimth_angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zenith_angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.PlanarAESA.array_response" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.PlanarAESA.build_rvec">
+<span class="sig-name descname"><span class="pre">build_rvec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.PlanarAESA.build_rvec" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.SincAntennaPattern">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">SincAntennaPattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.SincAntennaPattern" title="Link to this definition"></a></dt>
+<dd><p>Antenna pattern object for a sinc(x) (sin(x)/x) pattern</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.SincAntennaPattern.azimuth_slice">
+<span class="sig-name descname"><span class="pre">azimuth_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">azimuth_angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.SincAntennaPattern.azimuth_slice" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.SincAntennaPattern.elevation_slice">
+<span class="sig-name descname"><span class="pre">elevation_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elevation_angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuth_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.SincAntennaPattern.elevation_slice" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.SincAntennaPattern.gain_val">
+<span class="sig-name descname"><span class="pre">gain_val</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">azimuth_angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation_angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.SincAntennaPattern.gain_val" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="radar.core.Waveform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">radar.core.</span></span><span class="sig-name descname"><span class="pre">Waveform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radar_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.Waveform" title="Link to this definition"></a></dt>
+<dd><p>A class to represent a radar waveform.</p>
+<section id="id14">
+<h2>Attributes<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>index: int</dt><dd><p>Unique index given to distinguish among other Waveform objects used.</p>
+</dd>
+<dt>type<span class="classifier">str</span></dt><dd><p>Indicates the waveform type being a single pulse or a burst of pulses. Valid options are ‘single’ and ‘burst’.</p>
+</dd>
+<dt>pw<span class="classifier">float</span></dt><dd><p>Pulse Width (PW) in seconds.</p>
+</dd>
+<dt>pri<span class="classifier">float</span></dt><dd><p>Pulse Repetition Interval (PRI) in seconds.</p>
+</dd>
+<dt>modulation<span class="classifier">str</span></dt><dd><p>Specifies the type of modulation on pulse used.  Valid options are ‘bpsk’, ‘lfm’, or ‘none’.</p>
+</dd>
+<dt>lfm_ex<span class="classifier">float</span></dt><dd><p>Specifies the linear frequency modulation excursion (i.e., 1 MHz is a 1 MHz chirp or lfm) in Hertz. Not used if modulation is not set to ‘lfm’.</p>
+</dd>
+<dt>bpsk_seq<span class="classifier">numpy.ndarray</span></dt><dd><p>Specifies the binary phase shift keyed sequence consisting of ‘-1’ and ‘1’ as a numpy array, i.e., a 13-bit Barker code would be np.array([1,1,1,1,1,-1,-1,-1,1,-1,1,-1,1]). dtype should be float32, float64, or int. Not used if modulation is not set to ‘bpsk’.</p>
+</dd>
+<dt>chip_width_s<span class="classifier">float</span></dt><dd><p>Specifies the length of a bpsk chip in seconds.  Not used if modulation is not set to ‘bpsk’.</p>
+</dd>
+<dt>pris_per_cpi<span class="classifier">int</span></dt><dd><p>Specifies the number of PRIs in a Coherent Processing Interval (CPI).  For waveform type ‘single’, this defaults to 1.</p>
+</dd>
+<dt>Fs_rf<span class="classifier">float</span></dt><dd><p>Sampling frequency at transmit/receive (RF) frequency in Hertz.</p>
+</dd>
+<dt>Fs_if<span class="classifier">float</span></dt><dd><p>Sampling frequency at relevant intermediate freqency (IF) in Hertz.</p>
+</dd>
+<dt>Fs_bb<span class="classifier">float</span></dt><dd><p>Sampling frequency at baseband (BB) in Hertz.</p>
+</dd>
+<dt>fc_rf<span class="classifier">float</span></dt><dd><p>RF center frequency in Hertz.</p>
+</dd>
+<dt>fc_if<span class="classifier">float</span></dt><dd><p>IF center frequency in Hertz.</p>
+</dd>
+<dt>samples_per_chip_&lt;freq&gt;<span class="classifier">int </span></dt><dd><p>Computed by: int(np.ceil(self.pw/self.bpsk_length * self.Fs_&lt;freq&gt;)). &lt;freq&gt; can be ‘bb’, ‘if’, or ‘rf’.</p>
+</dd>
+<dt>samples_per_pw_&lt;freq&gt;<span class="classifier">int</span></dt><dd><p>Computed by: int(self.pw * self.Fs_&lt;freq&gt;). &lt;freq&gt; can be ‘bb’, ‘if’, or ‘rf’.</p>
+</dd>
+<dt>samples_per_pri_&lt;freq&gt;<span class="classifier">int</span></dt><dd><p>Computed by: int(self.pri * self.Fs_&lt;freq&gt;). &lt;freq&gt; can be ‘bb’, ‘if’, or ‘rf’.</p>
+</dd>
+<dt>samples_per_cpi_&lt;freq&gt;<span class="classifier">int</span></dt><dd><p>Computed by: int(self.pris_per_cpi * self.samples_per_pri_&lt;freq&gt;). &lt;freq&gt; can be ‘bb’, ‘if’, or ‘rf’.</p>
+</dd>
+<dt>cpi_duration_s<span class="classifier">float</span></dt><dd><p>Duration of CPI in seconds</p>
+</dd>
+<dt>samples_per_range_window_&lt;freq&gt;: int</dt><dd><p>Computed by: samples_per_pri_&lt;freq&gt; - int(2 * self.samples_per_pw_&lt;freq&gt;).  &lt;freq&gt; can be ‘bb’, ‘if’, or ‘rf’.</p>
+</dd>
+<dt>range_per_cpi_m<span class="classifier">float</span></dt><dd><p>maximum echo range within a CPI in meters, determined by c * cpi_duration_s/2</p>
+</dd>
+<dt>range_unambiguous<span class="classifier">float</span></dt><dd><p>maximum unambiguous range in meters, determined by cPRI/2</p>
+</dd>
+<dt>bb_filter<span class="classifier">FIR</span></dt><dd><p>An instance of FIR representing the filter used for the low pass filtering of the baseband waveform.</p>
+</dd>
+<dt>mf_wf_bb<span class="classifier">numpy.ndarray</span></dt><dd><p>Baseband waveform to match pulse used in matched filter.  Applied using method ‘apply_matched_filter’. dtype should be complex64 or complex128.</p>
+</dd>
+<dt>range_resolution<span class="classifier">float</span></dt><dd><p>Range resolution in meters. Computed by: 3e8/2/self.bandwidth.</p>
+</dd>
+<dt>rcv_window_mask<span class="classifier">numpy.ndarray</span></dt><dd><p>Array of 1s and 0s that indicate the the listening on and off intervals, respectively, for the waveform to be received.</p>
+</dd>
+</dl>
+</section>
+<section id="id15">
+<h2>Methods<a class="headerlink" href="#id15" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>wf():</dt><dd><p>Generates samples at the RF center frequency (fc_rf) at RF sampling frequency (Fs_rf) for one coherent processing interval.  For type ‘single’, this is just a single pri, for type ‘burst’, this is a train of pulses.</p>
+</dd>
+<dt>apply_matched_filter(x):</dt><dd><p>Correlates a single matched pulse to the incoming signal x, as specified by waveform attributes. Filtering performed as Baseband (BB) sampling rate</p>
+</dd>
+<dt>apply_bb_filter(x):</dt><dd><p>Applies Baseband (BB) low-pass filter limited to waveform bandwidth.  For LFM, this is the lfm_ex, for BPSK, this is 1/chip_width_s, and for unmodulated, this is just 1/pw</p>
+</dd>
+</dl>
+</section>
+<section id="id16">
+<h2>Notes<a class="headerlink" href="#id16" title="Link to this heading"></a></h2>
+<p>When we refer to the RF center frequency or RF sampling rate, we intend the frequency at which the waveform is transmitted, i.e., the antenna(s) and front end tuned such that it utilizes that frequency.</p>
+<p>The range window is the time the radar spends listening for pulses echoed.  For burst waveforms, there is an inherently restricted range due to the need to listen for the full pulse length and then transmit the second pulse, resulting in what are called its ‘blind zones’.  These are accounted for by applying the self.rcv_window_mask to an incoming signal x.</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>wf_params: 
+lfm_single_wf_params = {‘index’: 2, ‘type’: ‘single’, ‘pw’: 100e-6, ‘pri’: 1100e-6, ‘modulation’ : ‘lfm’, ‘lfm_excursion’ : 2e6, ‘bpsk_seq’ : [], ‘bpsk_chipw’ : 0.,’pris_per_cpi’: 1}
+bpsk_burst_wf_params = {‘index’ : 5,’type’: ‘burst’, ‘pw’: .75e-06, ‘pri’: 4e-6, ‘modulation’ : ‘bpsk’, ‘lfm_excursion’ : 0., ‘bpsk_seq’ : [1,1,1,1,1,-1,-1,1,1,-1,1,-1,1], ‘bpsk_chipw’ : .04e-6,’pris_per_cpi’: 200}</p>
+<p>Example transmit/receive chain for Waveform instance mywf:
+x = mywf.wf()                                               #Transmited waveform
+x = applyEnvironment(x)                     #function specific to user scenario
+x = mywf.apply_rcv_mask(x)                  #Account for blind range zones
+x = applyRFFrontend(x)                              #function specific to user scenario
+x = convert2baseband(x)                     #function specific to user scenario
+x = mywf.apply_bb_filter(x)                 #Filter at baseband
+x = mywf.apply_matched_filter(x)    #Matched filter for pulse</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.Waveform.apply_bb_filter">
+<span class="sig-name descname"><span class="pre">apply_bb_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.Waveform.apply_bb_filter" title="Link to this definition"></a></dt>
+<dd><p>Applies Baseband (BB) low-pass filter limited to waveform bandwidth.  For LFM, this is the lfm_ex, for BPSK, this is 1/chip_width_s, and for unmodulated, this is just 1/pw</p>
+<section id="id17">
+<h3>Parameters<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>x<span class="classifier">numpy.ndarray</span></dt><dd><p>Complex digital IQ representation of signal. dtype should be complex64 or complex128.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
+<p>Filtered complex digital IQ representation of signal. dtype will be complex64 or complex128.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.Waveform.apply_matched_filter">
+<span class="sig-name descname"><span class="pre">apply_matched_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.Waveform.apply_matched_filter" title="Link to this definition"></a></dt>
+<dd><p>Correlates a single matched pulse to the incoming signal x, as specified by waveform attributes. Filtering performed as Baseband (BB) sampling rate</p>
+<section id="id18">
+<h3>Parameters<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>x<span class="classifier">numpy.ndarray</span></dt><dd><p>Complex digital IQ representation of signal. dtype should be complex64 or complex128.</p>
+</dd>
+</dl>
+</section>
+<section id="id19">
+<h3>Returns<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
+<p>Filtered complex digital IQ representation of signal. dtype will be complex64 or complex128.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.Waveform.apply_rcv_mask">
+<span class="sig-name descname"><span class="pre">apply_rcv_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.Waveform.apply_rcv_mask" title="Link to this definition"></a></dt>
+<dd><p>Applies self.rcv_window_mask to incoming signal to account for blind range zones.</p>
+<section id="id20">
+<h3>Parameters<a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>x<span class="classifier">numpy.ndarray</span></dt><dd><p>Incoming signal of type complex64 or complex128.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.Waveform.help">
+<span class="sig-name descname"><span class="pre">help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.Waveform.help" title="Link to this definition"></a></dt>
+<dd><p>Prints the class docstring and the docstrings of its methods.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="radar.core.Waveform.wf">
+<span class="sig-name descname"><span class="pre">wf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#radar.core.Waveform.wf" title="Link to this definition"></a></dt>
+<dd><p>Generates samples at the RF center frequency (fc_rf) at RF sampling frequency (Fs_rf) for one coherent processing interval.  For type ‘single’, this is just a single pri, for type ‘burst’, this is a train of pulses.</p>
+<section id="id21">
+<h3>Parameters<a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>None</p>
+</div></blockquote>
+</section>
+<section id="id22">
+<h3>Returns<a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>wf_out<span class="classifier">numpy.ndarray</span></dt><dd><p>Complex digital IQ representation of “single” or “burst” waveform for one CPI.  Length calculated by CPI length and RF sampling frequency. dtype will be complex64 or complex128.</p>
+</dd>
+</dl>
+</section>
+<section id="id23">
+<h3>Notes<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<p>Waveforms set as generators to preserve memory.</p>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="setup_and_installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials/lab0-IntroPythonNumpy.html" class="btn btn-neutral float-right" title="Lab 0 - Introduction to Python and Numpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Blinn.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

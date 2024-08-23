@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to the documentation for radar! &mdash; radar 0.1 documentation</title>
+  <title>Welcome to the documentation for… &mdash; radar 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -34,7 +34,7 @@
           
           <a href="#" class="icon icon-home">
             radar
-              <img src="_static/apg81.png" class="logo" alt="Logo"/>
+              <img src="_static/radar_thumbnail.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -48,12 +48,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="setup_and_installation.html">Installation</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functional_blocks.html">radar.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional_blocks.html#module-radar.core">radar.core</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/lab3-RadarDesign.html">Radar Search and Track</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a></li>
 </ul>
 
         </div>
@@ -70,7 +75,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to the documentation for radar!</li>
+      <li class="breadcrumb-item active">Welcome to the documentation for…</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -80,8 +85,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-the-documentation-for-radar">
-<h1>Welcome to the documentation for radar!<a class="headerlink" href="#welcome-to-the-documentation-for-radar" title="Link to this heading"></a></h1>
+  <section id="welcome-to-the-documentation-for">
+<h1>Welcome to the documentation for…<a class="headerlink" href="#welcome-to-the-documentation-for" title="Link to this heading"></a></h1>
+<img alt="_images/radar_logo_white_bg.png" src="_images/radar_logo_white_bg.png" />
 <p><strong>radar</strong> is a Python library intended to teach the user basics of
 radar signal processing as to prototype for Software-Defined Radio
 (SDR) design.</p>
@@ -101,6 +107,35 @@ how to install the project.</p>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functional_blocks.html">radar.util</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.util.affts"><code class="docutils literal notranslate"><span class="pre">affts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.util.ffts"><code class="docutils literal notranslate"><span class="pre">ffts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.util.init_figs"><code class="docutils literal notranslate"><span class="pre">init_figs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.util.log2lin"><code class="docutils literal notranslate"><span class="pre">log2lin()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional_blocks.html#module-radar.core">radar.core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.BasicReceiver"><code class="docutils literal notranslate"><span class="pre">BasicReceiver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.BasicTransmitter"><code class="docutils literal notranslate"><span class="pre">BasicTransmitter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.ButterFilter"><code class="docutils literal notranslate"><span class="pre">ButterFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.CA_CFAR1D"><code class="docutils literal notranslate"><span class="pre">CA_CFAR1D</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.CA_CFAR2D"><code class="docutils literal notranslate"><span class="pre">CA_CFAR2D</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.Cheby1Filter"><code class="docutils literal notranslate"><span class="pre">Cheby1Filter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.CoherentOscillator"><code class="docutils literal notranslate"><span class="pre">CoherentOscillator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.CustomAESA"><code class="docutils literal notranslate"><span class="pre">CustomAESA</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.DiscreteScan"><code class="docutils literal notranslate"><span class="pre">DiscreteScan</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.FIR"><code class="docutils literal notranslate"><span class="pre">FIR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.MTIBasic"><code class="docutils literal notranslate"><span class="pre">MTIBasic</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.PlanarAESA"><code class="docutils literal notranslate"><span class="pre">PlanarAESA</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.SincAntennaPattern"><code class="docutils literal notranslate"><span class="pre">SincAntennaPattern</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional_blocks.html#radar.core.Waveform"><code class="docutils literal notranslate"><span class="pre">Waveform</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a><ul>
@@ -113,6 +148,7 @@ how to install the project.</p>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html#why-all-the-emphasis-on-arrays">Why all the emphasis on arrays?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html#basic-signal-processing-in-python-numpy">Basic Signal Processing in Python/NumPy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html#fourier-transform">Fourier Transform</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html#signal-filtering">Signal Filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html#multi-rate-signal-processing">Multi-Rate Signal Processing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html#center-frequency-and-mixing">Center Frequency and Mixing</a></li>
@@ -127,7 +163,7 @@ how to install the project.</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab2-TxRx.html#project">Project</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/lab3-RadarDesign.html">Radar Search and Track</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-RadarDesign.html#scanning-the-area-or-volume">Scanning the Area or Volume:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-RadarDesign.html#design-example-basic-360-azimuth-scan">Design Example: Basic 360 Azimuth Scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-RadarDesign.html#design-example-dwell-and-switch">Design Example: Dwell and Switch</a></li>
