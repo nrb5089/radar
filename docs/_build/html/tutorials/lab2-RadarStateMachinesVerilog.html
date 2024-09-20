@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 2 - Schedulers and State Machines &mdash; radar 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Getting a RTD Started for Git Repo" href="sphinx_rtd_relatively_painless.html" />
+    <link rel="prev" title="Lab 1 - Signal Synthesis and Simulation" href="lab1-DDSPulse.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            radar
+              <img src="../_static/radar_thumbnail.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html">radar.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html#module-radar.core">radar.core</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Signal Processing Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDR Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroEmbeddedDesign.html">Lab 0 - Introduction to Software Defined Radio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-DDSPulse.html">Lab 1 - Signal Synthesis and Simulation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 2 - Schedulers and State Machines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-pulse-controller">Basic Pulse Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-pri-controller">Multiple PRI Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nested-scheduling">Nested Scheduling</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Howto Docs Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sphinx_rtd_relatively_painless.html">Getting a RTD Started for Git Repo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">radar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lab 2 - Schedulers and State Machines</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/lab2-RadarStateMachinesVerilog.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lab-2-schedulers-and-state-machines">
+<h1>Lab 2 - Schedulers and State Machines<a class="headerlink" href="#lab-2-schedulers-and-state-machines" title="Link to this heading"></a></h1>
+<section id="basic-pulse-controller">
+<h2>Basic Pulse Controller<a class="headerlink" href="#basic-pulse-controller" title="Link to this heading"></a></h2>
+<p>Below is an example of a state machine in Verilog for scheduling pulses at different times. This state machine generates a pulse for a duration of 5 clock cycles, then stays low for 10 clock cycles, and then repeats. It uses a counter to keep track of the number of clock cycles that have passed.</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">PulseGenerator</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">clk</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">rst_n</span><span class="p">,</span>
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="n">pulse</span>
+<span class="p">);</span>
+
+<span class="w">    </span><span class="k">parameter</span><span class="w"> </span><span class="n">IDLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">2</span><span class="mb">&#39;b00</span><span class="p">,</span><span class="w"> </span><span class="n">PULSE_HIGH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">2</span><span class="mb">&#39;b01</span><span class="p">,</span><span class="w"> </span><span class="n">PULSE_LOW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">2</span><span class="mb">&#39;b10</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">next_state</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">4</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">counter</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">negedge</span><span class="w"> </span><span class="n">rst_n</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">IDLE</span><span class="p">;</span>
+<span class="w">            </span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">5</span><span class="mb">&#39;b00000</span><span class="p">;</span>
+<span class="w">            </span><span class="n">pulse</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">next_state</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">PULSE_HIGH</span><span class="p">)</span>
+<span class="w">                </span><span class="n">pulse</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="w">                </span><span class="n">pulse</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">5</span><span class="mb">&#39;b00000</span><span class="p">)</span>
+<span class="w">                </span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">5</span><span class="mb">&#39;b11111</span><span class="p">;</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="w">                </span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="n">next_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="w">            </span><span class="nl">IDLE:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">5</span><span class="mb">&#39;b00000</span><span class="p">)</span>
+<span class="w">                    </span><span class="n">next_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PULSE_HIGH</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+
+<span class="w">            </span><span class="nl">PULSE_HIGH:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">5</span><span class="mb">&#39;b00000</span><span class="p">)</span>
+<span class="w">                    </span><span class="n">next_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PULSE_LOW</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+
+<span class="w">            </span><span class="nl">PULSE_LOW:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">5</span><span class="mb">&#39;b00000</span><span class="p">)</span>
+<span class="w">                    </span><span class="n">next_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PULSE_HIGH</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">        </span><span class="k">endcase</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+</section>
+<section id="multiple-pri-controller">
+<h2>Multiple PRI Controller<a class="headerlink" href="#multiple-pri-controller" title="Link to this heading"></a></h2>
+<p>This state machine has three states: <code class="docutils literal notranslate"><span class="pre">IDLE</span></code>, <code class="docutils literal notranslate"><span class="pre">PULSE_HIGH</span></code> and <code class="docutils literal notranslate"><span class="pre">PULSE_LOW</span></code>. It starts in the <code class="docutils literal notranslate"><span class="pre">IDLE</span></code> state and moves to <code class="docutils literal notranslate"><span class="pre">PULSE_HIGH</span></code> after 5 clock cycles, where it stays for 5 clock cycles before moving to <code class="docutils literal notranslate"><span class="pre">PULSE_LOW</span></code>. It stays in <code class="docutils literal notranslate"><span class="pre">PULSE_LOW</span></code> for 10 clock cycles before returning to <code class="docutils literal notranslate"><span class="pre">PULSE_HIGH</span></code>, and so on.  This is a basic example, and your specific requirements might need different adjustments, such as changing the number of clock cycles for each pulse or low period, or adding more states.  Next is a state machine with 8 different states for 8 different pulse repetition intervals. All pulses have the same width, which is 5 cycles in this case.</p>
+<p>This state machine will transition from one state to another after each pulse repetition interval. For example, in the first state, it will generate a pulse, wait for 5 cycles, then generate another pulse. In the second state, it will generate a pulse, wait for 10 cycles, then generate another pulse, and so forth.</p>
+<p>Here’s an example of how you might code this:</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">PulseGenerator</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">clk</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">rst_n</span><span class="p">,</span>
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="n">pulse</span>
+<span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Define state IDs</span>
+<span class="w">    </span><span class="k">parameter</span><span class="w"> </span><span class="p">[</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>
+<span class="w">        </span><span class="n">STATE_5</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b000</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_10</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b001</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_15</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b010</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_20</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b011</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_25</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b100</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_30</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b101</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_35</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b110</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_40</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b111</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Current state</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">state</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Pulse width counter and interval counter</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">4</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">pulse_width_counter</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">5</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">interval_counter</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// FSM Logic</span>
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">negedge</span><span class="w"> </span><span class="n">rst_n</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_5</span><span class="p">;</span>
+<span class="w">            </span><span class="n">pulse</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">            </span><span class="n">pulse_width_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d5</span><span class="p">;</span><span class="w">  </span><span class="c1">// Pulse width is 5 cycles</span>
+<span class="w">            </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">6</span><span class="mi">&#39;d5</span><span class="p">;</span><span class="w">  </span><span class="c1">// First interval is 5 cycles</span>
+<span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="c1">// Handle pulse width counter</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pulse_width_counter</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">pulse</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">                </span><span class="n">pulse_width_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">pulse_width_counter</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">pulse</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mh">1</span><span class="p">)</span>
+<span class="w">                    </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">                </span><span class="k">else</span>
+<span class="w">                    </span><span class="c1">// Move to the next state</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="w">                        </span><span class="nl">STATE_5:</span><span class="w">  </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_10</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">6</span><span class="mi">&#39;d10</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_10:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_15</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">6</span><span class="mi">&#39;d15</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_15:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_20</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">6</span><span class="mi">&#39;d20</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_20:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_25</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">6</span><span class="mi">&#39;d25</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_25:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_30</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">6</span><span class="mi">&#39;d30</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_30:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_35</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">6</span><span class="mi">&#39;d35</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_35:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_40</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">6</span><span class="mi">&#39;d40</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_40:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_5</span><span class="p">;</span><span class="w">  </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">6</span><span class="mi">&#39;d5</span><span class="p">;</span><span class="w">  </span><span class="k">end</span>
+<span class="w">                    </span><span class="k">endcase</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>This is a reduced state machine, and in a real-world situation, you might need to add more features to handle corner cases, errors, or specific application requirements. Please remember to test this code in your environment as different applications may need different adjustments.   The scheduler generally has built in processing states (that may be done in parallel), here’s an example of a state machine which goes through 8 pulse repetition intervals, moves to a data processing state, and repeats the entire sequence 4 times. After four complete sequences, it stays in the IDLE state until a reset signal is received.</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">PulseGenerator</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">clk</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">rst_n</span><span class="p">,</span>
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="n">pulse</span><span class="p">,</span>
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="n">processing</span>
+<span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Define state IDs</span>
+<span class="w">    </span><span class="k">parameter</span><span class="w"> </span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>
+<span class="w">        </span><span class="n">IDLE</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0000</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_5</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0001</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_10</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0010</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_15</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0011</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_20</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0100</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_25</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0101</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_30</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0110</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_35</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0111</span><span class="p">,</span>
+<span class="w">        </span><span class="n">STATE_40</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b1000</span><span class="p">,</span>
+<span class="w">        </span><span class="n">PROCESS</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b1001</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Current state</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">state</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Pulse width counter and interval counter</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">4</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">pulse_width_counter</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">interval_counter</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Repeat counter</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">repeat_counter</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// FSM Logic</span>
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">negedge</span><span class="w"> </span><span class="n">rst_n</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">IDLE</span><span class="p">;</span>
+<span class="w">            </span><span class="n">pulse</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">            </span><span class="n">processing</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">            </span><span class="n">pulse_width_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d5</span><span class="p">;</span><span class="w">  </span><span class="c1">// Pulse width is 5 cycles</span>
+<span class="w">            </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d5</span><span class="p">;</span><span class="w">  </span><span class="c1">// First interval is 5 cycles</span>
+<span class="w">            </span><span class="n">repeat_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">3</span><span class="mi">&#39;d4</span><span class="p">;</span><span class="w">  </span><span class="c1">// Repeat 4 times</span>
+<span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="c1">// Handle pulse width counter</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pulse_width_counter</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">pulse</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">                </span><span class="n">pulse_width_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">pulse_width_counter</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">pulse</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mh">1</span><span class="p">)</span>
+<span class="w">                    </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">                </span><span class="k">else</span>
+<span class="w">                    </span><span class="c1">// Move to the next state</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="w">                        </span><span class="nl">IDLE:</span><span class="w">     </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_5</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d5</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_5:</span><span class="w">  </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_10</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d10</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_10:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_15</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d15</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_15:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_20</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d20</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_20:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_25</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d25</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_25:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_30</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d30</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_30:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_35</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d35</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_35:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_40</span><span class="p">;</span><span class="w"> </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d40</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">STATE_40:</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">PROCESS</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<span class="w">                        </span><span class="nl">PROCESS:</span><span class="w">  </span><span class="k">begin</span>
+<span class="w">                            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">repeat_counter</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                                </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_5</span><span class="p">;</span>
+<span class="w">                                </span><span class="n">interval_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">7</span><span class="mi">&#39;d5</span><span class="p">;</span>
+<span class="w">                                </span><span class="n">repeat_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">repeat_counter</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">                            </span><span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                                </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">IDLE</span><span class="p">;</span>
+<span class="w">                            </span><span class="k">end</span>
+<span class="w">                        </span><span class="k">end</span>
+<span class="w">                    </span><span class="k">endcase</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="n">processing</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">PROCESS</span><span class="p">);</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>In this example, a new <code class="docutils literal notranslate"><span class="pre">PROCESS</span></code> state is added to the state machine. After going through the 8 pulse states, the state machine moves to the <code class="docutils literal notranslate"><span class="pre">PROCESS</span></code> state. After staying in the <code class="docutils literal notranslate"><span class="pre">PROCESS</span></code> state for one cycle, it checks the repeat_counter. If the repeat_counter is greater than 1, it repeats the whole process by moving back to the first pulse state. Otherwise, it moves to the IDLE state. The processing output signal is high when the state machine is in the <code class="docutils literal notranslate"><span class="pre">PROCESS</span></code> state and low otherwise.</p>
+</section>
+<section id="nested-scheduling">
+<h2>Nested Scheduling<a class="headerlink" href="#nested-scheduling" title="Link to this heading"></a></h2>
+<p>The main takeaway here is that there are timed intervals within timed intervals for scheduling, here’s an example of what several processing intervals inside a <code class="docutils literal notranslate"><span class="pre">SUBFRAME_A</span></code> state that performs a <em>processing</em> operation 5 times. After the fifth time, it transitions to the <code class="docutils literal notranslate"><span class="pre">SUBFRAME_B</span></code> state:</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">SubframeStateMachine</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">clk</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">rst_n</span><span class="p">,</span>
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="n">processing</span>
+<span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Define state IDs</span>
+<span class="w">    </span><span class="k">parameter</span><span class="w"> </span><span class="p">[</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>
+<span class="w">        </span><span class="n">IDLE</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b000</span><span class="p">,</span>
+<span class="w">        </span><span class="n">SUBFRAME_A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b001</span><span class="p">,</span>
+<span class="w">        </span><span class="n">SUBFRAME_B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="mb">&#39;b010</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Current state</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">state</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Processing counter</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">processing_counter</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// FSM Logic</span>
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">negedge</span><span class="w"> </span><span class="n">rst_n</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">IDLE</span><span class="p">;</span>
+<span class="w">            </span><span class="n">processing</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">            </span><span class="n">processing_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">4</span><span class="mi">&#39;d0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="c1">// Move to the next state</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="w">                </span><span class="nl">IDLE:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                    </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">SUBFRAME_A</span><span class="p">;</span>
+<span class="w">                    </span><span class="n">processing_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">4</span><span class="mi">&#39;d5</span><span class="p">;</span>
+<span class="w">                </span><span class="k">end</span>
+
+<span class="w">                </span><span class="nl">SUBFRAME_A:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                    </span><span class="n">processing</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w">  </span><span class="c1">// Perform processing</span>
+<span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">processing_counter</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mh">1</span><span class="p">)</span>
+<span class="w">                        </span><span class="n">processing_counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">processing_counter</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">else</span>
+<span class="w">                        </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">SUBFRAME_B</span><span class="p">;</span>
+<span class="w">                </span><span class="k">end</span>
+
+<span class="w">                </span><span class="nl">SUBFRAME_B:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                    </span><span class="n">processing</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span><span class="w">  </span><span class="c1">// No processing</span>
+<span class="w">                    </span><span class="c1">// More logic can be added here for what needs to be done in SUBFRAME_B</span>
+<span class="w">                </span><span class="k">end</span>
+<span class="w">            </span><span class="k">endcase</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>In this code, the state machine starts in an <code class="docutils literal notranslate"><span class="pre">IDLE</span></code> state. When it transitions to the <code class="docutils literal notranslate"><span class="pre">SUBFRAME_A</span></code> state, it performs some <em>processing</em> operation (represented by the <em>processing</em> output signal being set to 1) five times. After the fifth <em>processing</em> operation, the state machine transitions to the <code class="docutils literal notranslate"><span class="pre">SUBFRAME_B</span></code> state.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Much of this lab was autogenerated, but the code should reflect what type of logic needs to be implemented.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lab1-DDSPulse.html" class="btn btn-neutral float-left" title="Lab 1 - Signal Synthesis and Simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sphinx_rtd_relatively_painless.html" class="btn btn-neutral float-right" title="Getting a RTD Started for Git Repo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Blinn.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

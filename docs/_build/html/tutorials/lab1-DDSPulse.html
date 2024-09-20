@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 1 - Signal Synthesis and Simulation &mdash; radar 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Getting a RTD Started for Git Repo" href="sphinx_rtd_relatively_painless.html" />
+    <link rel="prev" title="Lab 0 - Introduction to Software Defined Radio" href="lab0-IntroEmbeddedDesign.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            radar
+              <img src="../_static/radar_thumbnail.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html">radar.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html#module-radar.core">radar.core</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Signal Processing Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDR Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroEmbeddedDesign.html">Lab 0 - Introduction to Software Defined Radio</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 1 - Signal Synthesis and Simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-dds-compiler-block">The DDS Compiler Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-a-simulation">Running a Simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#update-hdl-wrapper">Update HDL Wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#changing-the-frequency">Changing the Frequency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pulse-control">Pulse Control</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Howto Docs Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sphinx_rtd_relatively_painless.html">Getting a RTD Started for Git Repo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">radar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lab 1 - Signal Synthesis and Simulation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/lab1-DDSPulse.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lab-1-signal-synthesis-and-simulation">
+<h1>Lab 1 - Signal Synthesis and Simulation<a class="headerlink" href="#lab-1-signal-synthesis-and-simulation" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Estimated Time to Complete: 2.5-3 hours</p>
+</div>
+<p>Using Xilinx Vivado’s <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> functionality is critical to design and debugging of signal processing blocks.  We use Direct Digital Synthesis (DDS) as an example to generate a tone (sine wave) as a baseline example in this lab.  Imagine you’re a painter, but instead of a brush and paint, you’re equipped with numbers and math. Your canvas? The world of digital signals. In this vibrant world, Direct Digital Synthesis (DDS) is your superpower. With DDS, you can conjure up any waveform you desire—sine waves, square waves, and everything in between—just by crunching some numbers.</p>
+<p>Picture it as a magical music box: you turn the crank (input a frequency), and out comes a beautiful, pristine wave, ready to serenade the digital world. And the best part? You’re the maestro, conducting your waves with pinpoint accuracy, adjusting the tempo (frequency) and volume (amplitude) at your will, all in real-time.</p>
+<p>Open <strong>Vivado</strong> and press <strong>Create Project</strong>,</p>
+<img alt="../_images/Screenshot%20%281%29.png" src="../_images/Screenshot%20%281%29.png" />
+<p>click <strong>Next</strong> and name the project.</p>
+<img alt="../_images/Screenshot%20%283%29.png" src="../_images/Screenshot%20%283%29.png" />
+<p>Keep defaults on next screen <strong>RTL Project</strong>, Click <strong>Next</strong>.</p>
+<p>No sources to add,  Click <strong>Next</strong>.</p>
+<p>No constraints to add  Click <strong>Next</strong></p>
+<p>Click <strong>Boards</strong>, and scroll down to find the <strong>ZCU 111 Evaluation Board</strong>,  Click <strong>Next</strong>.</p>
+<p>Click <strong>Finish</strong></p>
+<section id="the-dds-compiler-block">
+<h2>The DDS Compiler Block<a class="headerlink" href="#the-dds-compiler-block" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Understanding of this block is critical to signal synthesis and design, take your time to understand, documentation from AMD/Xilinx is worth the read.</p>
+</div>
+<p>Vivado should now open your new project.  Click <strong>Create Block Design</strong> in the left column, Click <strong>*OK*</strong>.</p>
+<img alt="../_images/Screenshot%20%284%29.png" src="../_images/Screenshot%20%284%29.png" />
+<p>The block design window opens, Click on the <strong>+</strong> icon to add an IP core.</p>
+<img alt="../_images/Screenshot%20%285%29.png" src="../_images/Screenshot%20%285%29.png" />
+<p>Double click the DDS block that you just added.  Set parameters accordingly. The binary number should be 16 bits long, the third bit is 1.  <code class="docutils literal notranslate"><span class="pre">`0010000000000000`</span></code>.</p>
+<img alt="../_images/Screenshot%20%286%29.png" src="../_images/Screenshot%20%286%29.png" />
+<img alt="../_images/Screenshot%20%287%29.png" src="../_images/Screenshot%20%287%29.png" />
+<img alt="../_images/Screenshot%20%288%29.png" src="../_images/Screenshot%20%288%29.png" />
+<img alt="../_images/Screenshot%20%289%29.png" src="../_images/Screenshot%20%289%29.png" />
+<img alt="../_images/Screenshot%20%2810%29.png" src="../_images/Screenshot%20%2810%29.png" />
+<img alt="../_images/Screenshot%20%2811%29.png" src="../_images/Screenshot%20%2811%29.png" />
+<img alt="../_images/Screenshot%20%2812%29.png" src="../_images/Screenshot%20%2812%29.png" />
+<p>Click <strong>OK</strong></p>
+<p>Right click your DDS block and click <strong>Make External</strong>, this allows your block to connect to outside sources by automatically adding ports.</p>
+<img alt="../_images/Screenshot%20%2813%29.png" src="../_images/Screenshot%20%2813%29.png" />
+<p>You an view the properties of each port by click on them.  Note the frequency of this clock is 100 MHz.  You also use this to change the name of ports</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Important:</strong> Port names are critical for properly interfacing, name it something that makes sense for your design.</p>
+</div>
+<img alt="../_images/Screenshot%20%2814%29.png" src="../_images/Screenshot%20%2814%29.png" />
+<p>A suggested naming scheme is shown below, suggested because the later code you use has these as the main port names.  You can press the <code class="docutils literal notranslate"><span class="pre">+</span></code> to expand the <code class="docutils literal notranslate"><span class="pre">M_AXIS_DATA</span></code> port.</p>
+<img alt="../_images/Screenshot%20%2815%29.png" src="../_images/Screenshot%20%2815%29.png" />
+<p>Once the port names are changed, go ahead and right click the block design in the <strong>Design Sources</strong> list and click <strong>Generate Output Products</strong></p>
+<img alt="../_images/Screenshot%20%2816%29.png" src="../_images/Screenshot%20%2816%29.png" />
+<p>Change to <strong>Global</strong> if it is not, and click <strong>Generate</strong>.</p>
+<img alt="../_images/Screenshot%20%2817%29.png" src="../_images/Screenshot%20%2817%29.png" />
+<p>Click <strong>OK</strong> once prompted after output products are generated.</p>
+<p>right click the block design in the <strong>Design Sources</strong> list and click <strong>Create HDL Wrapper</strong></p>
+<img alt="../_images/Screenshot%20%2818%29.png" src="../_images/Screenshot%20%2818%29.png" />
+</section>
+<section id="running-a-simulation">
+<h2>Running a Simulation<a class="headerlink" href="#running-a-simulation" title="Link to this heading"></a></h2>
+<p>Right click <strong>Simulation Resources</strong> and click <strong>Add Sources</strong>, click <strong>Create File</strong>.</p>
+<img alt="../_images/Screenshot%20%2820%29.png" src="../_images/Screenshot%20%2820%29.png" />
+<img alt="../_images/Screenshot%20%2821%29.png" src="../_images/Screenshot%20%2821%29.png" />
+<p>Click <strong>Next</strong></p>
+<p>Name the file <strong>tb</strong> (for testbench).</p>
+<img alt="../_images/Screenshot%20%2822%29.png" src="../_images/Screenshot%20%2822%29.png" />
+<p>Click <strong>Ok</strong></p>
+<p>Right click the <code class="docutils literal notranslate"><span class="pre">tb.v</span></code> file in your <strong>Simulation Resources</strong> and select <strong>Set as Top</strong>.  If your <code class="docutils literal notranslate"><span class="pre">tb.v</span></code> file is in <strong>Design Resources</strong> you probably didn’t specify the type of source you wanted to add correctly.</p>
+<img alt="../_images/Screenshot%20%2823%29.png" src="../_images/Screenshot%20%2823%29.png" />
+<p>Double click <code class="docutils literal notranslate"><span class="pre">tb.v</span></code> to open it.</p>
+<p>Update the <code class="docutils literal notranslate"><span class="pre">tb.v</span></code> file with the code below and save.</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">tb</span><span class="p">;</span>
+
+<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">DDS_OUT_tdata</span><span class="p">;</span><span class="w"> </span><span class="c1">//DDS data (waveform) out is a 16-bit stream</span>
+<span class="kt">wire</span><span class="w"> </span><span class="n">DDS_OUT_tvalid</span><span class="p">;</span><span class="w">  </span><span class="c1">//Handshaking for indicating that data out is valid</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">aclk</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">aclken</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">aresetn</span><span class="p">;</span>
+
+<span class="c1">//Instantiation of Unit Under Test (UUT)</span>
+<span class="n">dds_system_wrapper</span><span class="w"> </span><span class="n">UUT</span><span class="w"> </span><span class="c1">// Instantiation of wrapper for your DDS system</span>
+<span class="w">       </span><span class="p">(.</span><span class="n">DDS_OUT_tdata</span><span class="p">(</span><span class="n">DDS_OUT_tdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">DDS_OUT_tvalid</span><span class="p">(</span><span class="n">DDS_OUT_tvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aclk</span><span class="p">(</span><span class="n">aclk</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aclken</span><span class="p">(</span><span class="n">aclken</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aresetn</span><span class="p">(</span><span class="n">aresetn</span><span class="p">));</span>
+
+<span class="k">parameter</span><span class="w"> </span><span class="n">half_clk_cycle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="p">;</span><span class="w"> </span><span class="c1">// 5ns is one half a clock cycle of a 100 MHz matches</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">aclken</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w"> </span><span class="c1">// &quot;&lt;=&quot; sets reg simultaneously</span>
+<span class="w">    </span><span class="n">aresetn</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w"> </span><span class="c1">//Active Low</span>
+<span class="k">end</span>
+<span class="k">always</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">aclk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w"> </span><span class="c1">// &quot;=&quot; sets reg sequentially</span>
+<span class="w">    </span><span class="p">#</span><span class="n">half_clk_cycle</span><span class="p">;</span><span class="w"> </span><span class="c1">// Wait half a clock cycle</span>
+
+<span class="w">    </span><span class="n">aclk</span><span class="w"> </span><span class="o">=</span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="n">half_clk_cycle</span><span class="p">;</span>
+<span class="k">end</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<img alt="../_images/Screenshot%20%2824%29.png" src="../_images/Screenshot%20%2824%29.png" />
+<p>Click <strong>Run Simulation</strong> along the left side</p>
+<img alt="../_images/Screenshot%20%2825%29.png" src="../_images/Screenshot%20%2825%29.png" />
+<p>Click <strong>Zoom Fit</strong> icon along the top tools.</p>
+<img alt="../_images/Screenshot%20%2826%29.png" src="../_images/Screenshot%20%2826%29.png" />
+<p>Click the <strong>Zoom In</strong> icon until you see the numbers pop up as below.  Observe that every clock cycle (<code class="docutils literal notranslate"><span class="pre">aclk</span></code> if you followed the suggested naming convention), the DDS output changes value.  However, this is not the ideal way to view a signal in the time domain.</p>
+<img alt="../_images/Screenshot%20%2827%29.png" src="../_images/Screenshot%20%2827%29.png" />
+<img alt="../_images/Screenshot%20%2829%29.png" src="../_images/Screenshot%20%2829%29.png" />
+<p>Right click the DDS out (<code class="docutils literal notranslate"><span class="pre">DDS_OUT_tdata[15:0]</span></code>), change <strong>Waveform Style</strong> from <strong>Digital</strong> to <strong>Analog</strong>.</p>
+<img alt="../_images/Screenshot%20%2830%29.png" src="../_images/Screenshot%20%2830%29.png" />
+<p>Ok what’s broken? Why is this not a clean sine wave?  Actually, if you’re seeing what’s in the figure below, you just need to change your numerical representation.  Remember the DDS generates values in twos-complement.</p>
+<img alt="../_images/Screenshot%20%2831%29.png" src="../_images/Screenshot%20%2831%29.png" />
+<p>Right click the DDS out (<code class="docutils literal notranslate"><span class="pre">DDS_OUT_tdata[15:0]</span></code>), changing the <strong>Radix</strong> settings change the numbering scheme that appears in the individual cells each clock cycle.  Change this to <strong>Signed Decimal</strong></p>
+<img alt="../_images/Screenshot%20%2832%29.png" src="../_images/Screenshot%20%2832%29.png" />
+<p>Voila.</p>
+<p>Go ahead and close the simulation by clicking the <strong>X</strong> in the upper right on the blue banner (not for <strong>Vivado</strong>)</p>
+<p>Click <strong>Open Block Design</strong> along the left side (or click the tab with your block design), and double click your DDS block.</p>
+<p>Change the <strong>Phase Increment Value</strong> to the following (divide by 2).</p>
+<img alt="../_images/Screenshot%20%2833%29.png" src="../_images/Screenshot%20%2833%29.png" />
+<p>This should cut the previous frequency in half.</p>
+<img alt="../_images/Screenshot%20%2834%29.png" src="../_images/Screenshot%20%2834%29.png" />
+<p>Click <strong>Ok</strong> and save.</p>
+<p>Follow the previous steps to <strong>Run Simulation</strong> and visualize the waveform.  Note the lower frequency sine wave.</p>
+<img alt="../_images/Screenshot%20%2835%29.png" src="../_images/Screenshot%20%2835%29.png" />
+<p>Again, close the simulation by clicking the <strong>X</strong> in the upper right on the blue banner (not for <strong>Vivado</strong>)</p>
+<section id="update-hdl-wrapper">
+<h3>Update HDL Wrapper<a class="headerlink" href="#update-hdl-wrapper" title="Link to this heading"></a></h3>
+<p>Click <strong>Open Block Design</strong> along the left side (or click the tab with your block design), and double click your DDS block.</p>
+<p>Up to this point you have designed waveform generators with fixed frequencies, but in reality, signals are dynamic in phase, frequency, and amplitude.  This last section details how to add an interface port to your DDS block such that you may stream frequency values over time.  This enables generation of waveforms that possess linear frequency modulation (LFM), for example.</p>
+<p>In the <strong>Implemention</strong> tab, change the <strong>Phase Increment Programmability</strong> to <strong>Streaming</strong>, this will add a port.</p>
+<img alt="../_images/Screenshot%20%2836%29.png" src="../_images/Screenshot%20%2836%29.png" />
+<p>Click <strong>OK</strong></p>
+<p>Right click the text for the new port and click <strong>Make External</strong>, change the name as shown below.</p>
+<img alt="../_images/Screenshot%20%2837%29.png" src="../_images/Screenshot%20%2837%29.png" />
+<img alt="../_images/Screenshot%20%2838%29.png" src="../_images/Screenshot%20%2838%29.png" />
+<p>Double click the HDL wrapper created previously, note that the new port is likely not added.  This an ongoing issue with Vivado…</p>
+<img alt="../_images/Screenshot%20%2839%29.png" src="../_images/Screenshot%20%2839%29.png" />
+<p>A workaround our team uses is to expand the drop down under the HDL wrapper file and right click the block diagram design within. In the pop-up menue, click <strong>View Instantiation Template</strong>, which forces an update.</p>
+<img alt="../_images/Screenshot%20%2840%29.png" src="../_images/Screenshot%20%2840%29.png" />
+<p>When the banner displaying <strong>This file has been changed. Reload</strong> appears, click <strong>Reload</strong>.</p>
+<img alt="../_images/Screenshot%20%2841%29.png" src="../_images/Screenshot%20%2841%29.png" />
+<p>Now that that is dealt with, the new port should appear for lines 15-16.  Note that two ports are required for the AXI interface (more detail in another tutorial).</p>
+<img alt="../_images/Screenshot%20%2842%29.png" src="../_images/Screenshot%20%2842%29.png" />
+</section>
+</section>
+<section id="changing-the-frequency">
+<h2>Changing the Frequency<a class="headerlink" href="#changing-the-frequency" title="Link to this heading"></a></h2>
+<p>Update the  <code class="docutils literal notranslate"><span class="pre">tb.v</span></code> under your <strong>Simulation Resources</strong> with the following code:</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">tb</span><span class="p">;</span>
+
+<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">DDS_OUT_tdata</span><span class="p">;</span><span class="w"> </span><span class="c1">//DDS data (waveform) out is a 16-bit stream</span>
+<span class="kt">wire</span><span class="w"> </span><span class="n">DDS_OUT_tvalid</span><span class="p">;</span><span class="w">  </span><span class="c1">//Handshaking for indicating that data out is valid</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">aclk</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">aclken</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">aresetn</span><span class="p">;</span>
+
+<span class="c1">//***************************************************UPDATE************</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">PHZ_INC_tdata</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">PHZ_INC_tvalid</span><span class="p">;</span>
+<span class="c1">//*********************************************************************</span>
+
+
+<span class="c1">//Instantiation of Unit Under Test (UUT)</span>
+<span class="n">dds_system_wrapper</span><span class="w"> </span><span class="n">UUT</span>
+<span class="w">       </span><span class="p">(.</span><span class="n">DDS_OUT_tdata</span><span class="p">(</span><span class="n">DDS_OUT_tdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">DDS_OUT_tvalid</span><span class="p">(</span><span class="n">DDS_OUT_tvalid</span><span class="p">),</span>
+
+<span class="w">        </span><span class="c1">//***************************************************UPDATE************</span>
+<span class="w">        </span><span class="p">.</span><span class="n">PHZ_INC_tdata</span><span class="p">(</span><span class="n">PHZ_INC_tdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">PHZ_INC_tvalid</span><span class="p">(</span><span class="n">PHZ_INC_tvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="c1">//*********************************************************************</span>
+
+<span class="w">        </span><span class="p">.</span><span class="n">aclk</span><span class="p">(</span><span class="n">aclk</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aclken</span><span class="p">(</span><span class="n">aclken</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aresetn</span><span class="p">(</span><span class="n">aresetn</span><span class="p">));</span>
+
+
+
+<span class="k">parameter</span><span class="w"> </span><span class="n">half_clk_cycle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="p">;</span><span class="w"> </span><span class="c1">// 5ns is one half a clock cycle of a 100 MHz matches</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">aclken</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w"> </span><span class="c1">// &quot;&lt;=&quot; sets reg simultaneously</span>
+<span class="w">    </span><span class="n">aresetn</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w"> </span><span class="c1">//Active Low</span>
+
+<span class="w">    </span><span class="c1">//***************************************************UPDATE************</span>
+<span class="w">    </span><span class="n">PHZ_INC_tdata</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">16</span><span class="mb">&#39;b0001</span><span class="n">_0000_0000_0000</span><span class="p">;</span>
+<span class="w">    </span><span class="n">PHZ_INC_tvalid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">//*********************************************************************</span>
+
+<span class="k">end</span>
+<span class="k">always</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">aclk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w"> </span><span class="c1">// &quot;=&quot; sets reg sequentially</span>
+<span class="w">    </span><span class="p">#</span><span class="n">half_clk_cycle</span><span class="p">;</span><span class="w"> </span><span class="c1">// Wait half a clock cycle</span>
+
+<span class="w">    </span><span class="n">aclk</span><span class="w"> </span><span class="o">=</span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="n">half_clk_cycle</span><span class="p">;</span>
+<span class="k">end</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>Click <strong>Run Simulation</strong> and observe that you get 6.25 MHz sine wave.  Adjust zoom and settings as usual to visualize the waveform.</p>
+<p>Ok, so what?  Well now you have a block in which you can interface and change the frequency at any required clock cycle periodically at each clock cycle.</p>
+<p>It’s generally good practice to work from a “Top Level” HDL file to manage your project.  Right click <strong>Design Sources</strong> and click <strong>Add Sources</strong>.</p>
+<img alt="../_images/Screenshot%20%2843%29.png" src="../_images/Screenshot%20%2843%29.png" />
+<img alt="../_images/Screenshot%20%2844%29.png" src="../_images/Screenshot%20%2844%29.png" />
+<p>Click <strong>Next</strong>.</p>
+<p>Click <strong>Create File</strong>, name it <code class="docutils literal notranslate"><span class="pre">`top_level`</span></code>.</p>
+<img alt="../_images/Screenshot%20%2845%29.png" src="../_images/Screenshot%20%2845%29.png" />
+<p>Click <strong>OK</strong></p>
+<p>Right click your <code class="docutils literal notranslate"><span class="pre">`top_level.v`</span></code> module and select <strong>Set as Top</strong>.</p>
+<img alt="../_images/Screenshot%20%2846%29.png" src="../_images/Screenshot%20%2846%29.png" />
+<p>Copy paste from <code class="docutils literal notranslate"><span class="pre">`dds_system_wrapper.v`</span></code> and paste it into <code class="docutils literal notranslate"><span class="pre">`top_level.v`</span></code>.  The code is included after the figures to avoid issues.</p>
+<img alt="../_images/Screenshot%20%2847%29.png" src="../_images/Screenshot%20%2847%29.png" />
+<img alt="../_images/Screenshot%20%2848%29.png" src="../_images/Screenshot%20%2848%29.png" />
+<p>Click <strong>Save</strong>, observe that <code class="docutils literal notranslate"><span class="pre">`top_level.v`</span></code> is now encompassing of all project elements in the hierarchy.</p>
+<img alt="../_images/Screenshot%20%2850%29.png" src="../_images/Screenshot%20%2850%29.png" />
+<img alt="../_images/Screenshot%20%2852%29.png" src="../_images/Screenshot%20%2852%29.png" />
+<p>Update <code class="docutils literal notranslate"><span class="pre">top_level.v</span></code> with the following lines in 47-48 as shown below</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">top_level</span>
+<span class="p">(</span><span class="n">DDS_OUT_tdata</span><span class="p">,</span>
+<span class="w">    </span><span class="n">DDS_OUT_tvalid</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PHZ_INC_tdata</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PHZ_INC_tvalid</span><span class="p">,</span>
+<span class="w">    </span><span class="n">aclk</span><span class="p">,</span>
+<span class="w">    </span><span class="n">aclken</span><span class="p">,</span>
+<span class="w">    </span><span class="n">aresetn</span><span class="p">);</span>
+<span class="w">  </span><span class="k">output</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">DDS_OUT_tdata</span><span class="p">;</span>
+<span class="w">  </span><span class="k">output</span><span class="w"> </span><span class="n">DDS_OUT_tvalid</span><span class="p">;</span>
+<span class="w">  </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">PHZ_INC_tdata</span><span class="p">;</span>
+<span class="w">  </span><span class="k">input</span><span class="w"> </span><span class="n">PHZ_INC_tvalid</span><span class="p">;</span>
+<span class="w">  </span><span class="k">input</span><span class="w"> </span><span class="n">aclk</span><span class="p">;</span>
+<span class="w">  </span><span class="k">input</span><span class="w"> </span><span class="n">aclken</span><span class="p">;</span>
+<span class="w">  </span><span class="k">input</span><span class="w"> </span><span class="n">aresetn</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">DDS_OUT_tdata</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">wire</span><span class="w"> </span><span class="n">DDS_OUT_tvalid</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">PHZ_INC_tdata</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">wire</span><span class="w"> </span><span class="n">PHZ_INC_tvalid</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">wire</span><span class="w"> </span><span class="n">aclk</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">wire</span><span class="w"> </span><span class="n">aclken</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">wire</span><span class="w"> </span><span class="n">aresetn</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">assign</span><span class="w"> </span><span class="n">PHZ_INC_tdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">16</span><span class="mb">&#39;b0000</span><span class="n">_1000_0000_0000</span><span class="p">;</span>
+<span class="w">  </span><span class="k">assign</span><span class="w"> </span><span class="n">PHZ_INC_tvalid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">dds_system_wrapper</span><span class="w"> </span><span class="n">dds_system_i</span>
+<span class="w">       </span><span class="p">(.</span><span class="n">DDS_OUT_tdata</span><span class="p">(</span><span class="n">DDS_OUT_tdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">DDS_OUT_tvalid</span><span class="p">(</span><span class="n">DDS_OUT_tvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">PHZ_INC_tdata</span><span class="p">(</span><span class="n">PHZ_INC_tdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">PHZ_INC_tvalid</span><span class="p">(</span><span class="n">PHZ_INC_tvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aclk</span><span class="p">(</span><span class="n">aclk</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aclken</span><span class="p">(</span><span class="n">aclken</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aresetn</span><span class="p">(</span><span class="n">aresetn</span><span class="p">));</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<img alt="../_images/Screenshot%20%2851%29.png" src="../_images/Screenshot%20%2851%29.png" />
+</section>
+<section id="pulse-control">
+<h2>Pulse Control<a class="headerlink" href="#pulse-control" title="Link to this heading"></a></h2>
+<p>Create a new design resource, right click <strong>Design Resources</strong> and from the drop down click <strong>Add Source</strong>, make sure in the menu that follows you specify <strong>Design Source</strong></p>
+<img alt="../_images/Screenshot%20%2871%29.png" src="../_images/Screenshot%20%2871%29.png" />
+<img alt="../_images/Screenshot%20%2872%29.png" src="../_images/Screenshot%20%2872%29.png" />
+<p>Copy paste the following code into the <code class="docutils literal notranslate"><span class="pre">mux_on_off.v</span></code> file</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">mux_on_off</span><span class="p">(</span><span class="n">mydatain_tdata</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">mydatain_tvalid</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">mydataout_tdata</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">mydataout_tvalid</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">pulse_ctrl</span>
+<span class="w">                    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">mydatain_tdata</span><span class="p">;</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">mydatain_tvalid</span><span class="p">;</span>
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">mydataout_tdata</span><span class="p">;</span>
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">mydataout_tvalid</span><span class="p">;</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">pulse_ctrl</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">assign</span><span class="w"> </span><span class="n">mydataout_tdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">pulse_ctrl</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">mydatain_tdata</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mh">16</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">assign</span><span class="w"> </span><span class="n">mydataout_tvalid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mydatain_tvalid</span><span class="p">;</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<img alt="../_images/Screenshot%20%2881%29.png" src="../_images/Screenshot%20%2881%29.png" />
+<p>Click and Drag the new source <code class="docutils literal notranslate"><span class="pre">mux_on_off.v</span></code> in to the block diagram</p>
+<img alt="../_images/Screenshot%20%2873%29.png" src="../_images/Screenshot%20%2873%29.png" />
+<img alt="../_images/Screenshot%20%2874%29.png" src="../_images/Screenshot%20%2874%29.png" />
+<p>Click the wire conneciting the DDS module to the output port <code class="docutils literal notranslate"><span class="pre">DDS_OUT</span></code>, press <strong>DELETE</strong>.</p>
+<p>Note that you will not have an <code class="docutils literal notranslate"><span class="pre">aclk</span></code> input for your version.</p>
+<p>Reconnect the block diagram as shown below, ignore the <code class="docutils literal notranslate"><span class="pre">aclk</span></code> port portions.</p>
+<img alt="../_images/Screenshot%20%2877%29.png" src="../_images/Screenshot%20%2877%29.png" />
+<p>Right click the text on your mux block and click <strong>Make External</strong></p>
+<img alt="../_images/Screenshot%20%2878%29.png" src="../_images/Screenshot%20%2878%29.png" />
+<img alt="../_images/Screenshot%20%2879%29.png" src="../_images/Screenshot%20%2879%29.png" />
+<p>You will need to update the HDL wrapper as you did before.</p>
+<img alt="../_images/Screenshot%20%2880%29.png" src="../_images/Screenshot%20%2880%29.png" />
+<p>Update your <code class="docutils literal notranslate"><span class="pre">tb.v</span></code> in your simulation sources with the code below and save.</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">tb</span><span class="p">;</span>
+
+<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">DDS_OUT_tdata</span><span class="p">;</span><span class="w"> </span><span class="c1">//DDS data (waveform) out is a 16-bit stream</span>
+<span class="kt">wire</span><span class="w"> </span><span class="n">DDS_OUT_tvalid</span><span class="p">;</span><span class="w">  </span><span class="c1">//Handshaking for indicating that data out is valid</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">aclk</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">aclken</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">aresetn</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">PHZ_INC_tdata</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">PHZ_INC_tvalid</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">pulse_ctrl</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">8</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">9</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">next_state</span><span class="p">;</span>
+
+<span class="c1">//State machine parameters governing pulse on/off</span>
+<span class="k">parameter</span><span class="w"> </span><span class="n">num_clock_cycles_on</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">100</span><span class="p">;</span>
+<span class="k">parameter</span><span class="w"> </span><span class="n">num_clock_cycles_off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">400</span><span class="p">;</span>
+<span class="k">parameter</span><span class="w"> </span><span class="n">PULSE_HIGH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">,</span><span class="w"> </span><span class="n">PULSE_LOW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+
+<span class="c1">//Instantiation of Unit Under Test (UUT)</span>
+<span class="n">dds_system_wrapper</span><span class="w"> </span><span class="n">UUT</span>
+<span class="w">       </span><span class="p">(.</span><span class="n">DDS_OUT_tdata</span><span class="p">(</span><span class="n">DDS_OUT_tdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">DDS_OUT_tvalid</span><span class="p">(</span><span class="n">DDS_OUT_tvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">PHZ_INC_tdata</span><span class="p">(</span><span class="n">PHZ_INC_tdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">PHZ_INC_tvalid</span><span class="p">(</span><span class="n">PHZ_INC_tvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aclk</span><span class="p">(</span><span class="n">aclk</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aclken</span><span class="p">(</span><span class="n">aclken</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">aresetn</span><span class="p">(</span><span class="n">aresetn</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">pulse_ctrl</span><span class="p">(</span><span class="n">pulse_ctrl</span><span class="p">));</span>
+
+
+
+<span class="k">parameter</span><span class="w"> </span><span class="n">half_clk_cycle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="p">;</span><span class="w"> </span><span class="c1">// 5ns is one half a clock cycle of a 100 MHz matches</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">aclken</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w"> </span><span class="c1">// &quot;&lt;=&quot; sets reg simultaneously</span>
+<span class="w">    </span><span class="n">aresetn</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w"> </span><span class="c1">//Active Low</span>
+<span class="w">    </span><span class="n">PHZ_INC_tdata</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">16</span><span class="mb">&#39;b0000</span><span class="n">_1000_0000_0000</span><span class="p">;</span>
+<span class="w">    </span><span class="n">PHZ_INC_tvalid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">pulse_ctrl</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">next_state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">PULSE_HIGH</span><span class="p">;</span>
+<span class="k">end</span>
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">aclk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_state</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="w">        </span><span class="nl">PULSE_HIGH:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">num_clock_cycles_on</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">9</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">                </span><span class="n">next_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PULSE_LOW</span><span class="p">;</span>
+<span class="w">                </span><span class="n">pulse_ctrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="nl">PULSE_LOW:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">num_clock_cycles_off</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">9</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">                </span><span class="n">next_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PULSE_HIGH</span><span class="p">;</span>
+<span class="w">                </span><span class="n">pulse_ctrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">endcase</span>
+<span class="k">end</span>
+<span class="k">always</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">aclk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="w"> </span><span class="c1">// &quot;=&quot; sets reg sequentially</span>
+<span class="w">    </span><span class="p">#</span><span class="n">half_clk_cycle</span><span class="p">;</span><span class="w"> </span><span class="c1">// Wait half a clock cycle</span>
+
+<span class="w">    </span><span class="n">aclk</span><span class="w"> </span><span class="o">=</span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="n">half_clk_cycle</span><span class="p">;</span>
+<span class="k">end</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>Save and <strong>Run Simulation</strong></p>
+<img alt="../_images/Screenshot%20%2882%29.png" src="../_images/Screenshot%20%2882%29.png" />
+<p>Use the simulation settings toolbar to change the run time to 1000 us.  Press to run.</p>
+<img alt="../_images/Screenshot%20%2883%29.png" src="../_images/Screenshot%20%2883%29.png" />
+<p>Adjust the zoom and timing window settings as you’ve done previously, as well as the signal display (analog vs digital, signed decimal, etc.).</p>
+<img alt="../_images/Screenshot%20%2884%29.png" src="../_images/Screenshot%20%2884%29.png" />
+<img alt="../_images/Screenshot%20%2885%29.png" src="../_images/Screenshot%20%2885%29.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lab0-IntroEmbeddedDesign.html" class="btn btn-neutral float-left" title="Lab 0 - Introduction to Software Defined Radio" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sphinx_rtd_relatively_painless.html" class="btn btn-neutral float-right" title="Getting a RTD Started for Git Repo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Blinn.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 3 - Creating Custom IP Blocks &mdash; radar 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Getting a RTD Started for Git Repo" href="sphinx_rtd_relatively_painless.html" />
+    <link rel="prev" title="Lab 2 - Schedulers and State Machines" href="lab2-RadarStateMachinesVerilog.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            radar
+              <img src="../_static/radar_thumbnail.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html">radar.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html#module-radar.core">radar.core</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Signal Processing Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDR Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroEmbeddedDesign.html">Lab 0 - Introduction to Software Defined Radio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-DDSPulse.html">Lab 1 - Signal Synthesis and Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2-RadarStateMachinesVerilog.html">Lab 2 - Schedulers and State Machines</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 3 - Creating Custom IP Blocks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creation-wizard">Creation Wizard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-ip-to-custom-ip">Add IP to Custom IP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-user-ports-and-logic">Adding User Ports and Logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#packaging-the-custom-ip">Packaging the Custom IP</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Howto Docs Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sphinx_rtd_relatively_painless.html">Getting a RTD Started for Git Repo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">radar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lab 3 - Creating Custom IP Blocks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/lab3-CustomIP.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lab-3-creating-custom-ip-blocks">
+<h1>Lab 3 - Creating Custom IP Blocks<a class="headerlink" href="#lab-3-creating-custom-ip-blocks" title="Link to this heading"></a></h1>
+<p>In this tutorial, we show how to create a custom IP block that houses two DDS modules capable of producing simultaneous samples at each clock cycle to create a tone. The tone is tunable via writing to the register space with applications run on the processor system (i.e., Linux or baremetal commands).</p>
+<section id="creation-wizard">
+<h2>Creation Wizard<a class="headerlink" href="#creation-wizard" title="Link to this heading"></a></h2>
+<p>Open up a new or existing project with Vivado, doesn’t matter which.  What you want is to click <strong>Tools</strong> and then find and click <strong>Create and Package New IP…</strong></p>
+<img alt="../_images/Screenshot%202024-09-19%20151924.png" src="../_images/Screenshot%202024-09-19%20151924.png" />
+<p>A wizard will pop up, select <strong>Create a new AXI4 peripheral</strong>. Click <strong>Next</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-19%20152001.png" src="../_images/Screenshot%202024-09-19%20152001.png" />
+<p>Name and describe the IP block as shown in the below figure</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Highly recommend creating a folder within your IP repository as shown in the figure below with <code class="docutils literal notranslate"><span class="pre">ip_repo/tunable_dds</span></code>, this allows you to store all project files associated with the custom IP block in one directory.</p>
+</div>
+<p>Click <strong>Next</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-19%20152142.png" src="../_images/Screenshot%202024-09-19%20152142.png" />
+<p>Keep all default settings.  Click <strong>Next</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-19%20152203.png" src="../_images/Screenshot%202024-09-19%20152203.png" />
+<p>Ensure that <strong>Edit IP</strong> is selected, or you’ll have to redo all these previous steps…</p>
+<p>Click <strong>Finish</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-19%20152215.png" src="../_images/Screenshot%202024-09-19%20152215.png" />
+<p>Your project sources will look like the following,</p>
+<img alt="../_images/Screenshot%202024-09-19%20152335.png" src="../_images/Screenshot%202024-09-19%20152335.png" />
+</section>
+<section id="add-ip-to-custom-ip">
+<h2>Add IP to Custom IP<a class="headerlink" href="#add-ip-to-custom-ip" title="Link to this heading"></a></h2>
+<p>Click <strong>Window</strong> and open the <strong>IP Catalog</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-19%20153348.png" src="../_images/Screenshot%202024-09-19%20153348.png" />
+<p>Search <em>dds</em> and double-click <code class="docutils literal notranslate"><span class="pre">DDS</span> <span class="pre">Compiler</span></code>, any of the options will work.</p>
+<img alt="../_images/Screenshot%202024-09-19%20153412.png" src="../_images/Screenshot%202024-09-19%20153412.png" />
+<p>The <strong>Customize IP</strong> wizard will launch, adjust to the following settings for each screen. Click <strong>Ok</strong> when finished.</p>
+<img alt="../_images/Screenshot%202024-09-19%20153426.png" src="../_images/Screenshot%202024-09-19%20153426.png" />
+<img alt="../_images/Screenshot%202024-09-19%20153455.png" src="../_images/Screenshot%202024-09-19%20153455.png" />
+<img alt="../_images/Screenshot%202024-09-19%20153510.png" src="../_images/Screenshot%202024-09-19%20153510.png" />
+<img alt="../_images/Screenshot%202024-09-19%20153527.png" src="../_images/Screenshot%202024-09-19%20153527.png" />
+<p>Press <strong>Skip</strong></p>
+<img alt="../_images/Screenshot%202024-09-19%20153550.png" src="../_images/Screenshot%202024-09-19%20153550.png" />
+<p>Find and click <strong>IP Sources</strong> located along the bottom of the <strong>Sources</strong> tab.</p>
+<img alt="../_images/Screenshot%202024-09-19%20153626.png" src="../_images/Screenshot%202024-09-19%20153626.png" />
+<p>Expand the menu, double-click <code class="docutils literal notranslate"><span class="pre">dds_compiler_0.veo</span></code> to open it.</p>
+<img alt="../_images/Screenshot%202024-09-19%20153646.png" src="../_images/Screenshot%202024-09-19%20153646.png" />
+<p>Inside you will find an instantiation template shown below for the <code class="docutils literal notranslate"><span class="pre">DDS</span> <span class="pre">Compiler</span></code> block.  This is a handy tool for use of many AMD/Xilinx IP.  Keep this file open in your project dashboard, we will revisit it shortly.</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">//....</span>
+<span class="c1">//----------- Begin Cut here for INSTANTIATION Template ---// INST_TAG</span>
+<span class="n">dds_compiler_0</span><span class="w"> </span><span class="n">your_instance_name</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclk</span><span class="p">(</span><span class="n">aclk</span><span class="p">),</span><span class="w">                                </span><span class="c1">// input wire aclk</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclken</span><span class="p">(</span><span class="n">aclken</span><span class="p">),</span><span class="w">                            </span><span class="c1">// input wire aclken</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aresetn</span><span class="p">(</span><span class="n">aresetn</span><span class="p">),</span><span class="w">                          </span><span class="c1">// input wire aresetn</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tvalid</span><span class="p">(</span><span class="n">s_axis_phase_tvalid</span><span class="p">),</span><span class="w">  </span><span class="c1">// input wire s_axis_phase_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tready</span><span class="p">(</span><span class="n">s_axis_phase_tready</span><span class="p">),</span><span class="w">  </span><span class="c1">// output wire s_axis_phase_tready</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tdata</span><span class="p">(</span><span class="n">s_axis_phase_tdata</span><span class="p">),</span><span class="w">    </span><span class="c1">// input wire [31 : 0] s_axis_phase_tdata</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tvalid</span><span class="p">(</span><span class="n">m_axis_data_tvalid</span><span class="p">),</span><span class="w">    </span><span class="c1">// output wire m_axis_data_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tready</span><span class="p">(</span><span class="n">m_axis_data_tready</span><span class="p">),</span><span class="w">    </span><span class="c1">// input wire m_axis_data_tready</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tdata</span><span class="p">(</span><span class="n">m_axis_data_tdata</span><span class="p">)</span><span class="w">      </span><span class="c1">// output wire [31 : 0] m_axis_data_tdata</span>
+<span class="p">);</span>
+<span class="c1">// INST_TAG_END ------ End INSTANTIATION Template ---------</span>
+<span class="c1">//....</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-user-ports-and-logic">
+<h2>Adding User Ports and Logic<a class="headerlink" href="#adding-user-ports-and-logic" title="Link to this heading"></a></h2>
+<p>Within <code class="docutils literal notranslate"><span class="pre">tunable_dds_v1_0.v</span></code>, find the lines of code toward the top,</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">// Users to add ports here</span>
+
+<span class="c1">// User ports ends</span>
+</pre></div>
+</div>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">// Users to add ports here</span>
+
+<span class="k">output</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">63</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">M_AXIS_DATA_tdata</span><span class="p">,</span>
+<span class="k">output</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">M_AXIS_DATA_tvalid</span><span class="p">,</span>
+<span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">M_AXIS_DATA_tready</span><span class="p">,</span>
+<span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">M_AXIS_CLK</span><span class="p">,</span>
+
+<span class="c1">// User ports ends</span>
+</pre></div>
+</div>
+<p>Then, scroll down within <code class="docutils literal notranslate"><span class="pre">tunable_dds_v1_0.v</span></code>, and find the instantiation template</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">// Instantiation of Axi Bus Interface S00_AXI</span>
+<span class="w">    </span><span class="n">tunable_dds_v1_0_S00_AXI</span><span class="w"> </span><span class="p">#</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="p">.</span><span class="n">C_S_AXI_DATA_WIDTH</span><span class="p">(</span><span class="n">C_S00_AXI_DATA_WIDTH</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">C_S_AXI_ADDR_WIDTH</span><span class="p">(</span><span class="n">C_S00_AXI_ADDR_WIDTH</span><span class="p">)</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="n">tunable_dds_v1_0_S00_AXI_inst</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ACLK</span><span class="p">(</span><span class="n">s00_axi_aclk</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARESETN</span><span class="p">(</span><span class="n">s00_axi_aresetn</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_AWADDR</span><span class="p">(</span><span class="n">s00_axi_awaddr</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_AWPROT</span><span class="p">(</span><span class="n">s00_axi_awprot</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_AWVALID</span><span class="p">(</span><span class="n">s00_axi_awvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_AWREADY</span><span class="p">(</span><span class="n">s00_axi_awready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_WDATA</span><span class="p">(</span><span class="n">s00_axi_wdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_WSTRB</span><span class="p">(</span><span class="n">s00_axi_wstrb</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_WVALID</span><span class="p">(</span><span class="n">s00_axi_wvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_WREADY</span><span class="p">(</span><span class="n">s00_axi_wready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_BRESP</span><span class="p">(</span><span class="n">s00_axi_bresp</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_BVALID</span><span class="p">(</span><span class="n">s00_axi_bvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_BREADY</span><span class="p">(</span><span class="n">s00_axi_bready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARADDR</span><span class="p">(</span><span class="n">s00_axi_araddr</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARPROT</span><span class="p">(</span><span class="n">s00_axi_arprot</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARVALID</span><span class="p">(</span><span class="n">s00_axi_arvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARREADY</span><span class="p">(</span><span class="n">s00_axi_arready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_RDATA</span><span class="p">(</span><span class="n">s00_axi_rdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_RRESP</span><span class="p">(</span><span class="n">s00_axi_rresp</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_RVALID</span><span class="p">(</span><span class="n">s00_axi_rvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_RREADY</span><span class="p">(</span><span class="n">s00_axi_rready</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Append entries at the bottom as</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">// Instantiation of Axi Bus Interface S00_AXI</span>
+<span class="w">    </span><span class="n">tunable_dds_v1_0_S00_AXI</span><span class="w"> </span><span class="p">#</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="p">.</span><span class="n">C_S_AXI_DATA_WIDTH</span><span class="p">(</span><span class="n">C_S00_AXI_DATA_WIDTH</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">C_S_AXI_ADDR_WIDTH</span><span class="p">(</span><span class="n">C_S00_AXI_ADDR_WIDTH</span><span class="p">)</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="n">tunable_dds_v1_0_S00_AXI_inst</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ACLK</span><span class="p">(</span><span class="n">s00_axi_aclk</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARESETN</span><span class="p">(</span><span class="n">s00_axi_aresetn</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_AWADDR</span><span class="p">(</span><span class="n">s00_axi_awaddr</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_AWPROT</span><span class="p">(</span><span class="n">s00_axi_awprot</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_AWVALID</span><span class="p">(</span><span class="n">s00_axi_awvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_AWREADY</span><span class="p">(</span><span class="n">s00_axi_awready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_WDATA</span><span class="p">(</span><span class="n">s00_axi_wdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_WSTRB</span><span class="p">(</span><span class="n">s00_axi_wstrb</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_WVALID</span><span class="p">(</span><span class="n">s00_axi_wvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_WREADY</span><span class="p">(</span><span class="n">s00_axi_wready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_BRESP</span><span class="p">(</span><span class="n">s00_axi_bresp</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_BVALID</span><span class="p">(</span><span class="n">s00_axi_bvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_BREADY</span><span class="p">(</span><span class="n">s00_axi_bready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARADDR</span><span class="p">(</span><span class="n">s00_axi_araddr</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARPROT</span><span class="p">(</span><span class="n">s00_axi_arprot</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARVALID</span><span class="p">(</span><span class="n">s00_axi_arvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_ARREADY</span><span class="p">(</span><span class="n">s00_axi_arready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_RDATA</span><span class="p">(</span><span class="n">s00_axi_rdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_RRESP</span><span class="p">(</span><span class="n">s00_axi_rresp</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_RVALID</span><span class="p">(</span><span class="n">s00_axi_rvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">S_AXI_RREADY</span><span class="p">(</span><span class="n">s00_axi_rready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">M_AXIS_DATA_tdata</span><span class="p">(</span><span class="n">M_AXIS_DATA_tdata</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">M_AXIS_DATA_tvalid</span><span class="p">(</span><span class="n">M_AXIS_DATA_tvalid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">M_AXIS_DATA_tready</span><span class="p">(</span><span class="n">M_AXIS_DATA_tready</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">M_AXIS_CLK</span><span class="p">(</span><span class="n">M_AXIS_CLK</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+<p>You can go ahead and close <code class="docutils literal notranslate"><span class="pre">tunable_dds_v1.v</span></code>, we’re done with that one.  The next steps will look familiar, make sure you’re editing the correct file.</p>
+<p>Within the <code class="docutils literal notranslate"><span class="pre">tunable_dds_v1_0_S00_AXI.v</span></code> file, find the comments toward the top</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">// Users to add ports here</span>
+
+<span class="c1">// User ports ends</span>
+</pre></div>
+</div>
+<p>Edit the code to read as</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">// Users to add ports here</span>
+
+<span class="k">output</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">63</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">M_AXIS_DATA_tdata</span><span class="p">,</span>
+<span class="k">output</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">M_AXIS_DATA_tvalid</span><span class="p">,</span>
+<span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">M_AXIS_DATA_tready</span><span class="p">,</span>
+<span class="k">input</span><span class="w"> </span><span class="kt">wire</span><span class="w"> </span><span class="n">M_AXIS_CLK</span><span class="p">,</span>
+
+<span class="c1">// User ports ends</span>
+</pre></div>
+</div>
+<p>Find the lines at the bottom of <code class="docutils literal notranslate"><span class="pre">tunable_dds_v1_0_S00_AXI.v</span></code></p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">// Add user logic here</span>
+
+<span class="c1">// User logic ends</span>
+</pre></div>
+</div>
+<p>Our implementation requires creating two samples simultaneously, in order to realize this, two DDS are required.  Copy paste the instantiation template (from <code class="docutils literal notranslate"><span class="pre">dds_compiler_0.veo</span></code> that you openned earlier) twice, rename from <code class="docutils literal notranslate"><span class="pre">your_instance_name</span></code> to <code class="docutils literal notranslate"><span class="pre">dds0</span></code> and <code class="docutils literal notranslate"><span class="pre">dds1</span></code>.</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">// Add user logic here</span>
+<span class="n">dds_compiler_0</span><span class="w"> </span><span class="n">dds0</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclk</span><span class="p">(</span><span class="n">aclk</span><span class="p">),</span><span class="w">                                </span><span class="c1">// input wire aclk</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclken</span><span class="p">(</span><span class="n">aclken</span><span class="p">),</span><span class="w">                            </span><span class="c1">// input wire aclken</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aresetn</span><span class="p">(</span><span class="n">aresetn</span><span class="p">),</span><span class="w">                          </span><span class="c1">// input wire aresetn</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tvalid</span><span class="p">(</span><span class="n">s_axis_phase_tvalid</span><span class="p">),</span><span class="w">  </span><span class="c1">// input wire s_axis_phase_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tdata</span><span class="p">(</span><span class="n">s_axis_phase_tdata</span><span class="p">),</span><span class="w">    </span><span class="c1">// input wire [31 : 0] s_axis_phase_tdata</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tvalid</span><span class="p">(</span><span class="n">m_axis_data_tvalid</span><span class="p">),</span><span class="w">    </span><span class="c1">// output wire m_axis_data_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tdata</span><span class="p">(</span><span class="n">m_axis_data_tdata</span><span class="p">)</span><span class="w">      </span><span class="c1">// output wire [31 : 0] m_axis_data_tdata</span>
+<span class="p">);</span>
+
+<span class="n">dds_compiler_0</span><span class="w"> </span><span class="n">dds1</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclk</span><span class="p">(</span><span class="n">aclk</span><span class="p">),</span><span class="w">                                </span><span class="c1">// input wire aclk</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclken</span><span class="p">(</span><span class="n">aclken</span><span class="p">),</span><span class="w">                            </span><span class="c1">// input wire aclken</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aresetn</span><span class="p">(</span><span class="n">aresetn</span><span class="p">),</span><span class="w">                          </span><span class="c1">// input wire aresetn</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tvalid</span><span class="p">(</span><span class="n">s_axis_phase_tvalid</span><span class="p">),</span><span class="w">  </span><span class="c1">// input wire s_axis_phase_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tdata</span><span class="p">(</span><span class="n">s_axis_phase_tdata</span><span class="p">),</span><span class="w">    </span><span class="c1">// input wire [31 : 0] s_axis_phase_tdata</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tvalid</span><span class="p">(</span><span class="n">m_axis_data_tvalid</span><span class="p">),</span><span class="w">    </span><span class="c1">// output wire m_axis_data_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tdata</span><span class="p">(</span><span class="n">m_axis_data_tdata</span><span class="p">)</span><span class="w">      </span><span class="c1">// output wire [31 : 0] m_axis_data_tdata</span>
+<span class="p">);</span>
+<span class="c1">// User logic ends</span>
+</pre></div>
+</div>
+<p>Now comes the key part, we need to tie the <code class="docutils literal notranslate"><span class="pre">slv_reg</span></code> variables to those <code class="docutils literal notranslate"><span class="pre">s_axis_phase_</span></code> inputs for the instantiation.  Ultimately, the <code class="docutils literal notranslate"><span class="pre">slv_reg</span></code> variables will reference a piece of memory that we will write to with our embedded system.  The addresses are auto-assigned whenever this block is used in a Vivado design, i.e., a base register of <code class="docutils literal notranslate"><span class="pre">0xa0000000</span></code> corresponds to <code class="docutils literal notranslate"><span class="pre">slv_reg0</span></code> and since our register address width (<code class="docutils literal notranslate"><span class="pre">C_S_AXI_ADDR_WIDTH</span></code>) is <code class="docutils literal notranslate"><span class="pre">4</span></code>, <code class="docutils literal notranslate"><span class="pre">slv_reg1</span></code> corresponds to <code class="docutils literal notranslate"><span class="pre">0xa0000004</span></code>.</p>
+<p>Add/change to the code as follows:</p>
+<ul class="simple">
+<li><p>At the bottom of the code snippet, <code class="docutils literal notranslate"><span class="pre">assign</span> <span class="pre">dds_resetn</span> <span class="pre">=</span> <span class="pre">steady_slv_reg0[0];</span></code>, and <code class="docutils literal notranslate"><span class="pre">assign</span> <span class="pre">phz_inc_start</span> <span class="pre">=</span> <span class="pre">slv_reg1[15:0];</span></code> map the register space to values that feed our DDS.</p></li>
+<li><p>Note the change of using <code class="docutils literal notranslate"><span class="pre">M_AXIS_CLK</span></code> for the <code class="docutils literal notranslate"><span class="pre">.aclk</span></code> and <code class="docutils literal notranslate"><span class="pre">M_AXIS_DATA_tready</span></code>.</p></li>
+<li><p>The handshaking <code class="docutils literal notranslate"><span class="pre">M_AXIS_DATA_tvalid</span></code> is a logical AND combination from both DDS.</p></li>
+<li><p>We lead the phase of <code class="docutils literal notranslate"><span class="pre">dds1</span></code> by and offset of half the phase increment rate, this is accomplished by a barrel shift <code class="docutils literal notranslate"><span class="pre">phz_inc_start</span> <span class="pre">&gt;&gt;</span> <span class="pre">1</span></code>.  This creates a set of two time samples at each clock cycle.</p></li>
+</ul>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="c1">// Add user logic here</span>
+
+<span class="kt">wire</span><span class="w"> </span><span class="n">dds_resetn</span><span class="p">;</span>
+
+<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">phz_inc_start</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">m0_axis_data_tdata</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">m0_axis_data_tvalid</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">m1_axis_data_tdata</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">m1_axis_data_tvalid</span><span class="p">;</span>
+
+<span class="n">dds_compiler_0</span><span class="w"> </span><span class="n">dds0</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclk</span><span class="p">(</span><span class="n">M_AXIS_CLK</span><span class="p">),</span><span class="w">                                </span><span class="c1">// input wire aclk</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclken</span><span class="p">(</span><span class="mh">1</span><span class="p">),</span><span class="w">                                       </span><span class="c1">// input wire aclken</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aresetn</span><span class="p">(</span><span class="n">dds_resetn</span><span class="p">),</span><span class="w">                             </span><span class="c1">// input wire aresetn</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tvalid</span><span class="p">(</span><span class="mh">1</span><span class="p">),</span><span class="w">                          </span><span class="c1">// input wire s_axis_phase_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tdata</span><span class="p">({</span><span class="mh">16</span><span class="mb">&#39;b0</span><span class="p">,</span><span class="n">phz_inc_start</span><span class="p">}),</span><span class="w">       </span><span class="c1">// input wire [31 : 0] s_axis_phase_tdata</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tvalid</span><span class="p">(</span><span class="n">m0_axis_data_tvalid</span><span class="p">),</span><span class="w">         </span><span class="c1">// output wire m_axis_data_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tready</span><span class="p">(</span><span class="n">M_AXIS_DATA_tready</span><span class="p">),</span><span class="w">          </span><span class="c1">// input wire m_axis_data_tready</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tdata</span><span class="p">(</span><span class="n">m0_axis_data_tdata</span><span class="p">)</span><span class="w">            </span><span class="c1">// output wire [31 : 0] m_axis_data_tdata</span>
+<span class="p">);</span>
+
+<span class="n">dds_compiler_0</span><span class="w"> </span><span class="n">dds1</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclk</span><span class="p">(</span><span class="n">M_AXIS_CLK</span><span class="p">),</span><span class="w">                                            </span><span class="c1">// input wire aclk</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aclken</span><span class="p">(</span><span class="mh">1</span><span class="p">),</span><span class="w">                                                   </span><span class="c1">// input wire aclken</span>
+<span class="w">  </span><span class="p">.</span><span class="n">aresetn</span><span class="p">(</span><span class="n">dds_resetn</span><span class="p">),</span><span class="w">                                         </span><span class="c1">// input wire aresetn</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tvalid</span><span class="p">(</span><span class="mh">1</span><span class="p">),</span><span class="w">                                      </span><span class="c1">// input wire s_axis_phase_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">s_axis_phase_tdata</span><span class="p">({</span><span class="n">phz_inc_start</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mh">1</span><span class="p">,</span><span class="w"> </span><span class="n">phz_inc_start</span><span class="p">}),</span><span class="w">     </span><span class="c1">// input wire [31 : 0] s_axis_phase_tdata</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tvalid</span><span class="p">(</span><span class="n">m1_axis_data_tvalid</span><span class="p">),</span><span class="w">                     </span><span class="c1">// output wire m_axis_data_tvalid</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tready</span><span class="p">(</span><span class="n">M_AXIS_DATA_tready</span><span class="p">),</span><span class="w">                      </span><span class="c1">// input wire m_axis_data_tready</span>
+<span class="w">  </span><span class="p">.</span><span class="n">m_axis_data_tdata</span><span class="p">(</span><span class="n">m1_axis_data_tdata</span><span class="p">)</span><span class="w">                        </span><span class="c1">// output wire [31 : 0] m_axis_data_tdata</span>
+<span class="p">);</span>
+
+<span class="k">assign</span><span class="w"> </span><span class="n">M_AXIS_DATA_tdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">m1_axis_data_tdata</span><span class="p">,</span><span class="n">m0_axis_data_tdata</span><span class="p">};</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">M_AXIS_DATA_tvalid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m0_axis_data_tvalid</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m1_axis_data_tvalid</span><span class="p">;</span>
+
+<span class="k">assign</span><span class="w"> </span><span class="n">dds_resetn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">steady_slv_reg0</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">phz_inc_start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slv_reg1</span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span>
+
+<span class="c1">// User logic ends</span>
+</pre></div>
+</div>
+<p>Your project sources should now look like the following,</p>
+<img alt="../_images/Screenshot%202024-09-20%20100910.png" src="../_images/Screenshot%202024-09-20%20100910.png" />
+</section>
+<section id="packaging-the-custom-ip">
+<h2>Packaging the Custom IP<a class="headerlink" href="#packaging-the-custom-ip" title="Link to this heading"></a></h2>
+<p>Along the <strong>Flow Navigator</strong> side bar, click <strong>Edit Packaged IP</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-20%20100931.png" src="../_images/Screenshot%202024-09-20%20100931.png" />
+<p>This opens the tab shown below.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101006.png" src="../_images/Screenshot%202024-09-20%20101006.png" />
+<p>Click on <strong>Customization Parameters</strong>, and then click <strong>Merge changes from Customization Parameters Wizard</strong>, press <strong>Ok</strong> through any prompts.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101020.png" src="../_images/Screenshot%202024-09-20%20101020.png" />
+<p>Click on <strong>Ports and Interfaces</strong>, this next bit is important to ensure the peripheral has a correct AXI-Stream interface.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101032.png" src="../_images/Screenshot%202024-09-20%20101032.png" />
+<p>Select the group of ports by <em>Ctrl + click</em> each one, then <em>Right click</em> on a member of the group to open the menu, click <strong>+ Add Bus Interface…</strong></p>
+<img alt="../_images/Screenshot%202024-09-20%20101059.png" src="../_images/Screenshot%202024-09-20%20101059.png" />
+<p>Click the elipsis <strong>…</strong> on the side.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101117.png" src="../_images/Screenshot%202024-09-20%20101117.png" />
+<p>Select <strong>axis_rtl</strong> corresponding to AMBA AXI4-Stream Interface. Click <strong>Ok</strong></p>
+<img alt="../_images/Screenshot%202024-09-20%20101128.png" src="../_images/Screenshot%202024-09-20%20101128.png" />
+<p>Change the name to <code class="docutils literal notranslate"><span class="pre">M_AXIS_DATA</span></code>.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101152.png" src="../_images/Screenshot%202024-09-20%20101152.png" />
+<p>Click the <strong>Port Mapping</strong> tab.  Match <code class="docutils literal notranslate"><span class="pre">TDATA</span></code> on the right (click it) with <code class="docutils literal notranslate"><span class="pre">M_AXIS_DATA_tdata</span></code> (click it) and then click <strong>Map Ports</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101214.png" src="../_images/Screenshot%202024-09-20%20101214.png" />
+<img alt="../_images/Screenshot%202024-09-20%20101225.png" src="../_images/Screenshot%202024-09-20%20101225.png" />
+<p>Repeat the same process for <code class="docutils literal notranslate"><span class="pre">TVALID</span></code> and <code class="docutils literal notranslate"><span class="pre">M_AXIS_DATA_tvalid</span></code> and <code class="docutils literal notranslate"><span class="pre">TREADY</span></code> and <code class="docutils literal notranslate"><span class="pre">M_AXIS_DATA_tready</span></code>. Click <strong>Ok</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101249.png" src="../_images/Screenshot%202024-09-20%20101249.png" />
+<p>Right click the new peripheral created <code class="docutils literal notranslate"><span class="pre">M_AXIS_DATA</span></code>, and click <strong>Associate Clocks…</strong></p>
+<img alt="../_images/Screenshot%202024-09-20%20101333.png" src="../_images/Screenshot%202024-09-20%20101333.png" />
+<p>Check <code class="docutils literal notranslate"><span class="pre">M_AXIS_CLK</span></code>.  Click <strong>Ok</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101343.png" src="../_images/Screenshot%202024-09-20%20101343.png" />
+<p>Click <strong>Review and Package</strong>. Click on <strong>Edit packaging settings</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101401.png" src="../_images/Screenshot%202024-09-20%20101401.png" />
+<p>Ensure that <strong>Delete project after packaging</strong> is unchecked.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>CRITICALLY IMPORTANT</strong>: If <strong>Delete project after packaging</strong> is checked, this will delete your ability to further edit this IP and you will have to start all over.  No clue why it is a default setting in Vivado that this is checked.</p>
+</div>
+<p>Once unchecked, click <strong>Ok</strong>.</p>
+<img alt="../_images/Screenshot%202024-09-20%20101422.png" src="../_images/Screenshot%202024-09-20%20101422.png" />
+<p>Click <strong>Re-Package IP</strong></p>
+<img alt="../_images/Screenshot%202024-09-20%20101437.png" src="../_images/Screenshot%202024-09-20%20101437.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lab2-RadarStateMachinesVerilog.html" class="btn btn-neutral float-left" title="Lab 2 - Schedulers and State Machines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sphinx_rtd_relatively_painless.html" class="btn btn-neutral float-right" title="Getting a RTD Started for Git Repo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Blinn.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

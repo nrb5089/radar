@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 0 - Introduction to Software Defined Radio &mdash; radar 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab 1 - Signal Synthesis and Simulation" href="lab1-DDSPulse.html" />
+    <link rel="prev" title="Lab 3 - Radar Search and Track" href="lab3-RadarDesign.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            radar
+              <img src="../_static/radar_thumbnail.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup_and_installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functional Blocks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html">radar.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional_blocks.html#module-radar.core">radar.core</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Signal Processing Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDR Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 0 - Introduction to Software Defined Radio</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#platform-background">Platform Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#field-programmable-gate-array-fpga">Field Programmable Gate Array (FPGA)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#zynq">Zynq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rf-system-on-chip">RF System-on-Chip</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#task-1">Task 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#task-2">Task 2</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lab1-DDSPulse.html">Lab 1 - Signal Synthesis and Simulation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Howto Docs Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sphinx_rtd_relatively_painless.html">Getting a RTD Started for Git Repo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">radar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lab 0 - Introduction to Software Defined Radio</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/lab0-IntroEmbeddedDesign.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lab-0-introduction-to-software-defined-radio">
+<h1>Lab 0 - Introduction to Software Defined Radio<a class="headerlink" href="#lab-0-introduction-to-software-defined-radio" title="Link to this heading"></a></h1>
+<p>Software Defined Radio (SDR) is like a radio communication system where components that have been traditionally implemented in hardware (like mixers, filters, amplifiers, modulators/demodulators, detectors, etc.) are instead implemented by means of software on a personal computer or embedded system.</p>
+<p>To understand this, let’s consider an analogy.</p>
+<p>Think about how you might adjust the settings on your TV or your music system. Normally, you would push a button or turn a dial. Now, imagine if you could do that with a software on your computer or phone. You could change the volume, switch channels, adjust the brightness, etc., and all of this without ever touching the TV or music system.</p>
+<p>That’s a bit like what software-defined radio does. The “settings” of the radio–like which frequency to tune into–are controlled by software. This means you can use the same piece of hardware to listen to FM radio, shortwave, Wi-Fi signals, etc., just by changing the software.</p>
+<p>The beauty of SDRs is their flexibility. With the right software, an SDR can become virtually any radio device you need. This makes them useful in many areas of technology and communication.</p>
+<section id="platform-background">
+<h2>Platform Background<a class="headerlink" href="#platform-background" title="Link to this heading"></a></h2>
+<section id="field-programmable-gate-array-fpga">
+<h3>Field Programmable Gate Array (FPGA)<a class="headerlink" href="#field-programmable-gate-array-fpga" title="Link to this heading"></a></h3>
+<p>An FPGA, or Field-Programmable Gate Array, is like a massive box of electronic Lego bricks in a small chip. Just as you can assemble Lego bricks in countless ways to build houses, cars, spaceships, etc., you can configure the “bricks” (digital logic blocks) inside an FPGA to perform a wide variety of tasks, such as digital signal processing, pattern recognition, complex calculations, and so much more.  Each of these digital logic blocks can be thought of as a tiny machine that does a simple task. Some might do basic arithmetic like addition, some might store data (like a small memory), while others can make decisions (like choosing a different path based on certain conditions). The “Field-Programmable” part of the name means that you can program, or configure, these logic blocks to do what you want them to do while the FPGA is in use, or “in the field”. This is different from other kinds of hardware devices, which are usually designed for a specific purpose and can’t be changed after they’ve been manufactured.  You can imagine that you are the foreman of a giant construction site, where the FPGA is the site and the digital logic blocks are the workers. As the foreman, you get to decide what each worker (logic block) does, how they communicate with each other, and in what order they do their tasks. This gives you a lot of flexibility to construct complex systems tailored to your specific needs.  FPGAs are often used when a task is too complex for a regular processor, or when you need a lot of processing power but want to keep the power consumption low.</p>
+<p>An example hobby board (Zybo), the FPGA is the small chip in the center with several peripherals attached to it, i.e. HDMI port, LEDs, etc..</p>
+<img alt="../_images/zybo.jpg" src="../_images/zybo.jpg" />
+<p>FGPAs are programmed using Hardware Descriptions Languages (HDLs). You can think of a hardware description language (HDL) as a blueprint for a building. Let’s say you want to build a house. Instead of just starting to build, you’d first create a detailed plan that includes the size and shape of each room, where the doors and windows will go, and how the plumbing and electrical systems will be arranged. This plan helps you visualize the final product, communicate your ideas to others, and guide the construction process.  In the world of digital electronics, an HDL serves a similar purpose. When engineers design complex digital systems - like a computer processor or an FPGA - they use an HDL to describe what they want to build. This could include details about the logical operations the system will perform, how data will move through the system, and how different parts of the system will interact with each other.  The two most common HDLs are VHDL and Verilog. Just as different architectural styles can be used to design buildings, these different languages can be used to design digital systems. Each has its own syntax and conventions, much like programming languages.  Once the design is described in an HDL, special software tools can convert this high-level description into a low-level representation that directly controls the digital hardware. This is similar to how a construction crew uses a blueprint to guide the actual building process.  So, to sum it up: An HDL is a language used by engineers to describe, simulate, and test the behavior and structure of digital systems before they’re built. The following are excellent tutorials/references for Verilog and VHDL, respectively:</p>
+<p><a class="reference external" href="https://verilogguide.readthedocs.io/en/latest/">https://verilogguide.readthedocs.io/en/latest/</a></p>
+<p><a class="reference external" href="https://vhdlguide.readthedocs.io/en/latest/">https://vhdlguide.readthedocs.io/en/latest/</a></p>
+</section>
+<section id="zynq">
+<h3>Zynq<a class="headerlink" href="#zynq" title="Link to this heading"></a></h3>
+<p>AMD Xilinx platforms are the key technology to our SDR design.  In particular, the design paradigm of a Zynq System-on-Chip (SoC) will be used extensively, if unfamiliar, please utilize the following text to learn more and follow the accompanying tutorials.</p>
+<p><a class="reference external" href="http://www.zynqbook.com/">http://www.zynqbook.com/</a></p>
+<p><a class="reference external" href="http://www.zynqbook.com/download-tuts.html">http://www.zynqbook.com/download-tuts.html</a></p>
+<p>While these are for a previous generation of chip, they still provide an excellent introduction to the overall technology.</p>
+<p><em>Note:</em> The book is a couple years old and AMD Xilinx has updated its set of tools, Vivado persists as the main IDE for programming the Programmable Logic (PL), but instead of Xilinx SDK, you’ll you Vitis.  Similarly, instead of Vivado HLS you’ll use Vitis HLS.  Just keep this in mind when getting to the various sections calling for these tools.</p>
+</section>
+<section id="rf-system-on-chip">
+<h3>RF System-on-Chip<a class="headerlink" href="#rf-system-on-chip" title="Link to this heading"></a></h3>
+<p>The more specific design series from AMD Xilinx is the RF System-on-Chip (RFSoC).  These devices possess both a hardened processor along with Analog-to-Digital Converters (ADC) and Digital-to-Analog Converters (DAC) in addition to other features.  The following text provides an excellent introduction to the features of these devices:</p>
+<p><a class="reference external" href="https://www.rfsocbook.com/">https://www.rfsocbook.com/</a></p>
+</section>
+</section>
+<section id="task-1">
+<h2>Task 1<a class="headerlink" href="#task-1" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Estimated Time to Complete: 6-9 hours</p>
+</div>
+<p>Complete the Zynq Ultrascale+ MPSoC Embedded Design Tutorials at</p>
+<p><a class="reference external" href="https://xilinx.github.io/Embedded-Design-Tutorials/docs/2022.1/build/html/docs/Introduction/ZynqMPSoC-EDT/ZynqMPSoC-EDT.html">https://xilinx.github.io/Embedded-Design-Tutorials/docs/2022.1/build/html/docs/Introduction/ZynqMPSoC-EDT/ZynqMPSoC-EDT.html</a></p>
+<p>Resource files found here:</p>
+<p><a class="reference external" href="https://github.com/Xilinx/Embedded-Design-Tutorials/tree/master/docs/Introduction/ZynqMPSoC-EDT/ref_files">https://github.com/Xilinx/Embedded-Design-Tutorials/tree/master/docs/Introduction/ZynqMPSoC-EDT/ref_files</a></p>
+<p>You may skip the sections <code class="docutils literal notranslate"><span class="pre">Building</span> <span class="pre">and</span> <span class="pre">Debugging</span> <span class="pre">Linux</span> <span class="pre">Applications</span></code>, <code class="docutils literal notranslate"><span class="pre">Boot</span> <span class="pre">and</span> <span class="pre">Configuration</span></code>, and <code class="docutils literal notranslate"><span class="pre">Secure</span> <span class="pre">Boot</span></code> for now.  Note that in the first tutorial where you build a project, <code class="docutils literal notranslate"><span class="pre">Zynq</span> <span class="pre">UltraScale+</span> <span class="pre">MPSoC</span> <span class="pre">Processing</span> <span class="pre">System</span> <span class="pre">Configuration</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">Vivado</span> <span class="pre">Design</span> <span class="pre">Suite</span></code>, after the step to <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">HDL</span> <span class="pre">Wrapper</span></code>, click on <code class="docutils literal notranslate"><span class="pre">Generate</span> <span class="pre">Bitstream</span></code> to start this process, it will take several minutes.  While the tutorial is correct that there is no PL design in this first project, the team has had issues building the project in Vitis without doing the <code class="docutils literal notranslate"><span class="pre">Generate</span> <span class="pre">Bitstream</span></code> step.</p>
+</section>
+<section id="task-2">
+<h2>Task 2<a class="headerlink" href="#task-2" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Estimated Time to Complete: 80-120 hours</p>
+</div>
+<p>Complete the Zynq Book tutorials (<a class="reference external" href="http://www.zynqbook.com/download-tuts.html">http://www.zynqbook.com/download-tuts.html</a>) for the listed sections.  Some are similar (or repeats) of Task 1, iteration is key to learning the workflow.</p>
+<ul class="simple">
+<li><p>[ ] 1A: There may be differences in the newer versions of Vivado</p></li>
+<li><p>[ ] 1B: Use the <code class="docutils literal notranslate"><span class="pre">Zynq</span> <span class="pre">MPSoC</span> <span class="pre">Processing</span> <span class="pre">System</span></code>, not the <code class="docutils literal notranslate"><span class="pre">ZYNQ7</span> <span class="pre">Processing</span> <span class="pre">System</span></code>.  These tutorials were made for the previous version.</p></li>
+<li><p>[ ] 1C: Xilinx SDK is replaced with Vitis, use this in place.</p></li>
+<li><p>[ ] 2A:</p></li>
+<li><p>[ ] 2B:</p></li>
+<li><p>[ ] 2C:</p></li>
+<li><p>[ ] 2D:</p></li>
+<li><p>[ ] 3 (optional): Vivado HLS is now replaced with Vitis HLS.</p></li>
+<li><p>[ ] 4A</p></li>
+<li><p>[ ] 5A</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lab3-RadarDesign.html" class="btn btn-neutral float-left" title="Lab 3 - Radar Search and Track" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lab1-DDSPulse.html" class="btn btn-neutral float-right" title="Lab 1 - Signal Synthesis and Simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Blinn.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

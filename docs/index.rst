@@ -33,9 +33,25 @@ Contents
     
 .. toctree::
     :maxdepth: 2
-    :caption: Tutorials:
+    :caption: Signal Processing Tutorials:
    
     tutorials/lab0-IntroPythonNumpy
     tutorials/lab1-BasicSPPython
     tutorials/lab2-TxRx
     tutorials/lab3-RadarDesign
+
+.. toctree::
+    :maxdepth: 2
+    :caption: SDR Tutorials:
+   
+    tutorials/lab0-IntroEmbeddedDesign
+    tutorials/lab1-DDSPulse
+    tutorials/lab2-RadarStateMachinesVerilog
+    tutorials/lab3-CustomIP
+    
+.. toctree::
+    :maxdepth: 2
+    :caption: Howto Docs Guide
+    
+    tutorials/sphinx_rtd_relatively_painless
+    

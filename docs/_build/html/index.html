@@ -16,9 +16,8 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=2709fde1"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -54,12 +53,23 @@
 <li class="toctree-l1"><a class="reference internal" href="functional_blocks.html">radar.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional_blocks.html#module-radar.core">radar.core</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Signal Processing Tutorials:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab1-BasicSPPython.html">Lab 1 - Basic Signal Processing in Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab2-TxRx.html">Lab 2 - Transmitter and Receivers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab3-RadarDesign.html">Lab 3 - Radar Search and Track</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDR Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab0-IntroEmbeddedDesign.html">Lab 0 - Introduction to Software Defined Radio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab1-DDSPulse.html">Lab 1 - Signal Synthesis and Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab2-RadarStateMachinesVerilog.html">Lab 2 - Schedulers and State Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab3-CustomIP.html">Lab 3 - Creating Custom IP Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Howto Docs Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/sphinx_rtd_relatively_painless.html">Getting a RTD Started for Git Repo</a></li>
 </ul>
 
         </div>
@@ -137,7 +147,7 @@ how to install the project.</p>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Signal Processing Tutorials:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/lab0-IntroPythonNumpy.html">Lab 0 - Introduction to Python and Numpy</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab0-IntroPythonNumpy.html#setting-up-python-environment">Setting up Python environment</a></li>
@@ -168,6 +178,49 @@ how to install the project.</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-RadarDesign.html#scanning-the-area-or-volume">Scanning the Area or Volume:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-RadarDesign.html#design-example-basic-360-azimuth-scan">Design Example: Basic 360 Azimuth Scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-RadarDesign.html#design-example-dwell-and-switch">Design Example: Dwell and Switch</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">SDR Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab0-IntroEmbeddedDesign.html">Lab 0 - Introduction to Software Defined Radio</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab0-IntroEmbeddedDesign.html#platform-background">Platform Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab0-IntroEmbeddedDesign.html#task-1">Task 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab0-IntroEmbeddedDesign.html#task-2">Task 2</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab1-DDSPulse.html">Lab 1 - Signal Synthesis and Simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-DDSPulse.html#the-dds-compiler-block">The DDS Compiler Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-DDSPulse.html#running-a-simulation">Running a Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-DDSPulse.html#changing-the-frequency">Changing the Frequency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab1-DDSPulse.html#pulse-control">Pulse Control</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab2-RadarStateMachinesVerilog.html">Lab 2 - Schedulers and State Machines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab2-RadarStateMachinesVerilog.html#basic-pulse-controller">Basic Pulse Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab2-RadarStateMachinesVerilog.html#multiple-pri-controller">Multiple PRI Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab2-RadarStateMachinesVerilog.html#nested-scheduling">Nested Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/lab3-CustomIP.html">Lab 3 - Creating Custom IP Blocks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-CustomIP.html#creation-wizard">Creation Wizard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-CustomIP.html#add-ip-to-custom-ip">Add IP to Custom IP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-CustomIP.html#adding-user-ports-and-logic">Adding User Ports and Logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/lab3-CustomIP.html#packaging-the-custom-ip">Packaging the Custom IP</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Howto Docs Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/sphinx_rtd_relatively_painless.html">Getting a RTD Started for Git Repo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sphinx_rtd_relatively_painless.html#your-code-documentation">Your Code Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sphinx_rtd_relatively_painless.html#the-repository-and-configuration">The Repository and Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sphinx_rtd_relatively_painless.html#building-the-project">Building the Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sphinx_rtd_relatively_painless.html#hosting-on-readthedocs">Hosting on Readthedocs</a></li>
 </ul>
 </li>
 </ul>
